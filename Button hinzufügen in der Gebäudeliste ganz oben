@@ -1,4 +1,17 @@
-// Funktion, die den Button hinzufügt
+// ==UserScript==
+// @name         Füge einen Button ob in der Gebäudeliste ein
+// @namespace    http://tampermonkey.net/
+// @version      1.0
+// @description  Fügt einen neuen Button zum angegebenen div auf Leitstellenspiel.de hinzu
+// @author       Du
+// @match        https://www.leitstellenspiel.de/*
+// @grant        none
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    // Funktion, die den Button hinzufügt
     function addButton() {
         // Überprüfe, ob das Ziel-Element existiert
         const targetDiv = document.getElementById('building-list-header-buttons');
@@ -18,4 +31,6 @@
     // Warte, bis die Seite vollständig geladen ist, und rufe dann die addButton Funktion auf
     window.addEventListener('load', addButton);
 
+    // Fallback, falls der Load-Event nicht richtig ausgelöst wird
+    setTimeout(addButton, 3000);
 })();
