@@ -1,0 +1,64 @@
+// Funktion zum Überprüfen des "Alarmieren und weiter"-Buttons in allen iFrames
+    function debugAlertNextButtonInIframe() {
+    const iframes = document.querySelectorAll('[id^="lightbox_iframe_"]');
+
+    for (let iframe of iframes) {
+        const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+
+        if (!iframeDocument) {
+//            console.log(`❌ Kein Zugriff auf das iFrame-Dokument von ${iframe.id}!`);
+            continue;
+        }
+
+        const alertNextButton = iframeDocument.querySelector('.alert_next');
+
+        if (alertNextButton) {
+//            console.log(`✅ "Alarmieren und weiter"-Button im iFrame ${iframe.id} gefunden!`);
+
+            alertNextButton.addEventListener('click', function (event) {
+                event.preventDefault(); // Standardverhalten verhindern
+
+//                console.log(`🚨 "Alarmieren und weiter"-Button im iFrame ${iframe.id} wurde geklickt!`);
+
+                // Zum nächsten sichtbaren Einsatz springen
+                goToNextVisibleMission();
+            });
+
+            return true; // Button gefunden, Schleife beenden
+        } else {
+//            console.log(`❌ "Alarmieren und weiter"-Button nicht im iFrame ${iframe.id} gefunden!`);
+        }
+    }
+
+    return false;
+}
+
+    // Beobachtet Änderungen im DOM (Lightbox-Öffnung)
+    const observer = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+            if (mutation.addedNodes.length > 0) {
+                mutation.addedNodes.forEach(node => {
+                    if (node.nodeType === 1 && node.id.startsWith('lightbox_iframe_')) {
+//                        console.log(`🟢 Neuer iFrame mit id ${node.id} erkannt! Überprüfe Buttons...`);
+                        // Wiederholt die Überprüfung alle 1 Sekunde, bis der Button gefunden wird
+                        const intervalId = setInterval(() => {
+                            if (debugAlertNextButtonInIframe()) {
+                                clearInterval(intervalId); // Stoppt die Schleife, wenn der Button gefunden wurde
+                            }
+                        }, 1000); // 1 Sekunde
+                    }
+                });
+            }
+        });
+    });
+
+    // Starte den Observer
+    observer.observe(document.body, {
+        childList: true, // Beobachte das Hinzufügen von neuen Knoten
+        subtree: true // Beobachte auch alle Kindknoten des gesamten Dokuments
+    });
+
+    // Starte den Observer für den Body (überwacht neue Elemente)
+    observer.observe(document.body, { childList: true, subtree: true });
+
+//    console.log("🔍 Debugging-Observer für iFrame-Alarmmaske gestartet.");
