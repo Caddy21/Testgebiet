@@ -182,10 +182,10 @@
         '6_small': [ // Polizei (Kleinwache)
             { id: 0, name: 'Zelle', cost: 25000, coins: 5 },
             { id: 1, name: 'Zelle', cost: 25000, coins: 5 },
-            { id: 10, name: 'Diensthundestaffel', cost: 100000, coins: 10 },
-            { id: 11, name: 'Kriminalpolizei', cost: 100000, coins: 20 },
-            { id: 12, name: 'Dienstgruppenleitung', cost: 200000, coins: 25 },
-            { id: 13, name: 'Motorradstaffel', cost: 75000, coins: 15 },
+//            { id: 10, name: 'Diensthundestaffel', cost: 100000, coins: 10 },
+//            { id: 11, name: 'Kriminalpolizei', cost: 100000, coins: 20 },
+//            { id: 12, name: 'Dienstgruppenleitung', cost: 200000, coins: 25 },
+//            { id: 13, name: 'Motorradstaffel', cost: 75000, coins: 15 },
         ],
 
         '24_normal': [ // Reiterstaffel
@@ -216,153 +216,149 @@
 
     // Stile für das Interface
     const styles = `
-   #extension-lightbox {
-       position: fixed;
-       top: 0;
-       left: 0;
-       width: 100%;
-       height: 100%;
-       background: rgba(0, 0, 0, 0.5);
-       display: flex;
-       justify-content: center;
-       align-items: center;
-       z-index: 10000;
-   }
-   #extension-lightbox #extension-lightbox-content {
-       background: var(--background-color, white);
-       color: var(--text-color, black);
-       border: 1px solid var(--border-color, black);
-       padding: 20px;
-       width: 80%;
-       max-width: 1200px;
-       max-height: 90vh;
-       overflow-y: auto;
-       position: relative;
-   }
-   #extension-lightbox #extension-lightbox-content.dark {
-       background: #2c2f33;
-       color: #ffffff;
-       border-color: #23272a;
-   }
-   #extension-lightbox #extension-lightbox-content.light {
-       background: #ffffff;
-       color: #000000;
-       border-color: #dddddd;
-   }
-   #extension-lightbox #close-extension-helper {
-       position: absolute;
-       top: 10px;
-       right: 10px;
-       background: red;
-       color: white;
-       border: none;
-       padding: 5px;
-       cursor: pointer;
+    #extension-lightbox {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
     }
-     :root {
-     --background-color: #f2f2f2;  /* Standard Light Mode Hintergrund */
-     --text-color: #000;           /* Standard Light Mode Textfarbe */
-     --border-color: #ccc;         /* Standard Light Mode Randfarbe */
+    #extension-lightbox #extension-lightbox-content {
+        background: var(--background-color, white);
+        color: var(--text-color, black);
+        border: 1px solid var(--border-color, black);
+        padding: 20px;
+        width: 80%;
+        max-width: 1200px;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
     }
-
+    #extension-lightbox #extension-lightbox-content.dark {
+        background: #2c2f33;
+        color: #ffffff;
+        border-color: #23272a;
+    }
+    #extension-lightbox #extension-lightbox-content.light {
+        background: #ffffff;
+        color: #000000;
+        border-color: #dddddd;
+    }
+    #extension-lightbox #close-extension-helper {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: red;
+        color: white;
+        border: none;
+        padding: 5px;
+        cursor: pointer;
+    }
+    :root {
+        --background-color: #f2f2f2;  /* Standard Light Mode Hintergrund */
+        --text-color: #000;           /* Standard Light Mode Textfarbe */
+        --border-color: #ccc;         /* Standard Light Mode Randfarbe */
+    }
     #extension-lightbox table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-    font-size: 16px;
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        font-size: 16px;
     }
-
     #extension-lightbox table th,
     #extension-lightbox table td {
-    background-color: var(--background-color);
-    color: var(--text-color);
-    border: 1px solid var(--border-color);
-    padding: 8px;
-    text-align: left;
-   }
-
-   #extension-lightbox table th {
-    font-weight: bold;
-   }
-   #extension-lightbox .extension-button {
-       background-color: var(--button-background-color, #007bff);
-       color: var(--button-text-color, #ffffff);
-       border: none;
-       padding: 5px 10px;
-       cursor: pointer;
-       border-radius: 4px;
-   }
-   #extension-lightbox .extension-button:disabled {
-       background-color: gray;
-       cursor: not-allowed;
-   }
-   #extension-lightbox .extension-button:hover:enabled {
-       background-color: var(--button-hover-background-color, #0056b3);
-   }
-   #extension-lightbox .build-all-button {
-       background-color: var(--button-background-color, #ff0000);
-       color: var(--button-text-color, #ffffff);
-       border: none;
-       padding: 5px 10px;
-       cursor: pointer;
-       border-radius: 4px;
-       margin-top: 10px;
-   }
-   #extension-lightbox .build-all-button:disabled {
-       background-color: gray;
-       cursor: not-allowed;
-   }
-   #extension-lightbox .build-all-button:hover:enabled {
-       background-color: var(--button-hover-background-color, #218838);
-   }
-   #extension-lightbox .spoiler-button {
-       background-color: green;
-       color: #ffffff;
-       border: none;
-       padding: 5px 10px;
-       cursor: pointer;
-       border-radius: 4px;
-       margin-top: 10px;
-   }
-   #extension-lightbox .spoiler-content {
-       display: none;
-   }
-   .currency-selection {
-       position: fixed;
-       top: 50%;
-       left: 50%;
-       transform: translate(-50%, -50%);
-       background: white;
-       border: 1px solid black;
-       padding: 20px;
-       z-index: 10001;
-       display: flex;
-       flex-direction: column;
-       gap: 10px;
-   }
-   .currency-button {
-       padding: 10px 20px;
-       cursor: pointer;
-       border-radius: 4px;
-       border: none;
-       color: #ffffff;
-   }
-   .credits-button {
-       background-color: #28a745;
-   }
-   .coins-button {
-       background-color: #dc3545;
-   }
-   .cancel-button {
-       background-color: #6c757d;
-       color: #ffffff;
-       border: none;
-       padding: 10px 20px;
-       cursor: pointer;
-       border-radius: 4px;
-   }
-
-   `;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+        padding: 8px;
+        text-align: left;
+    }
+    #extension-lightbox table th {
+        font-weight: bold;
+    }
+    #extension-lightbox .extension-button {
+        background-color: var(--button-background-color, #007bff);
+        color: var(--button-text-color, #ffffff);
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+    #extension-lightbox .extension-button:disabled {
+        background-color: gray;
+        cursor: not-allowed;
+    }
+    #extension-lightbox .extension-button:hover:enabled {
+        background-color: var(--button-hover-background-color, #0056b3);
+    }
+    #extension-lightbox .build-all-button {
+        background-color: red; /* Always red */
+        color: var(--button-text-color, #ffffff);
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        border-radius: 4px;
+        margin-top: 10px;
+    }
+    #extension-lightbox .build-all-button:disabled {
+        background-color: gray;
+        cursor: not-allowed;
+    }
+    #extension-lightbox .build-all-button:hover:enabled {
+        background-color: red; /* Keep it red on hover */
+    }
+    #extension-lightbox .spoiler-button {
+        background-color: green;
+        color: #ffffff;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        border-radius: 4px;
+        margin-top: 10px;
+    }
+    #extension-lightbox .spoiler-content {
+        display: none;
+    }
+    .currency-selection {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        border: 1px solid black;
+        padding: 20px;
+        z-index: 10001;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .currency-button {
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 4px;
+        border: none;
+        color: #ffffff;
+    }
+    .credits-button {
+        background-color: #28a745;
+    }
+    .coins-button {
+        background-color: #dc3545;
+    }
+    .cancel-button {
+        background-color: #6c757d;
+        color: #ffffff;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+`;
 
     // Funktion zum Abrufen der Benutzereinstellungen vom API
     async function getUserMode() {
@@ -717,44 +713,56 @@
         };
 
         Object.keys(buildingGroups).forEach(groupKey => {
-            const group = buildingGroups[groupKey];
-            const buildingType = buildingTypeNames[groupKey] || 'Unbekannt';
+    const group = buildingGroups[groupKey];
+    const buildingType = buildingTypeNames[groupKey] || 'Unbekannt';
 
-            const buildingHeader = document.createElement('h4');
-            buildingHeader.textContent = `Typ: ${buildingType}`;
-            list.appendChild(buildingHeader);
+    const buildingHeader = document.createElement('h4');
+    buildingHeader.textContent = `Typ: ${buildingType}`;
+    list.appendChild(buildingHeader);
 
-            const spoilerButton = document.createElement('button');
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.display = 'flex';
+    buttonContainer.style.gap = '10px'; // Abstand zwischen den Buttons
+
+    const spoilerButton = document.createElement('button');
+    spoilerButton.textContent = 'Erweiterungen anzeigen';
+    spoilerButton.classList.add('spoiler-button');
+    buttonContainer.appendChild(spoilerButton);
+
+    const buildAllButton = document.createElement('button');
+    buildAllButton.textContent = 'Erweiterung bei allen Wachen bauen';
+    buildAllButton.classList.add('build-all-button');
+    buildAllButton.onclick = () => confirmAndBuildAllExtensions(groupKey, group);
+    buttonContainer.appendChild(buildAllButton);
+
+    list.appendChild(buttonContainer);
+
+    const contentWrapper = document.createElement('div');
+    contentWrapper.className = 'spoiler-content';
+    contentWrapper.style.display = 'none'; // Standardmäßig ausgeblendet
+
+    const searchInput = document.createElement('input');
+    searchInput.type = "text";
+    searchInput.placeholder = "🔍 Nach Wachennamen oder Erweiterungen suchen...";
+    searchInput.style.width = "100%";
+    searchInput.style.marginBottom = "10px";
+    searchInput.style.padding = "5px";
+    searchInput.style.fontSize = "14px";
+    searchInput.style.display = 'block';
+
+    // Toggle-Spoiler-Button
+    spoilerButton.addEventListener('click', () => {
+        if (contentWrapper.style.display === 'none') {
+            contentWrapper.style.display = 'block'; // Zeige die Erweiterungen an
+            spoilerButton.textContent = 'Erweiterungen ausblenden';
+        } else {
+            contentWrapper.style.display = 'none'; // Verstecke die Erweiterungen
             spoilerButton.textContent = 'Erweiterungen anzeigen';
-            spoilerButton.classList.add('spoiler-button');
-            list.appendChild(spoilerButton);
+        }
+    });
 
-            const contentWrapper = document.createElement('div');
-            contentWrapper.className = 'spoiler-content';
-            contentWrapper.style.display = 'none'; // Standardmäßig ausgeblendet
-
-            const searchInput = document.createElement('input');
-            searchInput.type = "text";
-            searchInput.placeholder = "🔍 Nach Wachennamen oder Erweiterungen suchen...";
-            searchInput.style.width = "100%";
-            searchInput.style.marginBottom = "10px";
-            searchInput.style.padding = "5px";
-            searchInput.style.fontSize = "14px";
-            searchInput.style.display = 'block';
-
-            // Toggle-Spoiler-Button
-            spoilerButton.addEventListener('click', () => {
-                if (contentWrapper.style.display === 'none') {
-                    contentWrapper.style.display = 'block'; // Zeige die Erweiterungen an
-                    spoilerButton.textContent = 'Erweiterungen ausblenden';
-                } else {
-                    contentWrapper.style.display = 'none'; // Verstecke die Erweiterungen
-                    spoilerButton.textContent = 'Erweiterungen anzeigen';
-                }
-            });
-
-            const table = document.createElement('table');
-            table.innerHTML = `
+    const table = document.createElement('table');
+    table.innerHTML = `
         <thead>
             <tr>
                 <th>Wache</th>
@@ -765,63 +773,62 @@
         </thead>
         <tbody></tbody>
     `;
-            const tbody = table.querySelector('tbody');
+    const tbody = table.querySelector('tbody');
 
-            group.forEach(({ building, missingExtensions }) => {
-                missingExtensions.forEach(extension => {
-                    // Überprüfen, ob die Erweiterung gebaut werden kann
-                    if (isExtensionLimitReached(building, extension.id)) {
-                        return; // Überspringe die Erweiterung, wenn sie nicht gebaut werden kann
-                    }
+    group.forEach(({ building, missingExtensions }) => {
+        missingExtensions.forEach(extension => {
+            if (isExtensionLimitReached(building, extension.id)) {
+                return; // Überspringe die Erweiterung, wenn sie nicht gebaut werden kann
+            }
 
-                    const row = document.createElement('tr');
-                    row.classList.add(`row-${building.id}-${extension.id}`); // Eine eindeutige Klasse für jede Erweiterung hinzufügen
+            const row = document.createElement('tr');
+            row.classList.add(`row-${building.id}-${extension.id}`); // Eine eindeutige Klasse für jede Erweiterung hinzufügen
 
-                    const nameCell = document.createElement('td');
-                    nameCell.textContent = building.caption;
-                    row.appendChild(nameCell);
+            const nameCell = document.createElement('td');
+            nameCell.textContent = building.caption;
+            row.appendChild(nameCell);
 
-                    const extensionCell = document.createElement('td');
-                    extensionCell.textContent = extension.name;
-                    row.appendChild(extensionCell);
+            const extensionCell = document.createElement('td');
+            extensionCell.textContent = extension.name;
+            row.appendChild(extensionCell);
 
-                    // Credits Button
-                    const creditCell = document.createElement('td');
-                    const creditButton = document.createElement('button');
-                    creditButton.textContent = `${formatNumber(extension.cost)} Credits`;
-                    creditButton.classList.add('btn', 'btn-xl', 'credit-button'); // btn btn-xs Klassen hinzugefügt
-                    creditButton.style.backgroundColor = '#28a745'; // Grüner Hintergrund
-                    creditButton.style.color = 'white';
-                    creditButton.disabled = isExtensionLimitReached(building, extension.id); // Erweiterung kann nicht gebaut werden
-                    creditButton.onclick = () => buildExtension(building, extension.id, 'credits', extension.cost, row); // Button klick Event
-                    creditCell.appendChild(creditButton);
-                    row.appendChild(creditCell);
+            // Credits Button
+            const creditCell = document.createElement('td');
+            const creditButton = document.createElement('button');
+            creditButton.textContent = `${formatNumber(extension.cost)} Credits`;
+            creditButton.classList.add('btn', 'btn-xl', 'credit-button'); // btn btn-xs Klassen hinzugefügt
+            creditButton.style.backgroundColor = '#28a745'; // Grüner Hintergrund
+            creditButton.style.color = 'white';
+            creditButton.disabled = isExtensionLimitReached(building, extension.id); // Erweiterung kann nicht gebaut werden
+            creditButton.onclick = () => buildExtension(building, extension.id, 'credits', extension.cost, row); // Button klick Event
+            creditCell.appendChild(creditButton);
+            row.appendChild(creditCell);
 
-                    // Coins Button
-                    const coinsCell = document.createElement('td');
-                    const coinsButton = document.createElement('button');
-                    coinsButton.textContent = `${extension.coins} Coins`;
-                    coinsButton.classList.add('btn', 'btn-xl', 'coins-button'); // btn btn-xs Klassen hinzugefügt
-                    coinsButton.style.backgroundColor = '#dc3545'; // Roter Hintergrund
-                    coinsButton.style.color = 'white';
-                    coinsButton.disabled = isExtensionLimitReached(building, extension.id); // Erweiterung kann nicht gebaut werden
-                    coinsButton.onclick = () => buildExtension(building, extension.id, 'coins', extension.coins, row); // Button klick Event
-                    coinsCell.appendChild(coinsButton);
-                    row.appendChild(coinsCell);
+            // Coins Button
+            const coinsCell = document.createElement('td');
+            const coinsButton = document.createElement('button');
+            coinsButton.textContent = `${extension.coins} Coins`;
+            coinsButton.classList.add('btn', 'btn-xl', 'coins-button'); // btn btn-xs Klassen hinzugefügt
+            coinsButton.style.backgroundColor = '#dc3545'; // Roter Hintergrund
+            coinsButton.style.color = 'white';
+            coinsButton.disabled = isExtensionLimitReached(building, extension.id); // Erweiterung kann nicht gebaut werden
+            coinsButton.onclick = () => buildExtension(building, extension.id, 'coins', extension.coins, row); // Button klick Event
+            coinsCell.appendChild(coinsButton);
+            row.appendChild(coinsCell);
 
-                    tbody.appendChild(row);
-                });
-            });
-
-            contentWrapper.appendChild(searchInput);
-            contentWrapper.appendChild(table);
-            list.appendChild(contentWrapper);
-
-            searchInput.addEventListener("input", function() {
-                const searchTerm = searchInput.value.toLowerCase();
-                filterTable(tbody, searchTerm);
-            });
+            tbody.appendChild(row);
         });
+    });
+
+    contentWrapper.appendChild(searchInput);
+    contentWrapper.appendChild(table);
+    list.appendChild(contentWrapper);
+
+    searchInput.addEventListener("input", function() {
+        const searchTerm = searchInput.value.toLowerCase();
+        filterTable(tbody, searchTerm);
+    });
+});
     }
 
     function buildExtension(building, extensionId, currency, amount, row) {
@@ -1031,5 +1038,22 @@
             alert('Fehler beim Überprüfen der Credits und Coins.');
         }
     }
+
+    // Neue Funktion zum Bauen aller Erweiterungen für alle Wachen
+function buildAllExtensionsForAllBuildings() {
+    // Iteriere über alle Gebäudegruppen und deren Erweiterungen
+    Object.keys(buildingGroups).forEach(groupKey => {
+        const group = buildingGroups[groupKey];
+        group.forEach(({ building, missingExtensions }) => {
+            missingExtensions.forEach(extension => {
+                // Überprüfe, ob die Erweiterung gebaut werden kann
+                if (!isExtensionLimitReached(building, extension.id)) {
+                    // Baue die Erweiterung
+                    buildExtension(building, extension.id, 'credits', extension.cost);
+                }
+            });
+        });
+    });
+}
 
 })();
