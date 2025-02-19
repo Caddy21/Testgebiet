@@ -634,7 +634,11 @@
     // Funktion zum Rendern der Erweiterungen und des Spoilers
     function renderMissingExtensions(buildings) {
         const list = document.getElementById('extension-list');
-        list.innerHTML = '';
+        list.innerHTML = ''; // Lösche den Inhalt der Lightbox
+
+        // Setze die globalen Variablen zurück
+        buildingGroups = {};
+        buildingsData = buildings;
 
         buildings.sort((a, b) => {
             if (a.building_type === b.building_type) {
@@ -650,13 +654,11 @@
 
             const existingExtensions = new Set(building.extensions.map(e => e.type_id));
 
-            // Hier wird gefiltert, ob die Erweiterung gebaut werden darf
             const allowedExtensions = extensions.filter(extension => {
-                // Überprüfen, ob die Erweiterung nicht limitiert ist
                 if (isExtensionLimitReached(building, extension.id)) {
-                    return false; // Diese Erweiterung kann nicht gebaut werden
+                    return false;
                 }
-                return !existingExtensions.has(extension.id); // Nur Erweiterungen, die noch nicht gebaut wurden
+                return !existingExtensions.has(extension.id);
             });
 
             if (allowedExtensions.length > 0) {
@@ -699,7 +701,7 @@
 
             const buttonContainer = document.createElement('div');
             buttonContainer.style.display = 'flex';
-            buttonContainer.style.gap = '10px'; // Abstand zwischen den Buttons
+            buttonContainer.style.gap = '10px';
 
             const spoilerButton = document.createElement('button');
             spoilerButton.textContent = 'Erweiterungen anzeigen';
@@ -709,14 +711,14 @@
             const buildAllButton = document.createElement('button');
             buildAllButton.textContent = 'Erweiterung bei allen Wachen bauen';
             buildAllButton.classList.add('build-all-button');
-            buildAllButton.onclick = () => showCurrencySelectionForAll(groupKey); // Korrigierte Funktion
+            buildAllButton.onclick = () => showCurrencySelectionForAll(groupKey);
             buttonContainer.appendChild(buildAllButton);
 
             list.appendChild(buttonContainer);
 
             const contentWrapper = document.createElement('div');
             contentWrapper.className = 'spoiler-content';
-            contentWrapper.style.display = 'none'; // Standardmäßig ausgeblendet
+            contentWrapper.style.display = 'none';
 
             const searchInput = document.createElement('input');
             searchInput.type = "text";
@@ -727,39 +729,38 @@
             searchInput.style.fontSize = "14px";
             searchInput.style.display = 'block';
 
-            // Toggle-Spoiler-Button
             spoilerButton.addEventListener('click', () => {
                 if (contentWrapper.style.display === 'none') {
-                    contentWrapper.style.display = 'block'; // Zeige die Erweiterungen an
+                    contentWrapper.style.display = 'block';
                     spoilerButton.textContent = 'Erweiterungen ausblenden';
                 } else {
-                    contentWrapper.style.display = 'none'; // Verstecke die Erweiterungen
+                    contentWrapper.style.display = 'none';
                     spoilerButton.textContent = 'Erweiterungen anzeigen';
                 }
             });
 
             const table = document.createElement('table');
             table.innerHTML = `
-                <thead>
-                    <tr>
-                        <th>Wache</th>
-                        <th>Fehlende Erweiterung</th>
-                        <th>Credits</th>
-                        <th>Coins</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            `;
+            <thead>
+                <tr>
+                    <th>Wache</th>
+                    <th>Fehlende Erweiterung</th>
+                    <th>Credits</th>
+                    <th>Coins</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        `;
             const tbody = table.querySelector('tbody');
 
             group.forEach(({ building, missingExtensions }) => {
                 missingExtensions.forEach(extension => {
                     if (isExtensionLimitReached(building, extension.id)) {
-                        return; // Überspringe die Erweiterung, wenn sie nicht gebaut werden kann
+                        return;
                     }
 
                     const row = document.createElement('tr');
-                    row.classList.add(`row-${building.id}-${extension.id}`); // Eine eindeutige Klasse für jede Erweiterung hinzufügen
+                    row.classList.add(`row-${building.id}-${extension.id}`);
 
                     const nameCell = document.createElement('td');
                     nameCell.textContent = building.caption;
@@ -769,27 +770,25 @@
                     extensionCell.textContent = extension.name;
                     row.appendChild(extensionCell);
 
-                    // Credits Button
                     const creditCell = document.createElement('td');
                     const creditButton = document.createElement('button');
                     creditButton.textContent = `${formatNumber(extension.cost)} Credits`;
-                    creditButton.classList.add('btn', 'btn-xl', 'credit-button'); // btn btn-xs Klassen hinzugefügt
-                    creditButton.style.backgroundColor = '#28a745'; // Grüner Hintergrund
+                    creditButton.classList.add('btn', 'btn-xl', 'credit-button');
+                    creditButton.style.backgroundColor = '#28a745';
                     creditButton.style.color = 'white';
-                    creditButton.disabled = isExtensionLimitReached(building, extension.id); // Erweiterung kann nicht gebaut werden
-                    creditButton.onclick = () => buildExtension(building, extension.id, 'credits', extension.cost, row); // Button klick Event
+                    creditButton.disabled = isExtensionLimitReached(building, extension.id);
+                    creditButton.onclick = () => buildExtension(building, extension.id, 'credits', extension.cost, row);
                     creditCell.appendChild(creditButton);
                     row.appendChild(creditCell);
 
-                    // Coins Button
                     const coinsCell = document.createElement('td');
                     const coinsButton = document.createElement('button');
                     coinsButton.textContent = `${extension.coins} Coins`;
-                    coinsButton.classList.add('btn', 'btn-xl', 'coins-button'); // btn btn-xs Klassen hinzugefügt
-                    coinsButton.style.backgroundColor = '#dc3545'; // Roter Hintergrund
+                    coinsButton.classList.add('btn', 'btn-xl', 'coins-button');
+                    coinsButton.style.backgroundColor = '#dc3545';
                     coinsButton.style.color = 'white';
-                    coinsButton.disabled = isExtensionLimitReached(building, extension.id); // Erweiterung kann nicht gebaut werden
-                    coinsButton.onclick = () => buildExtension(building, extension.id, 'coins', extension.coins, row); // Button klick Event
+                    coinsButton.disabled = isExtensionLimitReached(building, extension.id);
+                    coinsButton.onclick = () => buildExtension(building, extension.id, 'coins', extension.coins, row);
                     coinsCell.appendChild(coinsButton);
                     row.appendChild(coinsCell);
 
@@ -812,6 +811,10 @@
     document.getElementById('close-extension-helper').addEventListener('click', () => {
         const lightbox = document.getElementById('extension-lightbox');
         lightbox.style.display = 'none';
+
+        // Setze die globalen Variablen zurück
+        buildingGroups = {};
+        buildingsData = [];
     });
 
     // Initial den Button hinzufügen
@@ -906,7 +909,7 @@
         return false;
     }
 
- // Funktion zum Bauen aller Erweiterungen
+    // Funktion zum Bauen aller Erweiterungen
     async function buildExtension(building, extensionId, currency, amount, row) {
         const userInfo = await getUserCredits();
         if ((currency === 'credits' && userInfo.credits < amount) || (currency === 'coins' && userInfo.coins < amount)) {
@@ -978,31 +981,31 @@
     }
 
     // Funktion, um eine Erweiterung in einem Gebäude zu bauen
-async function confirmAndBuildExtension(buildingId, extensionId, amount, currency) {
-    try {
-        const userInfo = await getUserCredits();
-        const currencyText = currency === 'credits' ? 'Credits' : 'Coins';
-        console.log(`Benutzer hat ${userInfo.credits} Credits und ${userInfo.coins} Coins`);
+    async function confirmAndBuildExtension(buildingId, extensionId, amount, currency) {
+        try {
+            const userInfo = await getUserCredits();
+            const currencyText = currency === 'credits' ? 'Credits' : 'Coins';
+            console.log(`Benutzer hat ${userInfo.credits} Credits und ${userInfo.coins} Coins`);
 
-        if ((currency === 'credits' && userInfo.credits < amount) || (currency === 'coins' && userInfo.coins < amount)) {
-            alert(`Nicht genügend ${currencyText}.`);
-            console.log(`Nicht genügend ${currencyText}.`);
-            return;
+            if ((currency === 'credits' && userInfo.credits < amount) || (currency === 'coins' && userInfo.coins < amount)) {
+                alert(`Nicht genügend ${currencyText}.`);
+                console.log(`Nicht genügend ${currencyText}.`);
+                return;
+            }
+
+            console.log('Übergebene buildingId:', buildingId);
+            console.log('Aktuelle Gebäudedaten:', buildingsData);
+            if (confirm(`Möchten Sie wirklich ${formatNumber(amount)} ${currencyText} für diese Erweiterung ausgeben?`)) {
+                const buildingCaption = getBuildingCaption(buildingId);
+                console.log('Gefundener Gebäudename:', buildingCaption);
+
+                buildExtension(buildingId, extensionId, currency, buildingCaption, null, null, true);
+            }
+        } catch (error) {
+            console.error('Fehler beim Überprüfen der Credits und Coins:', error);
+            alert('Fehler beim Überprüfen der Credits und Coins.');
         }
-
-        console.log('Übergebene buildingId:', buildingId);
-        console.log('Aktuelle Gebäudedaten:', buildingsData);
-        if (confirm(`Möchten Sie wirklich ${formatNumber(amount)} ${currencyText} für diese Erweiterung ausgeben?`)) {
-            const buildingCaption = getBuildingCaption(buildingId);
-            console.log('Gefundener Gebäudename:', buildingCaption);
-
-            buildExtension(buildingId, extensionId, currency, buildingCaption, null, null, true);
-        }
-    } catch (error) {
-        console.error('Fehler beim Überprüfen der Credits und Coins:', error);
-        alert('Fehler beim Überprüfen der Credits und Coins.');
     }
-}
 
     async function calculateAndBuildAllExtensions(groupKey, currency) {
         const group = buildingGroups[groupKey];
