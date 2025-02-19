@@ -1174,6 +1174,9 @@
     }
 
     async function showCurrencySelection(selectedExtensionsByBuilding) {
+        const userSettings = await getUserMode();
+        const isDarkMode = userSettings && (userSettings.design_mode === 1 || userSettings.design_mode === 4);
+
         let totalCredits = 0;
         let totalCoins = 0;
 
@@ -1191,9 +1194,9 @@
 
         const selectionDiv = document.createElement('div');
         selectionDiv.className = 'currency-selection';
-        selectionDiv.style.background = '#fff';
-        selectionDiv.style.color = '#000';
-        selectionDiv.style.borderColor = '#ccc';
+        selectionDiv.style.background = isDarkMode ? '#333' : '#fff';
+        selectionDiv.style.color = isDarkMode ? '#fff' : '#000';
+        selectionDiv.style.borderColor = isDarkMode ? '#444' : '#ccc';
 
         const totalText = document.createElement('p');
         totalText.textContent = `Gesamtsumme: ${formatNumber(totalCredits)} Credits / ${totalCoins} Coins`;
@@ -1201,7 +1204,7 @@
 
         const creditsButton = document.createElement('button');
         creditsButton.className = 'currency-button credits-button';
-        creditsButton.textContent = `${formatNumber(totalCredits)} Credits`;
+        creditsButton.textContent = `Mit Credits zahlen (${formatNumber(totalCredits)} Credits)`;
         creditsButton.onclick = async () => {
             for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
                 for (const extensionId of extensions) {
@@ -1217,7 +1220,7 @@
 
         const coinsButton = document.createElement('button');
         coinsButton.className = 'currency-button coins-button';
-        coinsButton.textContent = `${formatNumber(totalCoins)} Coins`;
+        coinsButton.textContent = `Mit Coins zahlen (${formatNumber(totalCoins)} Coins)`;
         coinsButton.onclick = async () => {
             for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
                 for (const extensionId of extensions) {
