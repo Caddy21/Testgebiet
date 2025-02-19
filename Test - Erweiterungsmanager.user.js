@@ -634,116 +634,136 @@ addMenuButton();
         });
     }
 
-    // Funktion zum Rendern der Erweiterungen und des Spoilers
-    function renderMissingExtensions(buildings) {
-        const list = document.getElementById('extension-list');
-        list.innerHTML = ''; // Lösche den Inhalt der Lightbox
-
-        // Setze die globalen Variablen zurück
-        buildingGroups = {};
-        buildingsData = buildings;
-
-        buildings.sort((a, b) => {
-            if (a.building_type === b.building_type) {
-                return a.caption.localeCompare(b.caption);
-            }
-            return a.building_type - b.building_type;
-        });
-
-        buildings.forEach(building => {
-            const buildingTypeKey = `${building.building_type}_${building.small_building ? 'small' : 'normal'}`;
-            const extensions = manualExtensions[buildingTypeKey];
-            if (!extensions) return;
-
-            const existingExtensions = new Set(building.extensions.map(e => e.type_id));
-
-            const allowedExtensions = extensions.filter(extension => {
-                if (isExtensionLimitReached(building, extension.id)) {
-                    return false;
-                }
-                return !existingExtensions.has(extension.id);
-            });
-
-            if (allowedExtensions.length > 0) {
-                if (!buildingGroups[buildingTypeKey]) {
-                    buildingGroups[buildingTypeKey] = [];
-                }
-                buildingGroups[buildingTypeKey].push({ building, missingExtensions: allowedExtensions });
-            }
-        });
-
-        const buildingTypeNames = {
-            '0_normal': 'Feuerwache (Normal)',
-            '0_small': 'Feuerwache (Kleinwache)',
-            '1_normal': 'Feuerwehrschule',
-            '2_normal': 'Rettungswache',
-            '3_normal': 'Rettungsschule',
-            '4_normal': 'Krankenhaus',
-            '5_normal': 'Rettungshubschrauber-Station',
-            '6_normal': 'Polizeiwache',
-            '6_small': 'Polizeiwache (Klein)',
-            '8_normal': 'Polizeischule',
-            '9_normal': 'THW',
-            '10_normal': 'THW-Bundesschule',
-            '11_normal': 'Bereitschaftspolizei',
-            '12_normal': 'SEG',
-            '13_normal': 'Polizeihubschrauberstation',
-            '17_normal': 'Polizei-Sondereinheiten',
-            '24_normal': 'Reiterstaffel',
-            '25_normal': 'Bergrettungswache',
-            '27_normal': 'Schule für Seefahrt und Seenotrettung',
+    // Funktion um die aktuelle Credits und Coins des USERs abzurufen
+async function getUserCredits() {
+    try {
+        const response = await fetch('https://www.leitstellenspiel.de/api/userinfo');
+        if (!response.ok) {
+            throw new Error('Fehler beim Abrufen der Credits und Coins');
+        }
+        const data = await response.json();
+        console.log('Benutzer Credits und Coins abgerufen:', data);
+        return {
+            credits: data.credits_user_current,
+            coins: data.coins_user_current
         };
+    } catch (error) {
+        console.error('Fehler beim Abrufen der Credits und Coins:', error);
+        throw error;
+    }
+}
 
-        Object.keys(buildingGroups).forEach(groupKey => {
-            const group = buildingGroups[groupKey];
-            const buildingType = buildingTypeNames[groupKey] || 'Unbekannt';
+// Funktion zum Rendern der Erweiterungen und des Spoilers
+async function renderMissingExtensions(buildings) {
+    const userInfo = await getUserCredits();
+    const list = document.getElementById('extension-list');
+    list.innerHTML = ''; // Lösche den Inhalt der Lightbox
 
-            const buildingHeader = document.createElement('h4');
-            buildingHeader.textContent = `Typ: ${buildingType}`;
-            list.appendChild(buildingHeader);
+    // Setze die globalen Variablen zurück
+    buildingGroups = {};
+    buildingsData = buildings;
 
-            const buttonContainer = document.createElement('div');
-            buttonContainer.style.display = 'flex';
-            buttonContainer.style.gap = '10px';
+    buildings.sort((a, b) => {
+        if (a.building_type === b.building_type) {
+            return a.caption.localeCompare(b.caption);
+        }
+        return a.building_type - b.building_type;
+    });
 
-            const spoilerButton = document.createElement('button');
-            spoilerButton.textContent = 'Erweiterungen anzeigen';
-            spoilerButton.classList.add('spoiler-button');
-            buttonContainer.appendChild(spoilerButton);
+    buildings.forEach(building => {
+        const buildingTypeKey = `${building.building_type}_${building.small_building ? 'small' : 'normal'}`;
+        const extensions = manualExtensions[buildingTypeKey];
+        if (!extensions) return;
 
-            const buildAllButton = document.createElement('button');
-            buildAllButton.textContent = 'Erweiterung bei allen Wachen bauen';
-            buildAllButton.classList.add('build-all-button');
-            buildAllButton.onclick = () => showCurrencySelectionForAll(groupKey);
-            buttonContainer.appendChild(buildAllButton);
+        const existingExtensions = new Set(building.extensions.map(e => e.type_id));
 
-            list.appendChild(buttonContainer);
+        const allowedExtensions = extensions.filter(extension => {
+            if (isExtensionLimitReached(building, extension.id)) {
+                return false;
+            }
+            return !existingExtensions.has(extension.id);
+        });
 
-            const contentWrapper = document.createElement('div');
-            contentWrapper.className = 'spoiler-content';
-            contentWrapper.style.display = 'none';
+        if (allowedExtensions.length > 0) {
+            if (!buildingGroups[buildingTypeKey]) {
+                buildingGroups[buildingTypeKey] = [];
+            }
+            buildingGroups[buildingTypeKey].push({ building, missingExtensions: allowedExtensions });
+        }
+    });
 
-            const searchInput = document.createElement('input');
-            searchInput.type = "text";
-            searchInput.placeholder = "🔍 Nach Wachennamen oder Erweiterungen suchen...";
-            searchInput.style.width = "100%";
-            searchInput.style.marginBottom = "10px";
-            searchInput.style.padding = "5px";
-            searchInput.style.fontSize = "14px";
-            searchInput.style.display = 'block';
+    const buildingTypeNames = {
+        '0_normal': 'Feuerwache (Normal)',
+        '0_small': 'Feuerwache (Kleinwache)',
+        '1_normal': 'Feuerwehrschule',
+        '2_normal': 'Rettungswache',
+        '3_normal': 'Rettungsschule',
+        '4_normal': 'Krankenhaus',
+        '5_normal': 'Rettungshubschrauber-Station',
+        '6_normal': 'Polizeiwache',
+        '6_small': 'Polizeiwache (Klein)',
+        '8_normal': 'Polizeischule',
+        '9_normal': 'THW',
+        '10_normal': 'THW-Bundesschule',
+        '11_normal': 'Bereitschaftspolizei',
+        '12_normal': 'SEG',
+        '13_normal': 'Polizeihubschrauberstation',
+        '17_normal': 'Polizei-Sondereinheiten',
+        '24_normal': 'Reiterstaffel',
+        '25_normal': 'Bergrettungswache',
+        '27_normal': 'Schule für Seefahrt und Seenotrettung',
+    };
 
-            spoilerButton.addEventListener('click', () => {
-                if (contentWrapper.style.display === 'none') {
-                    contentWrapper.style.display = 'block';
-                    spoilerButton.textContent = 'Erweiterungen ausblenden';
-                } else {
-                    contentWrapper.style.display = 'none';
-                    spoilerButton.textContent = 'Erweiterungen anzeigen';
-                }
-            });
+    Object.keys(buildingGroups).forEach(groupKey => {
+        const group = buildingGroups[groupKey];
+        const buildingType = buildingTypeNames[groupKey] || 'Unbekannt';
 
-            const table = document.createElement('table');
-            table.innerHTML = `
+        const buildingHeader = document.createElement('h4');
+        buildingHeader.textContent = `Typ: ${buildingType}`;
+        list.appendChild(buildingHeader);
+
+        const buttonContainer = document.createElement('div');
+        buttonContainer.style.display = 'flex';
+        buttonContainer.style.gap = '10px';
+
+        const spoilerButton = document.createElement('button');
+        spoilerButton.textContent = 'Erweiterungen anzeigen';
+        spoilerButton.classList.add('spoiler-button');
+        buttonContainer.appendChild(spoilerButton);
+
+        const buildAllButton = document.createElement('button');
+        buildAllButton.textContent = 'Erweiterung bei allen Wachen bauen';
+        buildAllButton.classList.add('build-all-button');
+        buildAllButton.onclick = () => showCurrencySelectionForAll(groupKey);
+        buttonContainer.appendChild(buildAllButton);
+
+        list.appendChild(buttonContainer);
+
+        const contentWrapper = document.createElement('div');
+        contentWrapper.className = 'spoiler-content';
+        contentWrapper.style.display = 'none';
+
+        const searchInput = document.createElement('input');
+        searchInput.type = "text";
+        searchInput.placeholder = "🔍 Nach Wachennamen oder Erweiterungen suchen...";
+        searchInput.style.width = "100%";
+        searchInput.style.marginBottom = "10px";
+        searchInput.style.padding = "5px";
+        searchInput.style.fontSize = "14px";
+        searchInput.style.display = 'block';
+
+        spoilerButton.addEventListener('click', () => {
+            if (contentWrapper.style.display === 'none') {
+                contentWrapper.style.display = 'block';
+                spoilerButton.textContent = 'Erweiterungen ausblenden';
+            } else {
+                contentWrapper.style.display = 'none';
+                spoilerButton.textContent = 'Erweiterungen anzeigen';
+            }
+        });
+
+        const table = document.createElement('table');
+        table.innerHTML = `
             <thead>
                 <tr>
                     <th>Wache</th>
@@ -754,61 +774,61 @@ addMenuButton();
             </thead>
             <tbody></tbody>
         `;
-            const tbody = table.querySelector('tbody');
+        const tbody = table.querySelector('tbody');
 
-            group.forEach(({ building, missingExtensions }) => {
-                missingExtensions.forEach(extension => {
-                    if (isExtensionLimitReached(building, extension.id)) {
-                        return;
-                    }
+        group.forEach(({ building, missingExtensions }) => {
+            missingExtensions.forEach(extension => {
+                if (isExtensionLimitReached(building, extension.id)) {
+                    return;
+                }
 
-                    const row = document.createElement('tr');
-                    row.classList.add(`row-${building.id}-${extension.id}`);
+                const row = document.createElement('tr');
+                row.classList.add(`row-${building.id}-${extension.id}`);
 
-                    const nameCell = document.createElement('td');
-                    nameCell.textContent = building.caption;
-                    row.appendChild(nameCell);
+                const nameCell = document.createElement('td');
+                nameCell.textContent = building.caption;
+                row.appendChild(nameCell);
 
-                    const extensionCell = document.createElement('td');
-                    extensionCell.textContent = extension.name;
-                    row.appendChild(extensionCell);
+                const extensionCell = document.createElement('td');
+                extensionCell.textContent = extension.name;
+                row.appendChild(extensionCell);
 
-                    const creditCell = document.createElement('td');
-                    const creditButton = document.createElement('button');
-                    creditButton.textContent = `${formatNumber(extension.cost)} Credits`;
-                    creditButton.classList.add('btn', 'btn-xl', 'credit-button');
-                    creditButton.style.backgroundColor = '#28a745';
-                    creditButton.style.color = 'white';
-                    creditButton.disabled = isExtensionLimitReached(building, extension.id);
-                    creditButton.onclick = () => buildExtension(building, extension.id, 'credits', extension.cost, row);
-                    creditCell.appendChild(creditButton);
-                    row.appendChild(creditCell);
+                const creditCell = document.createElement('td');
+                const creditButton = document.createElement('button');
+                creditButton.textContent = `${formatNumber(extension.cost)} Credits`;
+                creditButton.classList.add('btn', 'btn-xl', 'credit-button');
+                creditButton.style.backgroundColor = '#28a745';
+                creditButton.style.color = 'white';
+                creditButton.disabled = userInfo.credits < extension.cost;
+                creditButton.onclick = () => buildExtension(building, extension.id, 'credits', extension.cost, row);
+                creditCell.appendChild(creditButton);
+                row.appendChild(creditCell);
 
-                    const coinsCell = document.createElement('td');
-                    const coinsButton = document.createElement('button');
-                    coinsButton.textContent = `${extension.coins} Coins`;
-                    coinsButton.classList.add('btn', 'btn-xl', 'coins-button');
-                    coinsButton.style.backgroundColor = '#dc3545';
-                    coinsButton.style.color = 'white';
-                    coinsButton.disabled = isExtensionLimitReached(building, extension.id);
-                    coinsButton.onclick = () => buildExtension(building, extension.id, 'coins', extension.coins, row);
-                    coinsCell.appendChild(coinsButton);
-                    row.appendChild(coinsCell);
+                const coinsCell = document.createElement('td');
+                const coinsButton = document.createElement('button');
+                coinsButton.textContent = `${extension.coins} Coins`;
+                coinsButton.classList.add('btn', 'btn-xl', 'coins-button');
+                coinsButton.style.backgroundColor = '#dc3545';
+                coinsButton.style.color = 'white';
+                coinsButton.disabled = userInfo.coins < extension.coins;
+                coinsButton.onclick = () => buildExtension(building, extension.id, 'coins', extension.coins, row);
+                coinsCell.appendChild(coinsButton);
+                row.appendChild(coinsCell);
 
-                    tbody.appendChild(row);
-                });
-            });
-
-            contentWrapper.appendChild(searchInput);
-            contentWrapper.appendChild(table);
-            list.appendChild(contentWrapper);
-
-            searchInput.addEventListener("input", function() {
-                const searchTerm = searchInput.value.toLowerCase();
-                filterTable(tbody, searchTerm);
+                tbody.appendChild(row);
             });
         });
-    }
+
+        contentWrapper.appendChild(searchInput);
+        contentWrapper.appendChild(table);
+        list.appendChild(contentWrapper);
+
+        searchInput.addEventListener("input", function() {
+            const searchTerm = searchInput.value.toLowerCase();
+            filterTable(tbody, searchTerm);
+        });
+    });
+}
 
     // Schließen-Button-Funktionalität
     document.getElementById('close-extension-helper').addEventListener('click', () => {
@@ -1195,26 +1215,6 @@ addMenuButton();
                 row.style.display = "none";
             }
         });
-    }
-
-    // Funktion um die aktuelle Credits und Coins des USERs abzurufen
-    async function getUserCredits() {
-
-        try {
-            const response = await fetch('https://www.leitstellenspiel.de/api/userinfo');
-            if (!response.ok) {
-                throw new Error('Fehler beim Abrufen der Credits und Coins');
-            }
-            const data = await response.json();
-            console.log('Benutzer Credits und Coins abgerufen:', data);
-            return {
-                credits: data.credits_user_current,
-                coins: data.coins_user_current
-            };
-        } catch (error) {
-            console.error('Fehler beim Abrufen der Credits und Coins:', error);
-            throw error;
-        }
     }
 
     // Funktion, um den Namen eines Gebäudes anhand der ID zu bekommen
