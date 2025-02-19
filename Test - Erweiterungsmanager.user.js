@@ -214,7 +214,7 @@
 
     // Ab hier nichts mehr ändern! (Es sei denn Ihr wisst was Ihr tut)
 
-    // Stile für das Interface
+    // Fügt die Stile hinzu
     const styles = `
         #extension-lightbox {
             position: fixed;
@@ -357,6 +357,9 @@
             padding: 10px 20px;
             cursor: pointer;
             border-radius: 4px;
+        }
+        #open-extension-helper {
+            cursor: pointer; /* Set cursor to pointer */
         }
     `;
 
@@ -571,7 +574,7 @@
         }
     }
 
-    // Button im Profilmenü hinzufügen
+   // Button im Profilmenü hinzufügen
     function addMenuButton() {
         const profileMenu = document.querySelector('#menu_profile + .dropdown-menu');
         if (profileMenu) {
@@ -603,8 +606,8 @@
         }
     }
 
-    // Initial den Button hinzufügen
-    addMenuButton();
+// Initial den Button hinzufügen
+addMenuButton();
 
     let buildingsData = []; // Globale Variable, um die abgerufenen Gebäudedaten zu speichern
     let buildingGroups = {}; // Globale Definition
@@ -1226,6 +1229,5 @@
         console.log('Gebäude nicht gefunden. ID:', buildingId); // Wenn das Gebäude nicht gefunden wird
         return 'Unbekanntes Gebäude';
     }
-
 
 })();
