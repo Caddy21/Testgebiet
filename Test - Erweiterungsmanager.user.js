@@ -624,6 +624,39 @@
 
     // Initial den Button hinzufügen
     addMenuButton();
+    
+     // Funktion, um den Namen eines Gebäudes anhand der ID zu bekommen
+    function getBuildingCaption(buildingId) {
+
+        console.log('Übergebene buildingId:', buildingId);  // Überprüfen, welche ID übergeben wird
+        const building = buildingsData.find(b => String(b.id) === String(buildingId));
+        if (building) {
+            console.log('Gefundenes Gebäude:', building);  // Protokolliere das gefundene Gebäude
+            return building.caption; // Direkt den Gebäudennamen zurückgeben
+        }
+        console.log('Gebäude nicht gefunden. ID:', buildingId); // Wenn das Gebäude nicht gefunden wird
+        return 'Unbekanntes Gebäude';
+    }
+    
+    // Funktion um die aktuelle Credits und Coins des USERs abzurufen
+    async function getUserCredits() {
+        try {
+            const response = await fetch('https://www.leitstellenspiel.de/api/userinfo');
+            if (!response.ok) {
+                throw new Error('Fehler beim Abrufen der Credits und Coins');
+            }
+            const data = await response.json();
+            console.log('Benutzer Credits und Coins abgerufen:', data);
+            return {
+                credits: data.credits_user_current,
+                coins: data.coins_user_current
+            };
+        } catch (error) {
+            console.error('Fehler beim Abrufen der Credits und Coins:', error);
+            throw error;
+        }
+    }
+
 
     let buildingsData = []; // Globale Variable, um die abgerufenen Gebäudedaten zu speichern
     let buildingGroups = {}; // Globale Definition
@@ -648,25 +681,6 @@
             const list = document.getElementById('extension-list');
             list.innerHTML = 'Fehler beim Laden der Gebäudedaten.';
         });
-    }
-
-    // Funktion um die aktuelle Credits und Coins des USERs abzurufen
-    async function getUserCredits() {
-        try {
-            const response = await fetch('https://www.leitstellenspiel.de/api/userinfo');
-            if (!response.ok) {
-                throw new Error('Fehler beim Abrufen der Credits und Coins');
-            }
-            const data = await response.json();
-            console.log('Benutzer Credits und Coins abgerufen:', data);
-            return {
-                credits: data.credits_user_current,
-                coins: data.coins_user_current
-            };
-        } catch (error) {
-            console.error('Fehler beim Abrufen der Credits und Coins:', error);
-            throw error;
-        }
     }
 
     async function renderMissingExtensions(buildings) {
@@ -895,6 +909,22 @@
 
     // Initial den Button hinzufügen
     addMenuButton();
+    
+    // Funktion zur Filterung der Tabelle
+    function filterTable(tbody, searchTerm) {
+        const rows = tbody.querySelectorAll("tr");
+
+        rows.forEach(row => {
+            const wachenName = row.cells[0]?.textContent.toLowerCase() || "";
+            const erweiterung = row.cells[1]?.textContent.toLowerCase() || "";
+
+            if (wachenName.includes(searchTerm) || erweiterung.includes(searchTerm)) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    }
 
     // Funktion zur Unterscheidung der Erweiterungswarteschlange zwischen Premium und Nicht Premium User
     function isExtensionLimitReached(building, extensionId) {
@@ -1149,7 +1179,6 @@
         return true;
     }
 
-
     // Funktion zum Überprüfen der maximalen Anzahl ausgewählter Erweiterungen
     async function checkMaxSelectedExtensions(selectedExtensions) {
         const userInfo = await getUserCredits();
@@ -1162,7 +1191,6 @@
 
         return true;
     }
-
 
     // Funktion zum Bauen ausgewählter Erweiterungen
     async function buildSelectedExtensions() {
@@ -1386,35 +1414,6 @@
 
         // Entferne die Fortschrittsanzeige, wenn alle Erweiterungen gebaut wurden
         removeProgressBar(progressContainer);
-    }
-
-    // Funktion zur Filterung der Tabelle
-    function filterTable(tbody, searchTerm) {
-        const rows = tbody.querySelectorAll("tr");
-
-        rows.forEach(row => {
-            const wachenName = row.cells[0]?.textContent.toLowerCase() || "";
-            const erweiterung = row.cells[1]?.textContent.toLowerCase() || "";
-
-            if (wachenName.includes(searchTerm) || erweiterung.includes(searchTerm)) {
-                row.style.display = "";
-            } else {
-                row.style.display = "none";
-            }
-        });
-    }
-
-    // Funktion, um den Namen eines Gebäudes anhand der ID zu bekommen
-    function getBuildingCaption(buildingId) {
-
-        console.log('Übergebene buildingId:', buildingId);  // Überprüfen, welche ID übergeben wird
-        const building = buildingsData.find(b => String(b.id) === String(buildingId));
-        if (building) {
-            console.log('Gefundenes Gebäude:', building);  // Protokolliere das gefundene Gebäude
-            return building.caption; // Direkt den Gebäudennamen zurückgeben
-        }
-        console.log('Gebäude nicht gefunden. ID:', buildingId); // Wenn das Gebäude nicht gefunden wird
-        return 'Unbekanntes Gebäude';
     }
 
 })();
