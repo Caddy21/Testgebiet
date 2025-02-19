@@ -506,70 +506,70 @@
     }
 
     // Funktion zur Prüfung von Premium und Hinweis
-async function checkPremiumAndShowHint() {
-    const userSettings = await getUserMode();
-    const isDarkMode = userSettings && (userSettings.design_mode === 1 || userSettings.design_mode === 4);
+    async function checkPremiumAndShowHint() {
+        const userSettings = await getUserMode();
+        const isDarkMode = userSettings && (userSettings.design_mode === 1 || userSettings.design_mode === 4);
 
-    function createCustomAlert(message, isDarkMode, callback) {
-        const alertDiv = document.createElement('div');
-        alertDiv.style.position = 'fixed';
-        alertDiv.style.top = '50%';
-        alertDiv.style.left = '50%';
-        alertDiv.style.transform = 'translate(-50%, -50%)';
-        alertDiv.style.padding = '20px';
-        alertDiv.style.border = '1px solid';
-        alertDiv.style.borderRadius = '10px';
-        alertDiv.style.boxShadow = '0px 0px 10px rgba(0,0,0,0.2)';
-        alertDiv.style.width = '300px';
-        alertDiv.style.textAlign = 'center';
-        alertDiv.style.zIndex = '10002';
+        function createCustomAlert(message, isDarkMode, callback) {
+            const alertDiv = document.createElement('div');
+            alertDiv.style.position = 'fixed';
+            alertDiv.style.top = '50%';
+            alertDiv.style.left = '50%';
+            alertDiv.style.transform = 'translate(-50%, -50%)';
+            alertDiv.style.padding = '20px';
+            alertDiv.style.border = '1px solid';
+            alertDiv.style.borderRadius = '10px';
+            alertDiv.style.boxShadow = '0px 0px 10px rgba(0,0,0,0.2)';
+            alertDiv.style.width = '300px';
+            alertDiv.style.textAlign = 'center';
+            alertDiv.style.zIndex = '10002';
 
-        alertDiv.style.background = isDarkMode ? '#333' : '#fff';
-        alertDiv.style.color = isDarkMode ? '#fff' : '#000';
-        alertDiv.style.borderColor = isDarkMode ? '#444' : '#ccc';
+            alertDiv.style.background = isDarkMode ? '#333' : '#fff';
+            alertDiv.style.color = isDarkMode ? '#fff' : '#000';
+            alertDiv.style.borderColor = isDarkMode ? '#444' : '#ccc';
 
-        const alertText = document.createElement('p');
-        alertText.textContent = message;
-        alertDiv.appendChild(alertText);
+            const alertText = document.createElement('p');
+            alertText.textContent = message;
+            alertDiv.appendChild(alertText);
 
-        const closeButton = document.createElement('button');
-        closeButton.textContent = 'OK';
-        closeButton.style.marginTop = '10px';
-        closeButton.style.padding = '5px 10px';
-        closeButton.style.border = 'none';
-        closeButton.style.cursor = 'pointer';
-        closeButton.style.borderRadius = '4px';
-        closeButton.style.backgroundColor = isDarkMode ? '#444' : '#007bff';
-        closeButton.style.color = isDarkMode ? '#fff' : '#fff';
-        closeButton.onclick = () => {
-            document.body.removeChild(alertDiv);
-            callback();
-        };
-        alertDiv.appendChild(closeButton);
+            const closeButton = document.createElement('button');
+            closeButton.textContent = 'OK';
+            closeButton.style.marginTop = '10px';
+            closeButton.style.padding = '5px 10px';
+            closeButton.style.border = 'none';
+            closeButton.style.cursor = 'pointer';
+            closeButton.style.borderRadius = '4px';
+            closeButton.style.backgroundColor = isDarkMode ? '#444' : '#007bff';
+            closeButton.style.color = isDarkMode ? '#fff' : '#fff';
+            closeButton.onclick = () => {
+                document.body.removeChild(alertDiv);
+                callback();
+            };
+            alertDiv.appendChild(closeButton);
 
-        document.body.appendChild(alertDiv);
-    }
+            document.body.appendChild(alertDiv);
+        }
 
-    if (typeof user_premium !== 'undefined') {
-        console.log("Die Variable 'user_premium' ist definiert."); // Debugging-Info
+        if (typeof user_premium !== 'undefined') {
+            console.log("Die Variable 'user_premium' ist definiert."); // Debugging-Info
 
-        if (!user_premium) {
-            console.warn("Der Nutzer hat keinen Premium-Account.");
-            createCustomAlert("Hallo\n\nHier kommt bald noch mehr Text", isDarkMode, () => {
+            if (!user_premium) {
+                console.warn("Der Nutzer hat keinen Premium-Account.");
+                createCustomAlert("Hallo\n\nHier kommt bald noch mehr Text", isDarkMode, () => {
+                    const lightbox = document.getElementById('extension-lightbox');
+                    lightbox.style.display = 'flex';
+                    fetchBuildingsAndRender(); // API-Daten abrufen, wenn das Script geöffnet wird
+                });
+            } else {
+                console.log("Der Nutzer hat einen Premium-Account.");
                 const lightbox = document.getElementById('extension-lightbox');
                 lightbox.style.display = 'flex';
                 fetchBuildingsAndRender(); // API-Daten abrufen, wenn das Script geöffnet wird
-            });
+            }
         } else {
-            console.log("Der Nutzer hat einen Premium-Account.");
-            const lightbox = document.getElementById('extension-lightbox');
-            lightbox.style.display = 'flex';
-            fetchBuildingsAndRender(); // API-Daten abrufen, wenn das Script geöffnet wird
+            console.error("Die Variable 'user_premium' ist nicht definiert. Bitte prüfe, ob sie korrekt geladen wurde.");
         }
-    } else {
-        console.error("Die Variable 'user_premium' ist nicht definiert. Bitte prüfe, ob sie korrekt geladen wurde.");
     }
-}
 
     // Button im Profilmenü hinzufügen
     function addMenuButton() {
@@ -906,6 +906,103 @@ async function checkPremiumAndShowHint() {
         return false;
     }
 
+ // Funktion zum Bauen aller Erweiterungen
+    async function buildExtension(building, extensionId, currency, amount, row) {
+        const userInfo = await getUserCredits();
+        if ((currency === 'credits' && userInfo.credits < amount) || (currency === 'coins' && userInfo.coins < amount)) {
+            alert(`Nicht genügend ${currency === 'credits' ? 'Credits' : 'Coins'}.`);
+            return;
+        }
+
+        // Die Erweiterung wird direkt gebaut
+        const csrfToken = getCSRFToken();
+        const buildUrl = `/buildings/${building.id}/extension/${currency}/${extensionId}`;
+
+        await new Promise((resolve, reject) => {
+            GM_xmlhttpRequest({
+                method: 'POST',
+                url: buildUrl,
+                headers: {
+                    'X-CSRF-Token': csrfToken,
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                onload: function(response) {
+                    console.log(`Erweiterung in Gebäude ${building.id} gebaut. Response:`, response);
+
+                    // Wenn es sich um eine Polizei-Kleinwache handelt und Erweiterungen 10, 11, 12 oder 13 betroffen sind
+                    if (building.building_type === 6 && building.small_building && [10, 11, 12, 13].includes(extensionId)) {
+                        // Alle Erweiterungen der Polizei-Kleinwache ausblenden, die noch nicht gebaut wurden
+                        const allRows = document.querySelectorAll(
+                            `.row-${building.id}-10,
+                         .row-${building.id}-11,
+                         .row-${building.id}-12,
+                         .row-${building.id}-13`
+                        );
+                        allRows.forEach(otherRow => {
+                            if (otherRow !== row) {
+                                otherRow.style.display = 'none'; // Alle anderen Zeilen ausblenden
+                            }
+                        });
+                    }
+
+                    // Wenn es sich um eine Feuerwehr-Kleinwache handelt und Erweiterungen 0, 3, 4, 5, 6, 7, 8, 9 oder 12 betroffen sind
+                    if (building.building_type === 0 && building.small_building && [0, 3, 4, 5, 6, 7, 8, 9, 12].includes(extensionId)) {
+                        // Alle Erweiterungen der Feuerwehr-Kleinwache ausblenden, die noch nicht gebaut wurden
+                        const allRows = document.querySelectorAll(
+                            `.row-${building.id}-0,
+                         .row-${building.id}-3,
+                         .row-${building.id}-4,
+                         .row-${building.id}-5,
+                         .row-${building.id}-6,
+                         .row-${building.id}-7,
+                         .row-${building.id}-8,
+                         .row-${building.id}-9,
+                         .row-${building.id}-12`
+                        );
+                        allRows.forEach(otherRow => {
+                            if (otherRow !== row) {
+                                otherRow.style.display = 'none'; // Alle anderen Zeilen ausblenden
+                            }
+                        });
+                    }
+
+                    row.style.display = 'none'; // Die ausgebaute Zeile wird ausgeblendet
+                    resolve(response);
+                },
+                onerror: function(error) {
+                    console.error(`Fehler beim Bauen der Erweiterung in Gebäude ${building.id}.`, error);
+                    reject(error);
+                }
+            });
+        });
+    }
+
+    // Funktion, um eine Erweiterung in einem Gebäude zu bauen
+async function confirmAndBuildExtension(buildingId, extensionId, amount, currency) {
+    try {
+        const userInfo = await getUserCredits();
+        const currencyText = currency === 'credits' ? 'Credits' : 'Coins';
+        console.log(`Benutzer hat ${userInfo.credits} Credits und ${userInfo.coins} Coins`);
+
+        if ((currency === 'credits' && userInfo.credits < amount) || (currency === 'coins' && userInfo.coins < amount)) {
+            alert(`Nicht genügend ${currencyText}.`);
+            console.log(`Nicht genügend ${currencyText}.`);
+            return;
+        }
+
+        console.log('Übergebene buildingId:', buildingId);
+        console.log('Aktuelle Gebäudedaten:', buildingsData);
+        if (confirm(`Möchten Sie wirklich ${formatNumber(amount)} ${currencyText} für diese Erweiterung ausgeben?`)) {
+            const buildingCaption = getBuildingCaption(buildingId);
+            console.log('Gefundener Gebäudename:', buildingCaption);
+
+            buildExtension(buildingId, extensionId, currency, buildingCaption, null, null, true);
+        }
+    } catch (error) {
+        console.error('Fehler beim Überprüfen der Credits und Coins:', error);
+        alert('Fehler beim Überprüfen der Credits und Coins.');
+    }
+}
 
     async function calculateAndBuildAllExtensions(groupKey, currency) {
         const group = buildingGroups[groupKey];
@@ -1078,78 +1175,6 @@ async function checkPremiumAndShowHint() {
         document.body.appendChild(selectionDiv);
     }
 
-
-    // Funktion zum Bauen einer Erweiterung mit Pause
-    async function buildExtensionWithPause(building, extensionId, currency, amount, row) {
-        const userInfo = await getUserCredits();
-        if ((currency === 'credits' && userInfo.credits < amount) || (currency === 'coins' && userInfo.coins < amount)) {
-            alert(`Nicht genügend ${currency === 'credits' ? 'Credits' : 'Coins'}.`);
-            return;
-        }
-
-        // Die Erweiterung wird direkt gebaut
-        const csrfToken = getCSRFToken();
-        const buildUrl = `/buildings/${building.id}/extension/${currency}/${extensionId}`;
-
-        await new Promise((resolve, reject) => {
-            GM_xmlhttpRequest({
-                method: 'POST',
-                url: buildUrl,
-                headers: {
-                    'X-CSRF-Token': csrfToken,
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                onload: function(response) {
-                    console.log(`Erweiterung in Gebäude ${building.id} gebaut. Response:`, response);
-
-                    // Wenn es sich um eine Polizei-Kleinwache handelt und Erweiterungen 10, 11, 12 oder 13 betroffen sind
-                    if (building.building_type === 6 && building.small_building && [10, 11, 12, 13].includes(extensionId)) {
-                        // Alle Erweiterungen der Polizei-Kleinwache ausblenden, die noch nicht gebaut wurden
-                        const allRows = document.querySelectorAll(
-                            `.row-${building.id}-10,
-                         .row-${building.id}-11,
-                         .row-${building.id}-12,
-                         .row-${building.id}-13`
-                        );
-                        allRows.forEach(otherRow => {
-                            if (otherRow !== row) {
-                                otherRow.style.display = 'none'; // Alle anderen Zeilen ausblenden
-                            }
-                        });
-                    }
-
-                    // Wenn es sich um eine Feuerwehr-Kleinwache handelt und Erweiterungen 0, 3, 4, 5, 6, 7, 8, 9 oder 12 betroffen sind
-                    if (building.building_type === 0 && building.small_building && [0, 3, 4, 5, 6, 7, 8, 9, 12].includes(extensionId)) {
-                        // Alle Erweiterungen der Feuerwehr-Kleinwache ausblenden, die noch nicht gebaut wurden
-                        const allRows = document.querySelectorAll(
-                            `.row-${building.id}-0,
-                         .row-${building.id}-3,
-                         .row-${building.id}-4,
-                         .row-${building.id}-5,
-                         .row-${building.id}-6,
-                         .row-${building.id}-7,
-                         .row-${building.id}-8,
-                         .row-${building.id}-9,
-                         .row-${building.id}-12`
-                        );
-                        allRows.forEach(otherRow => {
-                            if (otherRow !== row) {
-                                otherRow.style.display = 'none'; // Alle anderen Zeilen ausblenden
-                            }
-                        });
-                    }
-
-                    row.style.display = 'none'; // Die ausgebaute Zeile wird ausgeblendet
-                    resolve(response);
-                },
-                onerror: function(error) {
-                    console.error(`Fehler beim Bauen der Erweiterung in Gebäude ${building.id}.`, error);
-                    reject(error);
-                }
-            });
-        });
-    }
-
     // Funktion zur Filterung der Tabelle
     function filterTable(tbody, searchTerm) {
         const rows = tbody.querySelectorAll("tr");
@@ -1199,34 +1224,5 @@ async function checkPremiumAndShowHint() {
         return 'Unbekanntes Gebäude';
     }
 
-    // Funktion, um eine Erweiterung in einem Gebäude zu bauen
-    async function confirmAndBuildExtension(buildingId, extensionId, amount, currency) {
-        try {
-            const userInfo = await getUserCredits();
-            const currencyText = currency === 'credits' ? 'Credits' : 'Coins';
-            console.log(`Benutzer hat ${userInfo.credits} Credits und ${userInfo.coins} Coins`);
-
-            if ((currency === 'credits' && userInfo.credits < amount) || (currency === 'coins' && userInfo.coins < amount)) {
-                alert(`Nicht genügend ${currencyText}.`);
-                console.log(`Nicht genügend ${currencyText}.`);
-                return;
-            }
-
-            console.log('Übergebene buildingId:', buildingId);  // Ausgabe der übergebenen buildingId
-            // Hier die Konsolenausgabe hinzufügen, um sicherzustellen, dass buildingsData vorhanden ist
-            console.log('Aktuelle Gebäudedaten:', buildingsData);
-            if (confirm(`Möchten Sie wirklich ${formatNumber(amount)} ${currencyText} für diese Erweiterung ausgeben?`)) {
-
-                const buildingCaption = getBuildingCaption(buildingId); // Holen des Gebäudenamens
-                console.log('Gefundener Gebäudename:', buildingCaption); // Ausgabe des abgerufenen Gebäudennamens
-
-                // Hier übergeben wir showPopup korrekt als true
-                buildExtension(buildingId, extensionId, currency, buildingCaption, null, null, true); // Fortschrittswerte null, da sie nicht benötigt werden
-            }
-        } catch (error) {
-            console.error('Fehler beim Überprüfen der Credits und Coins:', error);
-            alert('Fehler beim Überprüfen der Credits und Coins.');
-        }
-    }
 
 })();
