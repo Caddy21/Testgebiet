@@ -669,7 +669,6 @@
         }
     }
 
-    // Funktion zum Rendern der Erweiterungen und des Spoilers
     async function renderMissingExtensions(buildings) {
         const userInfo = await getUserCredits();
         const list = document.getElementById('extension-list');
@@ -750,6 +749,7 @@
             const buildSelectedButton = document.createElement('button');
             buildSelectedButton.textContent = 'Ausgewählte Erweiterungen bauen';
             buildSelectedButton.classList.add('btn', 'build-selected-button');
+            buildSelectedButton.disabled = true; // Initial disabled
             buildSelectedButton.onclick = () => buildSelectedExtensions();
             buttonContainer.appendChild(buildSelectedButton);
 
@@ -814,6 +814,7 @@
                     checkbox.className = 'extension-checkbox';
                     checkbox.dataset.buildingId = building.id;
                     checkbox.dataset.extensionId = extension.id;
+                    checkbox.addEventListener('change', updateBuildSelectedButton); // Add event listener
                     checkboxCell.appendChild(checkbox);
                     row.appendChild(checkboxCell);
 
@@ -861,6 +862,26 @@
             });
         });
     }
+
+    // Funktion zum Aktualisieren des Status des "Ausgewählte Erweiterungen bauen" Buttons
+    function updateBuildSelectedButton() {
+        const buildSelectedButton = document.querySelector('.build-selected-button');
+        const selectedCheckboxes = document.querySelectorAll('.extension-checkbox:checked');
+        buildSelectedButton.disabled = selectedCheckboxes.length === 0;
+    }
+
+    // Schließen-Button-Funktionalität
+    document.getElementById('close-extension-helper').addEventListener('click', () => {
+        const lightbox = document.getElementById('extension-lightbox');
+        lightbox.style.display = 'none';
+
+        // Setze die globalen Variablen zurück
+        buildingGroups = {};
+        buildingsData = [];
+    });
+
+    // Initial den Button hinzufügen
+    addMenuButton();
 
     // Schließen-Button-Funktionalität
     document.getElementById('close-extension-helper').addEventListener('click', () => {
