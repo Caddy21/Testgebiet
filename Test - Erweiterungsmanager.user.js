@@ -167,16 +167,16 @@
             { id: 0, name: 'Rettungsdienst', cost: 100000, coins: 20 },
             { id: 1, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
             { id: 2, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 3, name: 'Wasserrettung', cost: 400000, coins: 25 },
-            { id: 4, name: 'Flughafenfeuerwehr', cost: 300000, coins: 25 },
-            { id: 5, name: 'Werkfeuerwehr', cost: 100000, coins: 20 },
-            { id: 6, name: 'Netzersatzanlage 50', cost: 100000, coins: 20 },
-            { id: 7, name: 'Großlüfter', cost: 75000, coins: 25 },
-            { id: 8, name: 'Drohneneinheit', cost: 150000, coins: 25 },
-            { id: 9, name: 'Verpflegungsdienst', cost: 200000, coins: 25 },
-            { id: 10, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
-            { id: 11, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
-            { id: 12, name: 'Bahnrettung', cost: 125000, coins: 25 },
+            { id: 6, name: 'Wasserrettung', cost: 400000, coins: 25 },
+            { id: 8, name: 'Flughafenfeuerwehr', cost: 300000, coins: 25 },
+            { id: 13, name: 'Werkfeuerwehr', cost: 100000, coins: 20 },
+            { id: 14, name: 'Netzersatzanlage 50', cost: 100000, coins: 20 },
+            { id: 16, name: 'Großlüfter', cost: 75000, coins: 25 },
+            { id: 18, name: 'Drohneneinheit', cost: 150000, coins: 25 },
+            { id: 19, name: 'Verpflegungsdienst', cost: 200000, coins: 25 },
+            { id: 20, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
+            { id: 21, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
+            { id: 25, name: 'Bahnrettung', cost: 125000, coins: 25 },
         ],
 
         '6_small': [ // Polizei (Kleinwache)
@@ -823,7 +823,7 @@
     // Funktion zur Unterscheidung der Erweiterungswarteschlange zwischen Premium und Nicht Premium User
     function isExtensionLimitReached(building, extensionId) {
         const fireStationSmallAlwaysAllowed = [1, 2, 10, 11];
-        const fireStationSmallLimited = [0, 3, 4, 5, 6, 7, 8, 9, 12];
+        const fireStationSmallLimited = [0, 6, 8, 13, 14, 16, 18, 19, 25];
 
         const policeStationSmallAlwaysAllowed = [0, 1];
         const policeStationSmallLimited = [10, 11, 12, 13];
@@ -949,18 +949,18 @@
                     }
 
                     // Wenn es sich um eine Feuerwehr-Kleinwache handelt und Erweiterungen 0, 3, 4, 5, 6, 7, 8, 9 oder 12 betroffen sind
-                    if (building.building_type === 0 && building.small_building && [0, 3, 4, 5, 6, 7, 8, 9, 12].includes(extensionId)) {
+                    if (building.building_type === 0 && building.small_building && [0, 6, 8, 13, 14, 16, 18, 19, 25].includes(extensionId)) {
                         // Alle Erweiterungen der Feuerwehr-Kleinwache ausblenden, die noch nicht gebaut wurden
                         const allRows = document.querySelectorAll(
                             `.row-${building.id}-0,
-                         .row-${building.id}-3,
-                         .row-${building.id}-4,
-                         .row-${building.id}-5,
                          .row-${building.id}-6,
-                         .row-${building.id}-7,
                          .row-${building.id}-8,
-                         .row-${building.id}-9,
-                         .row-${building.id}-12`
+                         .row-${building.id}-13,
+                         .row-${building.id}-14,
+                         .row-${building.id}-16,
+                         .row-${building.id}-18,
+                         .row-${building.id}-19,
+                         .row-${building.id}-25`
                         );
                         allRows.forEach(otherRow => {
                             if (otherRow !== row) {
