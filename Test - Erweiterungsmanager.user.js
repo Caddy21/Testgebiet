@@ -624,39 +624,6 @@
 
     // Initial den Button hinzufügen
     addMenuButton();
-    
-     // Funktion, um den Namen eines Gebäudes anhand der ID zu bekommen
-    function getBuildingCaption(buildingId) {
-
-        console.log('Übergebene buildingId:', buildingId);  // Überprüfen, welche ID übergeben wird
-        const building = buildingsData.find(b => String(b.id) === String(buildingId));
-        if (building) {
-            console.log('Gefundenes Gebäude:', building);  // Protokolliere das gefundene Gebäude
-            return building.caption; // Direkt den Gebäudennamen zurückgeben
-        }
-        console.log('Gebäude nicht gefunden. ID:', buildingId); // Wenn das Gebäude nicht gefunden wird
-        return 'Unbekanntes Gebäude';
-    }
-    
-    // Funktion um die aktuelle Credits und Coins des USERs abzurufen
-    async function getUserCredits() {
-        try {
-            const response = await fetch('https://www.leitstellenspiel.de/api/userinfo');
-            if (!response.ok) {
-                throw new Error('Fehler beim Abrufen der Credits und Coins');
-            }
-            const data = await response.json();
-            console.log('Benutzer Credits und Coins abgerufen:', data);
-            return {
-                credits: data.credits_user_current,
-                coins: data.coins_user_current
-            };
-        } catch (error) {
-            console.error('Fehler beim Abrufen der Credits und Coins:', error);
-            throw error;
-        }
-    }
-
 
     let buildingsData = []; // Globale Variable, um die abgerufenen Gebäudedaten zu speichern
     let buildingGroups = {}; // Globale Definition
@@ -681,6 +648,25 @@
             const list = document.getElementById('extension-list');
             list.innerHTML = 'Fehler beim Laden der Gebäudedaten.';
         });
+    }
+
+    // Funktion um die aktuelle Credits und Coins des USERs abzurufen
+    async function getUserCredits() {
+        try {
+            const response = await fetch('https://www.leitstellenspiel.de/api/userinfo');
+            if (!response.ok) {
+                throw new Error('Fehler beim Abrufen der Credits und Coins');
+            }
+            const data = await response.json();
+            console.log('Benutzer Credits und Coins abgerufen:', data);
+            return {
+                credits: data.credits_user_current,
+                coins: data.coins_user_current
+            };
+        } catch (error) {
+            console.error('Fehler beim Abrufen der Credits und Coins:', error);
+            throw error;
+        }
     }
 
     async function renderMissingExtensions(buildings) {
@@ -909,22 +895,6 @@
 
     // Initial den Button hinzufügen
     addMenuButton();
-    
-    // Funktion zur Filterung der Tabelle
-    function filterTable(tbody, searchTerm) {
-        const rows = tbody.querySelectorAll("tr");
-
-        rows.forEach(row => {
-            const wachenName = row.cells[0]?.textContent.toLowerCase() || "";
-            const erweiterung = row.cells[1]?.textContent.toLowerCase() || "";
-
-            if (wachenName.includes(searchTerm) || erweiterung.includes(searchTerm)) {
-                row.style.display = "";
-            } else {
-                row.style.display = "none";
-            }
-        });
-    }
 
     // Funktion zur Unterscheidung der Erweiterungswarteschlange zwischen Premium und Nicht Premium User
     function isExtensionLimitReached(building, extensionId) {
@@ -1180,47 +1150,61 @@
     }
 
     // Funktion zum Überprüfen der maximalen Anzahl ausgewählter Erweiterungen
-    async function checkMaxSelectedExtensions(selectedExtensions) {
+async function checkMaxSelectedExtensions(selectedExtensions) {
+    const userInfo = await getUserCredits();
+    const maxSelections = userInfo.premium ? Infinity : 2;
+
+    if (selectedExtensions.length > maxSelections) {
+        alert(`Nicht-Premium-Nutzer dürfen maximal ${maxSelections} Erweiterungen gleichzeitig auswählen.`);
+        return false;
+    }
+
+    return true;
+}
+
+// Event-Listener für Checkbox-Änderungen hinzufügen
+document.addEventListener('change', async (event) => {
+    if (event.target.classList.contains('extension-checkbox')) {
+        const selectedExtensions = document.querySelectorAll('.extension-checkbox:checked');
         const userInfo = await getUserCredits();
         const maxSelections = userInfo.premium ? Infinity : 2;
 
         if (selectedExtensions.length > maxSelections) {
             alert(`Nicht-Premium-Nutzer dürfen maximal ${maxSelections} Erweiterungen gleichzeitig auswählen.`);
-            return false;
+            event.target.checked = false; // Checkbox deaktivieren
         }
-
-        return true;
     }
+});
 
-    // Funktion zum Bauen ausgewählter Erweiterungen
-    async function buildSelectedExtensions() {
-        const selectedExtensions = document.querySelectorAll('.extension-checkbox:checked');
-        const selectedExtensionsByBuilding = {};
+// Funktion zum Bauen ausgewählter Erweiterungen
+async function buildSelectedExtensions() {
+    const selectedExtensions = document.querySelectorAll('.extension-checkbox:checked');
+    const selectedExtensionsByBuilding = {};
 
-        selectedExtensions.forEach(checkbox => {
-            const buildingId = checkbox.dataset.buildingId;
-            const extensionId = checkbox.dataset.extensionId;
+    selectedExtensions.forEach(checkbox => {
+        const buildingId = checkbox.dataset.buildingId;
+        const extensionId = checkbox.dataset.extensionId;
 
-            if (!selectedExtensionsByBuilding[buildingId]) {
-                selectedExtensionsByBuilding[buildingId] = [];
-            }
-            selectedExtensionsByBuilding[buildingId].push(parseInt(extensionId, 10));
-        });
-
-        for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
-            if (!checkMaxExtensions(buildingId, extensions)) {
-                alert(`Zu viele Erweiterungen für Gebäude ${getBuildingCaption(buildingId)} ausgewählt.`);
-                return;
-            }
+        if (!selectedExtensionsByBuilding[buildingId]) {
+            selectedExtensionsByBuilding[buildingId] = [];
         }
+        selectedExtensionsByBuilding[buildingId].push(parseInt(extensionId, 10));
+    });
 
-        const allSelectedExtensions = Object.values(selectedExtensionsByBuilding).flat();
-        if (!await checkMaxSelectedExtensions(allSelectedExtensions)) {
+    for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
+        if (!checkMaxExtensions(buildingId, extensions)) {
+            alert(`Zu viele Erweiterungen für Gebäude ${getBuildingCaption(buildingId)} ausgewählt.`);
             return;
         }
-
-        showCurrencySelection(selectedExtensionsByBuilding);
     }
+
+    const allSelectedExtensions = Object.values(selectedExtensionsByBuilding).flat();
+    if (!await checkMaxSelectedExtensions(allSelectedExtensions)) {
+        return;
+    }
+
+    showCurrencySelection(selectedExtensionsByBuilding);
+}
 
     async function showCurrencySelection(selectedExtensionsByBuilding) {
         const userSettings = await getUserMode();
@@ -1415,5 +1399,33 @@
         // Entferne die Fortschrittsanzeige, wenn alle Erweiterungen gebaut wurden
         removeProgressBar(progressContainer);
     }
+
+    // Funktion, um den Namen eines Gebäudes anhand der ID zu bekommen
+    function getBuildingCaption(buildingId) {
+
+        console.log('Übergebene buildingId:', buildingId);  // Überprüfen, welche ID übergeben wird
+        const building = buildingsData.find(b => String(b.id) === String(buildingId));
+        if (building) {
+            console.log('Gefundenes Gebäude:', building);  // Protokolliere das gefundene Gebäude
+            return building.caption; // Direkt den Gebäudennamen zurückgeben
+        }
+        console.log('Gebäude nicht gefunden. ID:', buildingId); // Wenn das Gebäude nicht gefunden wird
+        return 'Unbekanntes Gebäude';
+    }
+
+    function filterTable(tbody, searchTerm) {
+    const rows = tbody.querySelectorAll("tr");
+
+    rows.forEach(row => {
+        const wachenName = row.cells[1]?.textContent.toLowerCase() || "";
+        const erweiterung = row.cells[2]?.textContent.toLowerCase() || "";
+
+        if (wachenName.includes(searchTerm) || erweiterung.includes(searchTerm)) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+    });
+}
 
 })();
