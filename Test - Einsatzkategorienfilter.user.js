@@ -1,3 +1,15 @@
+// ==UserScript==
+// @name         [LSS] Einsatzkategorienfilter
+// @namespace    http://tampermonkey.net/
+// @version      1.4
+// @description  Filtert die Einsatzliste nach Kategorien
+// @author       Caddy21
+// @match        https://www.leitstellenspiel.de/
+// @grant        GM.setValue
+// @grant        GM.getValue
+// @icon         https://github.com/Caddy21/-docs-assets-css/raw/main/yoshi_icon__by_josecapes_dgqbro3-fullview.png
+// ==/UserScript==
+
 (function () {
     'use strict';
 
