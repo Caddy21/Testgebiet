@@ -81,16 +81,16 @@
         ],
 
         '6_normal': [ // Polizeiwache
-            { id: 0, name: 'Zelle', cost: 25000, coins: 5 },
-            { id: 1, name: 'Zelle', cost: 25000, coins: 5 },
-            { id: 2, name: 'Zelle', cost: 25000, coins: 5 },
-            { id: 3, name: 'Zelle', cost: 25000, coins: 5 },
-            { id: 4, name: 'Zelle', cost: 25000, coins: 5 },
-            { id: 5, name: 'Zelle', cost: 25000, coins: 5 },
-            { id: 6, name: 'Zelle', cost: 25000, coins: 5 },
-            { id: 7, name: 'Zelle', cost: 25000, coins: 5 },
-            { id: 8, name: 'Zelle', cost: 25000, coins: 5 },
-            { id: 9, name: 'Zelle', cost: 25000, coins: 5 },
+            { id: 0, name: '1te Zelle', cost: 25000, coins: 5 },
+            { id: 1, name: '2te Zelle', cost: 25000, coins: 5 },
+            { id: 2, name: '3te Zelle', cost: 25000, coins: 5 },
+            { id: 3, name: '4te Zelle', cost: 25000, coins: 5 },
+            { id: 4, name: '5te Zelle', cost: 25000, coins: 5 },
+            { id: 5, name: '6te Zelle', cost: 25000, coins: 5 },
+            { id: 6, name: '7te Zelle', cost: 25000, coins: 5 },
+            { id: 7, name: '8te Zelle', cost: 25000, coins: 5 },
+            { id: 8, name: '9te Zelle', cost: 25000, coins: 5 },
+            { id: 9, name: '10te Zelle', cost: 25000, coins: 5 },
             { id: 10, name: 'Diensthundestaffel', cost: 100000, coins: 10 },
             { id: 11, name: 'Kriminalpolizei', cost: 100000, coins: 20 },
             { id: 12, name: 'Dienstgruppenleitung', cost: 200000, coins: 25 },
@@ -180,8 +180,8 @@
         ],
 
         '6_small': [ // Polizei (Kleinwache)
-            { id: 0, name: 'Zelle', cost: 25000, coins: 5 },
-            { id: 1, name: 'Zelle', cost: 25000, coins: 5 },
+            { id: 0, name: '1te Zelle', cost: 25000, coins: 5 },
+            { id: 1, name: '2te Zelle', cost: 25000, coins: 5 },
             { id: 10, name: 'Diensthundestaffel', cost: 100000, coins: 10 },
             { id: 11, name: 'Kriminalpolizei', cost: 100000, coins: 20 },
             { id: 12, name: 'Dienstgruppenleitung', cost: 200000, coins: 25 },
@@ -1288,7 +1288,55 @@
 
     // Anfang der Funktion * Alle Erweiterungen * in einem Gebäude bauen
 
+    // Funktion zur Auswahl der Währung für alle Erweiterungen
+async function showCurrencySelectionForAll(groupKey) {
+    const userSettings = await getUserMode();
+    const isDarkMode = userSettings && (userSettings.design_mode === 1 || userSettings.design_mode === 4);
 
+    const group = buildingGroups[groupKey];
+    let totalCredits = 0;
+    let totalCoins = 0;
+
+    group.forEach(({ missingExtensions }) => {
+        missingExtensions.forEach(extension => {
+            totalCredits += extension.cost;
+            totalCoins += extension.coins;
+        });
+    });
+
+    const selectionDiv = document.createElement('div');
+    selectionDiv.className = 'currency-selection';
+    selectionDiv.style.background = isDarkMode ? '#333' : '#fff';
+    selectionDiv.style.color = isDarkMode ? '#fff' : '#000';
+    selectionDiv.style.borderColor = isDarkMode ? '#444' : '#ccc';
+
+    const totalText = document.createElement('p');
+    totalText.textContent = `Gesamtsumme: ${formatNumber(totalCredits)} Credits / ${totalCoins} Coins`;
+    selectionDiv.appendChild(totalText);
+
+    const creditsButton = document.createElement('button');
+    creditsButton.className = 'currency-button credits-button';
+    creditsButton.textContent = `Mit Credits zahlen (${formatNumber(totalCredits)} Credits)`;
+    creditsButton.onclick = () => calculateAndBuildAllExtensions(groupKey, 'credits');
+
+    const coinsButton = document.createElement('button');
+    coinsButton.className = 'currency-button coins-button';
+    coinsButton.textContent = `Mit Coins zahlen (${formatNumber(totalCoins)} Coins)`;
+    coinsButton.onclick = () => calculateAndBuildAllExtensions(groupKey, 'coins');
+
+    const cancelButton = document.createElement('button');
+    cancelButton.className = 'cancel-button';
+    cancelButton.textContent = 'Abbrechen';
+    cancelButton.onclick = () => {
+        document.body.removeChild(selectionDiv);
+    };
+
+    selectionDiv.appendChild(creditsButton);
+    selectionDiv.appendChild(coinsButton);
+    selectionDiv.appendChild(cancelButton);
+
+    document.body.appendChild(selectionDiv);
+}
 
     // Funktion zur Kalkulation der Kosten
     async function calculateAndBuildAllExtensions(groupKey, currency) {
