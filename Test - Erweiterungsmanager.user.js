@@ -382,10 +382,10 @@
     // Funktion zum Abrufen der Benutzereinstellungen vom API
     async function getUserMode() {
         try {
-            console.log("Versuche, Benutzereinstellungen von der API abzurufen...");
+            //            console.log("Versuche, Benutzereinstellungen von der API abzurufen...");
             const response = await fetch('https://www.leitstellenspiel.de/api/settings');
             const data = await response.json();
-            console.log("Benutzereinstellungen abgerufen:", data);
+            //            console.log("Benutzereinstellungen abgerufen:", data);
             return data; // Gibt die vollständige Antwort zurück
         } catch (error) {
             console.error("Fehler beim Abrufen der Einstellungen: ", error);
@@ -395,31 +395,31 @@
 
     // Funktion zum Anwenden des Dark- oder Light-Modus basierend auf der API-Antwort
     async function applyMode() {
-        console.log("Wende Modus an...");
+        //        console.log("Wende Modus an...");
 
         const userSettings = await getUserMode();
         if (!userSettings) {
-            console.log("Keine Benutzereinstellungen gefunden oder Fehler beim Abrufen.");
+            //            console.log("Keine Benutzereinstellungen gefunden oder Fehler beim Abrufen.");
             return;
         }
 
         const mode = userSettings.design_mode; // Benutze jetzt "design_mode" anstelle von "mode"
-        console.log("Aktueller Design-Modus:", mode);
+        //        console.log("Aktueller Design-Modus:", mode);
 
         // Warten auf das Lightbox-Element
         const lightboxContent = document.getElementById('extension-lightbox-content');
         if (!lightboxContent) {
-            console.log("Lightbox-Inhalt nicht gefunden.");
+            //            console.log("Lightbox-Inhalt nicht gefunden.");
             return;
         }
 
-        console.log("Lightbox-Inhalt gefunden, entferne alte Modus-Klassen...");
+        //        console.log("Lightbox-Inhalt gefunden, entferne alte Modus-Klassen...");
         // Entferne alle möglichen Modus-Klassen
         lightboxContent.classList.remove('dark', 'light');
 
         // Modus anwenden
         if (mode === 1 || mode === 4) { // Dunkelmodus
-            console.log("Dunkelmodus aktivieren...");
+            //            console.log("Dunkelmodus aktivieren...");
             lightboxContent.classList.add('dark');
 
             // Dark Mode für Tabelle
@@ -427,7 +427,7 @@
             document.documentElement.style.setProperty('--text-color', '#fff');
             document.documentElement.style.setProperty('--border-color', '#444');
         } else if (mode === 2 || mode === 3) { // Hellmodus
-            console.log("Hellmodus aktivieren...");
+            //            console.log("Hellmodus aktivieren...");
             lightboxContent.classList.add('light');
 
             // Light Mode für Tabelle
@@ -435,7 +435,7 @@
             document.documentElement.style.setProperty('--text-color', '#000');
             document.documentElement.style.setProperty('--border-color', '#ccc');
         } else { // Standardmodus (wenn der Modus unbekannt ist)
-            console.log("Unbekannter Modus, standardmäßig Hellmodus aktivieren...");
+            //            console.log("Unbekannter Modus, standardmäßig Hellmodus aktivieren...");
             lightboxContent.classList.add('light'); // Standardmäßig hell
 
             // Standard Light Mode für Tabelle
@@ -447,20 +447,20 @@
 
     // Funktion zur Beobachtung der Lightbox auf Änderungen (für dynamisch geladene Elemente)
     function observeLightbox() {
-        console.log("Beobachte die Lightbox auf Änderungen...");
+        //        console.log("Beobachte die Lightbox auf Änderungen...");
 
         const lightboxContainer = document.getElementById('extension-lightbox');
         if (!lightboxContainer) {
-            console.log("Lightbox-Container nicht gefunden.");
+            //            console.log("Lightbox-Container nicht gefunden.");
             return;
         }
 
         const observer = new MutationObserver(() => {
-            console.log("MutationObserver ausgelöst - Überprüfe, ob das Content-Element da ist...");
+            //            console.log("MutationObserver ausgelöst - Überprüfe, ob das Content-Element da ist...");
             // Überprüfe, ob das Content-Element in der Lightbox existiert
             const lightboxContent = document.getElementById('extension-lightbox-content');
             if (lightboxContent) {
-                console.log("Lightbox-Inhalt gefunden, wende Modus an...");
+                //                console.log("Lightbox-Inhalt gefunden, wende Modus an...");
                 applyMode(); // Wenn das Lightbox-Inhalt gefunden wird, Modus anwenden
                 observer.disconnect(); // Beende die Beobachtung, wenn die Lightbox gefunden wurde
             }
@@ -472,7 +472,7 @@
 
     // Wende den Modus an, wenn das DOM bereit ist
     window.addEventListener('load', () => {
-        console.log("DOM vollständig geladen. Wende Modus an...");
+        //        console.log("DOM vollständig geladen. Wende Modus an...");
         applyMode();
         observeLightbox(); // Beobachtet dynamische Änderungen
     });
@@ -570,7 +570,7 @@
         }
 
         if (typeof user_premium !== 'undefined') {
-            console.log("Die Variable 'user_premium' ist definiert."); // Debugging-Info
+            //            console.log("Die Variable 'user_premium' ist definiert."); // Debugging-Info
 
             if (!user_premium) {
                 console.warn("Der Nutzer hat keinen Premium-Account.");
@@ -580,7 +580,7 @@
                     fetchBuildingsAndRender(); // API-Daten abrufen, wenn das Script geöffnet wird
                 });
             } else {
-                console.log("Der Nutzer hat einen Premium-Account.");
+                //                console.log("Der Nutzer hat einen Premium-Account.");
                 const lightbox = document.getElementById('extension-lightbox');
                 lightbox.style.display = 'flex';
                 fetchBuildingsAndRender(); // API-Daten abrufen, wenn das Script geöffnet wird
@@ -628,13 +628,13 @@
     // Funktion, um den Namen eines Gebäudes anhand der ID zu bekommen
     function getBuildingCaption(buildingId) {
 
-        console.log('Übergebene buildingId:', buildingId);  // Überprüfen, welche ID übergeben wird
+        //        console.log('Übergebene buildingId:', buildingId);  // Überprüfen, welche ID übergeben wird
         const building = buildingsData.find(b => String(b.id) === String(buildingId));
         if (building) {
-            console.log('Gefundenes Gebäude:', building);  // Protokolliere das gefundene Gebäude
+            //            console.log('Gefundenes Gebäude:', building);  // Protokolliere das gefundene Gebäude
             return building.caption; // Direkt den Gebäudennamen zurückgeben
         }
-        console.log('Gebäude nicht gefunden. ID:', buildingId); // Wenn das Gebäude nicht gefunden wird
+        //        console.log('Gebäude nicht gefunden. ID:', buildingId); // Wenn das Gebäude nicht gefunden wird
         return 'Unbekanntes Gebäude';
     }
 
@@ -652,12 +652,12 @@
             return response.json();
         })
             .then(data => {
-            console.log('Abgerufene Gebäudedaten:', data); // Protokolliere die abgerufenen Daten
+            //            console.log('Abgerufene Gebäudedaten:', data); // Protokolliere die abgerufenen Daten
             buildingsData = data; // Speichern der Gebäudedaten in einer globalen Variablen
             renderMissingExtensions(data); // Weiterverarbeiten der abgerufenen Daten
         })
             .catch(error => {
-            console.error('Es ist ein Fehler aufgetreten:', error);
+            //            console.error('Es ist ein Fehler aufgetreten:', error);
             const list = document.getElementById('extension-list');
             list.innerHTML = 'Fehler beim Laden der Gebäudedaten.';
         });
@@ -671,18 +671,19 @@
                 throw new Error('Fehler beim Abrufen der Credits und Coins');
             }
             const data = await response.json();
-            console.log('Benutzer Credits und Coins abgerufen:', data);
+            //            console.log('Benutzer Credits und Coins abgerufen:', data);
             return {
                 credits: data.credits_user_current,
                 coins: data.coins_user_current,
                 premium: data.premium // Fügen Sie diese Zeile hinzu, um den Premium-Status zurückzugeben
             };
         } catch (error) {
-            console.error('Fehler beim Abrufen der Credits und Coins:', error);
+            //            console.error('Fehler beim Abrufen der Credits und Coins:', error);
             throw error;
         }
     }
 
+    // Funktion um die Tabellen zu erstellen und zu bestücken
     async function renderMissingExtensions(buildings) {
         const userInfo = await getUserCredits();
         const list = document.getElementById('extension-list');
@@ -915,8 +916,9 @@
         const policeStationSmallLimited = [10, 11, 12, 13];
 
         const thwAllExtensions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]; // Alle THW-Erweiterungen
-        const bpolAllExtensions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; // Alle BPol-Erweiterungen
-        const polSonderEinheitAllExtensions = [0, 1, 2, 3, 4]; // Alle PolSondereinheit-Erweiterungen
+        const bpolAllExtensions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];            // Alle BPol-Erweiterungen
+        const polSonderEinheitAllExtensions = [0, 1, 2, 3, 4];                   // Alle PolSondereinheit-Erweiterungen
+        const KhAllExtensions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];                  // Alle Krankenhaus-Erweiterungen
 
         // Falls Premium aktiv ist, gibt es keine Einschränkungen für THW, B-Pol, Schulen und Pol-Sondereinheit
         if (typeof user_premium !== "undefined" && user_premium) {
@@ -945,6 +947,25 @@
             // Polizeiwache (Kleinwache): Prüfen, ob die Erweiterung limitiert ist
             if (policeStationSmallAlwaysAllowed.includes(extensionId)) return false;
             return building.extensions.some(ext => policeStationSmallLimited.includes(ext.type_id));
+        }
+
+        if (building.building_type === 4) {
+            // Krankenhaus
+            const khRequiredFirst = [0, 1,];
+            const khRestrictedUntilFirstTwo = [2, 3, 4, 5, 6, 7, 8];
+            const khAlwaysAllowed = [9];
+
+            if (khAlwaysAllowed.includes(extensionId)) return false;
+
+            const hasRequiredFirstExtensions = khRequiredFirst.every(reqId =>
+                                                                     building.extensions.some(ext => ext.type_id === reqId)
+                                                                    );
+
+            if (khRestrictedUntilFirstTwo.includes(extensionId) && !hasRequiredFirstExtensions) {
+                return true;
+            }
+
+            return false;
         }
 
         if (building.building_type === 9) {
@@ -1002,10 +1023,6 @@
     // Funktion zum Bau einer Erweiterung
     async function buildExtension(building, extensionId, currency, amount, row) {
         const userInfo = await getUserCredits();
-        if ((currency === 'credits' && userInfo.credits < amount) || (currency === 'coins' && userInfo.coins < amount)) {
-            alert(`Nicht genügend ${currency === 'credits' ? 'Credits' : 'Coins'}.`);
-            return;
-        }
 
         // Die Erweiterung wird direkt gebaut
         const csrfToken = getCSRFToken();
@@ -1020,7 +1037,7 @@
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
                 onload: function(response) {
-                    console.log(`Erweiterung in Gebäude ${building.id} gebaut. Response:`, response);
+                    //                    console.log(`Erweiterung in Gebäude ${building.id} gebaut. Response:`, response);
 
                     // Überprüfen, ob die Zeile existiert
                     if (row) {
@@ -1079,19 +1096,19 @@
         try {
             const userInfo = await getUserCredits();
             const currencyText = currency === 'credits' ? 'Credits' : 'Coins';
-            console.log(`Benutzer hat ${userInfo.credits} Credits und ${userInfo.coins} Coins`);
+            //            console.log(`Benutzer hat ${userInfo.credits} Credits und ${userInfo.coins} Coins`);
 
             if ((currency === 'credits' && userInfo.credits < amount) || (currency === 'coins' && userInfo.coins < amount)) {
                 alert(`Nicht genügend ${currencyText}.`);
-                console.log(`Nicht genügend ${currencyText}.`);
+                //                console.log(`Nicht genügend ${currencyText}.`);
                 return;
             }
 
-            console.log('Übergebene buildingId:', buildingId);
-            console.log('Aktuelle Gebäudedaten:', buildingsData);
+            //            console.log('Übergebene buildingId:', buildingId);
+            //            console.log('Aktuelle Gebäudedaten:', buildingsData);
             if (confirm(`Möchten Sie wirklich ${formatNumber(amount)} ${currencyText} für diese Erweiterung ausgeben?`)) {
                 const buildingCaption = getBuildingCaption(buildingId);
-                console.log('Gefundener Gebäudename:', buildingCaption);
+                //                console.log('Gefundener Gebäudename:', buildingCaption);
 
                 buildExtension(buildingId, extensionId, currency, buildingCaption, null, null, true);
             }
@@ -1193,7 +1210,6 @@
         return true;
     }
 
-    // Funktion zum Bauen ausgewählter Erweiterungen
     async function buildSelectedExtensions() {
         const selectedExtensions = document.querySelectorAll('.extension-checkbox:checked');
         const selectedExtensionsByBuilding = {};
@@ -1217,6 +1233,22 @@
 
         const allSelectedExtensions = Object.values(selectedExtensionsByBuilding).flat();
         if (!checkMaxSelectedExtensions(allSelectedExtensions)) {
+            return;
+        }
+
+        const totalCredits = allSelectedExtensions.reduce((sum, extensionId) => {
+            const row = document.querySelector(`.row-${buildingId}-${extensionId}`);
+            return sum + parseInt(row.querySelector('.credit-button').innerText.replace(/\D/g, ''), 10);
+        }, 0);
+
+        const totalCoins = allSelectedExtensions.reduce((sum, extensionId) => {
+            const row = document.querySelector(`.row-${buildingId}-${extensionId}`);
+            return sum + parseInt(row.querySelector('.coins-button').innerText.replace(/\D/g, ''), 10);
+        }, 0);
+
+        const userInfo = await getUserCredits();
+        if ((userInfo.credits < totalCredits) || (userInfo.coins < totalCoins)) {
+            alert(`Nicht genügend Credits oder Coins. Der Bauversuch wird abgebrochen.`);
             return;
         }
 
@@ -1361,110 +1393,109 @@
         document.body.appendChild(selectionDiv);
     }
 
-    // Funktion zur Kalkulation der Kosten
     async function calculateAndBuildAllExtensions(groupKey, currency) {
-    const group = buildingGroups[groupKey];
-    const totalExtensions = group.reduce((sum, { missingExtensions }) => sum + missingExtensions.length, 0);
-    const totalCost = group.reduce((sum, { missingExtensions }) => {
-        return sum + missingExtensions.reduce((extSum, extension) => extSum + extension[currency], 0);
-    }, 0);
+        const group = buildingGroups[groupKey];
+        const totalExtensions = group.reduce((sum, { missingExtensions }) => sum + missingExtensions.length, 0);
+        const totalCost = group.reduce((sum, { missingExtensions }) => {
+            return sum + missingExtensions.reduce((extSum, extension) => extSum + extension[currency], 0);
+        }, 0);
 
-    try {
-        const userInfo = await getUserCredits();
-        if ((currency === 'credits' && userInfo.credits < totalCost) || (currency === 'coins' && userInfo.coins < totalCost)) {
-            alert(`Nicht genügend ${currency === 'credits' ? 'Credits' : 'Coins'}.`);
-            return;
-        }
+        try {
+            const userInfo = await getUserCredits();
+            if ((currency === 'credits' && userInfo.credits < totalCost) || (currency === 'coins' && userInfo.coins < totalCost)) {
+                alert(`Nicht genügend ${currency === 'credits' ? 'Credits' : 'Coins'}. Der Bauversuch wird abgebrochen.`);
+                return;
+            }
 
             // Erstelle die Fortschrittsanzeige
-        const { progressContainer, progressText, progressFill } = await createProgressBar(totalExtensions);
-        let builtCount = 0;
+            const { progressContainer, progressText, progressFill } = await createProgressBar(totalExtensions);
+            let builtCount = 0;
 
             // Baue alle Erweiterungen nur für den spezifischen Wachentyp
-        for (const { building, missingExtensions } of group) {
-            for (const extension of missingExtensions) {
-                // Überprüfe, ob die Erweiterung gebaut werden kann
-                if (!isExtensionLimitReached(building, extension.id)) {
-                    // Baue die Erweiterung
-                    await buildExtension(building, extension.id, currency, extension[currency]);
-                    builtCount++;
-                    updateProgress(builtCount, totalExtensions, progressText, progressFill);
+            for (const { building, missingExtensions } of group) {
+                for (const extension of missingExtensions) {
+                    // Überprüfe, ob die Erweiterung gebaut werden kann
+                    if (!isExtensionLimitReached(building, extension.id)) {
+                        // Baue die Erweiterung
+                        await buildExtension(building, extension.id, currency, extension[currency]);
+                        builtCount++;
+                        updateProgress(builtCount, totalExtensions, progressText, progressFill);
+                    }
                 }
             }
-        }
 
             // Entferne die Fortschrittsanzeige, wenn alle Erweiterungen gebaut wurden
-        removeProgressBar(progressContainer);
+            removeProgressBar(progressContainer);
 
-        // Aktualisiere die Tabelle
-        renderMissingExtensions(buildingsData);
-    } catch (error) {
-        console.error('Fehler beim Abrufen der Credits und Coins:', error);
-        alert('Fehler beim Abrufen der Credits und Coins.');
+            // Aktualisiere die Tabelle
+            renderMissingExtensions(buildingsData);
+        } catch (error) {
+            console.error('Fehler beim Abrufen der Credits und Coins:', error);
+            alert('Fehler beim Abrufen der Credits und Coins.');
+        }
     }
-}
 
     // Funktion zur Erstellung der Fortschrittsanzeige
-async function createProgressBar(totalExtensions) {
-    const userSettings = await getUserMode();
-    const isDarkMode = userSettings && (userSettings.design_mode === 1 || userSettings.design_mode === 4);
+    async function createProgressBar(totalExtensions) {
+        const userSettings = await getUserMode();
+        const isDarkMode = userSettings && (userSettings.design_mode === 1 || userSettings.design_mode === 4);
 
-    const progressContainer = document.createElement('div');
-    progressContainer.className = 'progress-container';
-    progressContainer.style.position = 'fixed';
-    progressContainer.style.top = '50%';
-    progressContainer.style.left = '50%';
-    progressContainer.style.transform = 'translate(-50%, -50%)';
-    progressContainer.style.padding = '20px';
-    progressContainer.style.border = '1px solid #ccc';
-    progressContainer.style.borderRadius = '10px';
-    progressContainer.style.boxShadow = '0px 0px 10px rgba(0,0,0,0.2)';
-    progressContainer.style.width = '300px';
-    progressContainer.style.textAlign = 'center';
-    progressContainer.style.zIndex = '10002'; // Sicherstellen, dass der Fortschrittsbalken oben bleibt
+        const progressContainer = document.createElement('div');
+        progressContainer.className = 'progress-container';
+        progressContainer.style.position = 'fixed';
+        progressContainer.style.top = '50%';
+        progressContainer.style.left = '50%';
+        progressContainer.style.transform = 'translate(-50%, -50%)';
+        progressContainer.style.padding = '20px';
+        progressContainer.style.border = '1px solid #ccc';
+        progressContainer.style.borderRadius = '10px';
+        progressContainer.style.boxShadow = '0px 0px 10px rgba(0,0,0,0.2)';
+        progressContainer.style.width = '300px';
+        progressContainer.style.textAlign = 'center';
+        progressContainer.style.zIndex = '10002'; // Sicherstellen, dass der Fortschrittsbalken oben bleibt
 
-    // Set background color based on mode
-    progressContainer.style.background = isDarkMode ? '#333' : '#fff';
-    progressContainer.style.color = isDarkMode ? '#fff' : '#000';
+        // Set background color based on mode
+        progressContainer.style.background = isDarkMode ? '#333' : '#fff';
+        progressContainer.style.color = isDarkMode ? '#fff' : '#000';
 
-    const progressText = document.createElement('p');
-    progressText.textContent = `0 / ${totalExtensions} Erweiterungen gebaut`;
-    progressText.style.fontWeight = 'bold'; // Fettschrift für bessere Lesbarkeit
-    progressText.style.fontSize = '16px'; // Größere Schrift für bessere Sichtbarkeit
+        const progressText = document.createElement('p');
+        progressText.textContent = `0 / ${totalExtensions} Erweiterungen gebaut`;
+        progressText.style.fontWeight = 'bold'; // Fettschrift für bessere Lesbarkeit
+        progressText.style.fontSize = '16px'; // Größere Schrift für bessere Sichtbarkeit
 
-    const progressBar = document.createElement('div');
-    progressBar.style.width = '100%';
-    progressBar.style.background = isDarkMode ? '#555' : '#ddd';  // Hintergrund für die Progressbar
-    progressBar.style.borderRadius = '5px';
-    progressBar.style.marginTop = '10px';
-    progressBar.style.overflow = 'hidden'; // Hinzugefügt um sicherzustellen, dass der Fortschrittsbalken den Container nicht verlässt
+        const progressBar = document.createElement('div');
+        progressBar.style.width = '100%';
+        progressBar.style.background = isDarkMode ? '#555' : '#ddd';  // Hintergrund für die Progressbar
+        progressBar.style.borderRadius = '5px';
+        progressBar.style.marginTop = '10px';
+        progressBar.style.overflow = 'hidden'; // Hinzugefügt um sicherzustellen, dass der Fortschrittsbalken den Container nicht verlässt
 
-    const progressFill = document.createElement('div');
-    progressFill.style.width = '0%';
-    progressFill.style.height = '20px';
-    progressFill.style.background = '#4caf50';
-    progressFill.style.borderRadius = '5px';
+        const progressFill = document.createElement('div');
+        progressFill.style.width = '0%';
+        progressFill.style.height = '20px';
+        progressFill.style.background = '#4caf50';
+        progressFill.style.borderRadius = '5px';
 
-    progressBar.appendChild(progressFill);
-    progressContainer.appendChild(progressText);
-    progressContainer.appendChild(progressBar);
-    document.body.appendChild(progressContainer);
+        progressBar.appendChild(progressFill);
+        progressContainer.appendChild(progressText);
+        progressContainer.appendChild(progressBar);
+        document.body.appendChild(progressContainer);
 
-    return { progressContainer, progressText, progressFill };
-}
+        return { progressContainer, progressText, progressFill };
+    }
 
-// Funktion zur Aktualisierung des Fortschritts
-function updateProgress(builtCount, totalExtensions, progressText, progressFill) {
-    progressText.textContent = `${builtCount} / ${totalExtensions} Erweiterungen gebaut`;
-    progressFill.style.width = Math.min(100, (builtCount / totalExtensions) * 100) + '%'; // Math.min hinzugefügt, um sicherzustellen, dass die Breite nicht 100% überschreitet
-}
+    // Funktion zur Aktualisierung des Fortschritts
+    function updateProgress(builtCount, totalExtensions, progressText, progressFill) {
+        progressText.textContent = `${builtCount} / ${totalExtensions} Erweiterungen gebaut`;
+        progressFill.style.width = Math.min(100, (builtCount / totalExtensions) * 100) + '%'; // Math.min hinzugefügt, um sicherzustellen, dass die Breite nicht 100% überschreitet
+    }
 
-// Funktion zum Entfernen der Fortschrittsanzeige mit 500ms Verzögerung
-function removeProgressBar(progressContainer) {
-    setTimeout(() => {
-        document.body.removeChild(progressContainer);
-    }, 500); // 500ms Pause bevor die Fortschrittsanzeige entfernt wird
-}
+    // Funktion zum Entfernen der Fortschrittsanzeige mit 500ms Verzögerung
+    function removeProgressBar(progressContainer) {
+        setTimeout(() => {
+            document.body.removeChild(progressContainer);
+        }, 500); // 500ms Pause bevor die Fortschrittsanzeige entfernt wird
+    }
 
 
     // Neue Funktion zum Bauen aller Erweiterungen für alle Wachen mit Pause und Anzeige
