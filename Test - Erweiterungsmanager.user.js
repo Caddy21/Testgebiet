@@ -1185,28 +1185,13 @@
 
         if (selectedExtensions.length > maxSelections) {
             if (!user_premium) {
-                alert(`Nicht-Premium-Nutzer dürfen maximal ${maxSelections} Erweiterungen gleichzeitig auswählen.`);
+                alert(`Da du keinen Premium-Account hast kannst du maximal ${maxSelections} Erweiterungen gleichzeitig auswählen und in Bau geben.`);
             }
             return false;
         }
 
         return true;
     }
-
-    // Event-Listener für Checkbox-Änderungen hinzufügen
-    document.addEventListener('change', (event) => {
-        if (event.target.classList.contains('extension-checkbox')) {
-            const selectedExtensions = document.querySelectorAll('.extension-checkbox:checked');
-            const maxSelections = user_premium ? Infinity : 2;
-
-            if (selectedExtensions.length > maxSelections) {
-                if (!user_premium) {
-                    alert(`Nicht-Premium-Nutzer dürfen maximal ${maxSelections} Erweiterungen gleichzeitig auswählen.`);
-                }
-                event.target.checked = false; // Checkbox deaktivieren
-            }
-        }
-    });
 
     // Funktion zum Bauen ausgewählter Erweiterungen
     async function buildSelectedExtensions() {
@@ -1378,104 +1363,109 @@
 
     // Funktion zur Kalkulation der Kosten
     async function calculateAndBuildAllExtensions(groupKey, currency) {
-        const group = buildingGroups[groupKey];
-        const totalCost = group.reduce((sum, { missingExtensions }) => {
-            return sum + missingExtensions.reduce((extSum, extension) => extSum + extension[currency], 0);
-        }, 0);
+    const group = buildingGroups[groupKey];
+    const totalExtensions = group.reduce((sum, { missingExtensions }) => sum + missingExtensions.length, 0);
+    const totalCost = group.reduce((sum, { missingExtensions }) => {
+        return sum + missingExtensions.reduce((extSum, extension) => extSum + extension[currency], 0);
+    }, 0);
 
-        try {
-            const userInfo = await getUserCredits();
-            if ((currency === 'credits' && userInfo.credits < totalCost) || (currency === 'coins' && userInfo.coins < totalCost)) {
-                alert(`Nicht genügend ${currency === 'credits' ? 'Credits' : 'Coins'}.`);
-                return;
-            }
+    try {
+        const userInfo = await getUserCredits();
+        if ((currency === 'credits' && userInfo.credits < totalCost) || (currency === 'coins' && userInfo.coins < totalCost)) {
+            alert(`Nicht genügend ${currency === 'credits' ? 'Credits' : 'Coins'}.`);
+            return;
+        }
 
             // Erstelle die Fortschrittsanzeige
-            const { progressContainer, progressText, progressFill } = await createProgressBar(group.length);
-            let builtCount = 0;
+        const { progressContainer, progressText, progressFill } = await createProgressBar(totalExtensions);
+        let builtCount = 0;
 
             // Baue alle Erweiterungen nur für den spezifischen Wachentyp
-            for (const { building, missingExtensions } of group) {
-                for (const extension of missingExtensions) {
-                    // Überprüfe, ob die Erweiterung gebaut werden kann
-                    if (!isExtensionLimitReached(building, extension.id)) {
-                        // Baue die Erweiterung
-                        await buildExtension(building, extension.id, currency, extension[currency]);
-                        builtCount++;
-                        updateProgress(builtCount, group.length, progressText, progressFill);
-                    }
+        for (const { building, missingExtensions } of group) {
+            for (const extension of missingExtensions) {
+                // Überprüfe, ob die Erweiterung gebaut werden kann
+                if (!isExtensionLimitReached(building, extension.id)) {
+                    // Baue die Erweiterung
+                    await buildExtension(building, extension.id, currency, extension[currency]);
+                    builtCount++;
+                    updateProgress(builtCount, totalExtensions, progressText, progressFill);
                 }
             }
+        }
 
             // Entferne die Fortschrittsanzeige, wenn alle Erweiterungen gebaut wurden
-            removeProgressBar(progressContainer);
+        removeProgressBar(progressContainer);
 
-            // Aktualisiere die Tabelle
-            renderMissingExtensions(buildingsData);
-        } catch (error) {
-            console.error('Fehler beim Abrufen der Credits und Coins:', error);
-            alert('Fehler beim Abrufen der Credits und Coins.');
-        }
+        // Aktualisiere die Tabelle
+        renderMissingExtensions(buildingsData);
+    } catch (error) {
+        console.error('Fehler beim Abrufen der Credits und Coins:', error);
+        alert('Fehler beim Abrufen der Credits und Coins.');
     }
+}
 
     // Funktion zur Erstellung der Fortschrittsanzeige
-    async function createProgressBar(totalExtensions) {
-        const userSettings = await getUserMode();
-        const isDarkMode = userSettings && (userSettings.design_mode === 1 || userSettings.design_mode === 4);
+async function createProgressBar(totalExtensions) {
+    const userSettings = await getUserMode();
+    const isDarkMode = userSettings && (userSettings.design_mode === 1 || userSettings.design_mode === 4);
 
-        const progressContainer = document.createElement('div');
-        progressContainer.className = 'progress-container';
-        progressContainer.style.position = 'fixed';
-        progressContainer.style.top = '50%';
-        progressContainer.style.left = '50%';
-        progressContainer.style.transform = 'translate(-50%, -50%)';
-        progressContainer.style.padding = '20px';
-        progressContainer.style.border = '1px solid #ccc';
-        progressContainer.style.borderRadius = '10px';
-        progressContainer.style.boxShadow = '0px 0px 10px rgba(0,0,0,0.2)';
-        progressContainer.style.width = '300px';
-        progressContainer.style.textAlign = 'center';
-        progressContainer.style.zIndex = '10002'; // Sicherstellen, dass der Fortschrittsbalken oben bleibt
+    const progressContainer = document.createElement('div');
+    progressContainer.className = 'progress-container';
+    progressContainer.style.position = 'fixed';
+    progressContainer.style.top = '50%';
+    progressContainer.style.left = '50%';
+    progressContainer.style.transform = 'translate(-50%, -50%)';
+    progressContainer.style.padding = '20px';
+    progressContainer.style.border = '1px solid #ccc';
+    progressContainer.style.borderRadius = '10px';
+    progressContainer.style.boxShadow = '0px 0px 10px rgba(0,0,0,0.2)';
+    progressContainer.style.width = '300px';
+    progressContainer.style.textAlign = 'center';
+    progressContainer.style.zIndex = '10002'; // Sicherstellen, dass der Fortschrittsbalken oben bleibt
 
-        // Set background color based on mode
-        progressContainer.style.background = isDarkMode ? '#333' : '#fff';
-        progressContainer.style.color = isDarkMode ? '#fff' : '#000';
+    // Set background color based on mode
+    progressContainer.style.background = isDarkMode ? '#333' : '#fff';
+    progressContainer.style.color = isDarkMode ? '#fff' : '#000';
 
-        const progressText = document.createElement('p');
-        progressText.textContent = `0 / ${totalExtensions} Erweiterungen gebaut`;
-        progressText.style.fontWeight = 'bold'; // Fettschrift für bessere Lesbarkeit
-        progressText.style.fontSize = '16px'; // Größere Schrift für bessere Sichtbarkeit
+    const progressText = document.createElement('p');
+    progressText.textContent = `0 / ${totalExtensions} Erweiterungen gebaut`;
+    progressText.style.fontWeight = 'bold'; // Fettschrift für bessere Lesbarkeit
+    progressText.style.fontSize = '16px'; // Größere Schrift für bessere Sichtbarkeit
 
-        const progressBar = document.createElement('div');
-        progressBar.style.width = '100%';
-        progressBar.style.background = isDarkMode ? '#555' : '#ddd';  // Hintergrund für die Progressbar
-        progressBar.style.borderRadius = '5px';
-        progressBar.style.marginTop = '10px';
+    const progressBar = document.createElement('div');
+    progressBar.style.width = '100%';
+    progressBar.style.background = isDarkMode ? '#555' : '#ddd';  // Hintergrund für die Progressbar
+    progressBar.style.borderRadius = '5px';
+    progressBar.style.marginTop = '10px';
+    progressBar.style.overflow = 'hidden'; // Hinzugefügt um sicherzustellen, dass der Fortschrittsbalken den Container nicht verlässt
 
-        const progressFill = document.createElement('div');
-        progressFill.style.width = '0%';
-        progressFill.style.height = '20px';
-        progressFill.style.background = '#4caf50';
-        progressFill.style.borderRadius = '5px';
+    const progressFill = document.createElement('div');
+    progressFill.style.width = '0%';
+    progressFill.style.height = '20px';
+    progressFill.style.background = '#4caf50';
+    progressFill.style.borderRadius = '5px';
 
-        progressBar.appendChild(progressFill);
-        progressContainer.appendChild(progressText);
-        progressContainer.appendChild(progressBar);
-        document.body.appendChild(progressContainer);
+    progressBar.appendChild(progressFill);
+    progressContainer.appendChild(progressText);
+    progressContainer.appendChild(progressBar);
+    document.body.appendChild(progressContainer);
 
-        return { progressContainer, progressText, progressFill };
-    }
+    return { progressContainer, progressText, progressFill };
+}
 
-    // Funktion zur Aktualisierung des Fortschritts
-    function updateProgress(builtCount, totalExtensions, progressText, progressFill) {
-        progressText.textContent = `${builtCount} / ${totalExtensions} Erweiterungen gebaut`;
-        progressFill.style.width = `${(builtCount / totalExtensions) * 100}%`;
-    }
+// Funktion zur Aktualisierung des Fortschritts
+function updateProgress(builtCount, totalExtensions, progressText, progressFill) {
+    progressText.textContent = `${builtCount} / ${totalExtensions} Erweiterungen gebaut`;
+    progressFill.style.width = Math.min(100, (builtCount / totalExtensions) * 100) + '%'; // Math.min hinzugefügt, um sicherzustellen, dass die Breite nicht 100% überschreitet
+}
 
-    // Funktion zum Entfernen der Fortschrittsanzeige
-    function removeProgressBar(progressContainer) {
+// Funktion zum Entfernen der Fortschrittsanzeige mit 500ms Verzögerung
+function removeProgressBar(progressContainer) {
+    setTimeout(() => {
         document.body.removeChild(progressContainer);
-    }
+    }, 500); // 500ms Pause bevor die Fortschrittsanzeige entfernt wird
+}
+
 
     // Neue Funktion zum Bauen aller Erweiterungen für alle Wachen mit Pause und Anzeige
     async function buildAllExtensionsWithPause(groupKey, currency) {
