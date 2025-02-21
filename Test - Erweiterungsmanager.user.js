@@ -863,26 +863,6 @@
         });
     }
 
-    // Funktion zum Aktualisieren des Status des "Ausgewählte Erweiterungen bauen" Buttons
-    function updateBuildSelectedButton() {
-        const buildSelectedButton = document.querySelector('.build-selected-button');
-        const selectedCheckboxes = document.querySelectorAll('.extension-checkbox:checked');
-        buildSelectedButton.disabled = selectedCheckboxes.length === 0;
-    }
-
-    // Schließen-Button-Funktionalität
-    document.getElementById('close-extension-helper').addEventListener('click', () => {
-        const lightbox = document.getElementById('extension-lightbox');
-        lightbox.style.display = 'none';
-
-        // Setze die globalen Variablen zurück
-        buildingGroups = {};
-        buildingsData = [];
-    });
-
-    // Initial den Button hinzufügen
-    addMenuButton();
-
     // Schließen-Button-Funktionalität
     document.getElementById('close-extension-helper').addEventListener('click', () => {
         const lightbox = document.getElementById('extension-lightbox');
@@ -985,6 +965,7 @@
         return false;
     }
 
+    // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     // Anfang des Bereichs für den Bau einer Erweiterung in einem Gebäude
 
@@ -1090,10 +1071,29 @@
         }
     }
 
-    // Ende des Bereichs für den Bau einer Erweiterung in einem Gebäude
+    // Ende des Bereichs für den Bau * einer Erweiterung * in einem Gebäude
 
+    // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     // Anfang der Funktion für * Bau von ausgewählten Erweiterungen *
+
+    function updateBuildSelectedButton() {
+        const groups = document.querySelectorAll('.spoiler-content');
+        groups.forEach(group => {
+            const buildSelectedButton = group.previousElementSibling.querySelector('.build-selected-button');
+            const selectedCheckboxes = group.querySelectorAll('.extension-checkbox:checked');
+            if (buildSelectedButton) {
+                buildSelectedButton.disabled = selectedCheckboxes.length === 0;
+            }
+        });
+    }
+
+    // Event-Listener für Checkbox-Änderungen hinzufügen
+    document.addEventListener('change', (event) => {
+        if (event.target.classList.contains('extension-checkbox')) {
+            updateBuildSelectedButton();
+        }
+    });
 
     // Funktion zum Überprüfen der maximalen Erweiterungen für Kleinwachen
     function checkMaxExtensions(buildingId, selectedExtensions) {
@@ -1150,61 +1150,61 @@
     }
 
     // Funktion zum Überprüfen der maximalen Anzahl ausgewählter Erweiterungen
-async function checkMaxSelectedExtensions(selectedExtensions) {
-    const userInfo = await getUserCredits();
-    const maxSelections = userInfo.premium ? Infinity : 2;
-
-    if (selectedExtensions.length > maxSelections) {
-        alert(`Nicht-Premium-Nutzer dürfen maximal ${maxSelections} Erweiterungen gleichzeitig auswählen.`);
-        return false;
-    }
-
-    return true;
-}
-
-// Event-Listener für Checkbox-Änderungen hinzufügen
-document.addEventListener('change', async (event) => {
-    if (event.target.classList.contains('extension-checkbox')) {
-        const selectedExtensions = document.querySelectorAll('.extension-checkbox:checked');
+    async function checkMaxSelectedExtensions(selectedExtensions) {
         const userInfo = await getUserCredits();
         const maxSelections = userInfo.premium ? Infinity : 2;
 
         if (selectedExtensions.length > maxSelections) {
             alert(`Nicht-Premium-Nutzer dürfen maximal ${maxSelections} Erweiterungen gleichzeitig auswählen.`);
-            event.target.checked = false; // Checkbox deaktivieren
+            return false;
         }
+
+        return true;
     }
-});
 
-// Funktion zum Bauen ausgewählter Erweiterungen
-async function buildSelectedExtensions() {
-    const selectedExtensions = document.querySelectorAll('.extension-checkbox:checked');
-    const selectedExtensionsByBuilding = {};
+    // Event-Listener für Checkbox-Änderungen hinzufügen
+    document.addEventListener('change', async (event) => {
+        if (event.target.classList.contains('extension-checkbox')) {
+            const selectedExtensions = document.querySelectorAll('.extension-checkbox:checked');
+            const userInfo = await getUserCredits();
+            const maxSelections = userInfo.premium ? Infinity : 2;
 
-    selectedExtensions.forEach(checkbox => {
-        const buildingId = checkbox.dataset.buildingId;
-        const extensionId = checkbox.dataset.extensionId;
-
-        if (!selectedExtensionsByBuilding[buildingId]) {
-            selectedExtensionsByBuilding[buildingId] = [];
+            if (selectedExtensions.length > maxSelections) {
+                alert(`Nicht-Premium-Nutzer dürfen maximal ${maxSelections} Erweiterungen gleichzeitig auswählen.`);
+                event.target.checked = false; // Checkbox deaktivieren
+            }
         }
-        selectedExtensionsByBuilding[buildingId].push(parseInt(extensionId, 10));
     });
 
-    for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
-        if (!checkMaxExtensions(buildingId, extensions)) {
-            alert(`Zu viele Erweiterungen für Gebäude ${getBuildingCaption(buildingId)} ausgewählt.`);
+    // Funktion zum Bauen ausgewählter Erweiterungen
+    async function buildSelectedExtensions() {
+        const selectedExtensions = document.querySelectorAll('.extension-checkbox:checked');
+        const selectedExtensionsByBuilding = {};
+
+        selectedExtensions.forEach(checkbox => {
+            const buildingId = checkbox.dataset.buildingId;
+            const extensionId = checkbox.dataset.extensionId;
+
+            if (!selectedExtensionsByBuilding[buildingId]) {
+                selectedExtensionsByBuilding[buildingId] = [];
+            }
+            selectedExtensionsByBuilding[buildingId].push(parseInt(extensionId, 10));
+        });
+
+        for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
+            if (!checkMaxExtensions(buildingId, extensions)) {
+                alert(`Zu viele Erweiterungen für Gebäude ${getBuildingCaption(buildingId)} ausgewählt.`);
+                return;
+            }
+        }
+
+        const allSelectedExtensions = Object.values(selectedExtensionsByBuilding).flat();
+        if (!await checkMaxSelectedExtensions(allSelectedExtensions)) {
             return;
         }
-    }
 
-    const allSelectedExtensions = Object.values(selectedExtensionsByBuilding).flat();
-    if (!await checkMaxSelectedExtensions(allSelectedExtensions)) {
-        return;
+        showCurrencySelection(selectedExtensionsByBuilding);
     }
-
-    showCurrencySelection(selectedExtensionsByBuilding);
-}
 
     async function showCurrencySelection(selectedExtensionsByBuilding) {
         const userSettings = await getUserMode();
@@ -1282,6 +1282,13 @@ async function buildSelectedExtensions() {
     }
 
     // Ende der Funktion für * Bau von ausgewählten Erweiterungen *
+
+
+    // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    // Anfang der Funktion * Alle Erweiterungen * in einem Gebäude bauen
+
+
 
     // Funktion zur Kalkulation der Kosten
     async function calculateAndBuildAllExtensions(groupKey, currency) {
@@ -1414,18 +1421,18 @@ async function buildSelectedExtensions() {
     }
 
     function filterTable(tbody, searchTerm) {
-    const rows = tbody.querySelectorAll("tr");
+        const rows = tbody.querySelectorAll("tr");
 
-    rows.forEach(row => {
-        const wachenName = row.cells[1]?.textContent.toLowerCase() || "";
-        const erweiterung = row.cells[2]?.textContent.toLowerCase() || "";
+        rows.forEach(row => {
+            const wachenName = row.cells[1]?.textContent.toLowerCase() || "";
+            const erweiterung = row.cells[2]?.textContent.toLowerCase() || "";
 
-        if (wachenName.includes(searchTerm) || erweiterung.includes(searchTerm)) {
-            row.style.display = "";
-        } else {
-            row.style.display = "none";
-        }
-    });
-}
+            if (wachenName.includes(searchTerm) || erweiterung.includes(searchTerm)) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    }
 
 })();
