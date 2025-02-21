@@ -26,6 +26,7 @@
     let activeCategoryButton = null; // Referenz auf den aktiven Button
     let activeFilters = []; // Globale Variable zur Speicherung der aktiven Filter
 
+
     // Mapping der Kategorien zu den benutzerdefinierten Beschriftungen
     const customCategoryLabels = {
         'fire': 'Feuerwehr',
@@ -68,71 +69,69 @@
 
     // Funktion zur Überwachung der Einsatzlisten
     function observeMissionLists() {
-        const missionListIds = [
-            "mission_list",
-            "mission_list_krankentransporte",
-            "mission_list_alliance",
-            "mission_list_sicherheitswache_alliance",
-            "mission_list_alliance_event",
-            "mission_list_sicherheitswache"
-        ];
+    const missionListIds = [
+        "mission_list",
+        "mission_list_krankentransporte",
+        "mission_list_alliance",
+        "mission_list_sicherheitswache_alliance",
+        "mission_list_alliance_event",
+        "mission_list_sicherheitswache"
+    ];
 
-        missionListIds.forEach(id => {
-            const missionList = document.getElementById(id);
-            if (!missionList) {
-                console.error(`Einsatzliste ${id} nicht gefunden!`);
-                return;
-            }
+    missionListIds.forEach(id => {
+        const missionList = document.getElementById(id);
+        if (!missionList) {
+            console.error(`Einsatzliste ${id} nicht gefunden!`);
+            return;
+        }
 
-            const observer = new MutationObserver(mutations => {
-                mutations.forEach(mutation => {
-                    mutation.addedNodes.forEach(node => {
-                        if (node.nodeType === 1 && node.classList.contains("missionSideBarEntry")) {
-                            updateSingleMissionVisibility(node);
-                        }
-                    });
+        const observer = new MutationObserver(mutations => {
+            mutations.forEach(mutation => {
+                mutation.addedNodes.forEach(node => {
+                    if (node.nodeType === 1 && node.classList.contains("missionSideBarEntry")) {
+                        updateSingleMissionVisibility(node);
+                    }
                 });
             });
-
-            observer.observe(missionList, { childList: true });
         });
+
+        observer.observe(missionList, { childList: true });
+    });
+}
+
+// Funktion um neue Einsätze Ihrer Kategorie zu zuordnen und ein- oder auszublenden
+function updateSingleMissionVisibility(missionElement) {
+    if (activeFilters.length === 0) {
+        missionElement.style.display = "";
+        return;
     }
 
-    // Funktion um neue Einsätze Ihrer Kategorie zu zuordnen und ein- oder auszublenden
-    function updateSingleMissionVisibility(missionElement) {
-        console.log('updateSingleMissionVisibility aufgerufen', missionElement);
-        if (activeFilters.length === 0) {
-            missionElement.style.display = "";
-            return;
-        }
-
-        const missionId = missionElement.getAttribute("mission_type_id");
-        if (!missionId || !missionCategoryMap.has(missionId)) {
-            missionElement.style.display = "none";
-            return;
-        }
-
-        const missionCategories = missionCategoryMap.get(missionId);
-        const match = activeFilters.some(category => missionCategories.includes(category));
-
-        missionElement.style.display = match ? "" : "none";
+    const missionId = missionElement.getAttribute("mission_type_id");
+    if (!missionId || !missionCategoryMap.has(missionId)) {
+        missionElement.style.display = "none";
+        return;
     }
 
-    // Aufruf der Funktion, um die Überwachung zu starten
-    observeMissionLists();
+    const missionCategories = missionCategoryMap.get(missionId);
+    const match = activeFilters.some(category => missionCategories.includes(category));
+
+    missionElement.style.display = match ? "" : "none";
+}
+
+// Aufruf der Funktion, um die Überwachung zu starten
+observeMissionLists();
 
     // Funktion zum laden der Einsatzdaten aus der API oder dem Cache, wenn sie nicht veraltet sind.
     async function loadMissionData() {
-        console.log('loadMissionData aufgerufen');
         const now = Date.now();
         const storedTimestamp = await GM.getValue(storageTimestampKey, 0);
         const isDataExpired = now - storedTimestamp > updateInterval;
 
         if (!isDataExpired) {
-            console.info("Lade Einsatzdaten aus der GM-Speicherung...");
+            //            console.info("Lade Einsatzdaten aus der GM-Speicherung...");
             missions = JSON.parse(await GM.getValue(storageKey, "{}"));
         } else {
-            console.info("Lade Einsatzdaten aus der API...");
+            //            console.info("Lade Einsatzdaten aus der API...");
             const response = await fetch(apiUrl);
             if (!response.ok) {
                 console.error("Fehler beim Abrufen der API:", response.statusText);
@@ -141,10 +140,10 @@
             missions = await response.json();
             await GM.setValue(storageKey, JSON.stringify(missions));
             await GM.setValue(storageTimestampKey, now);
-            console.info("Einsatzdaten wurden aus der API geladen und in der GM-Speicherung gespeichert.");
+            //            console.info("Einsatzdaten wurden aus der API geladen und in der GM-Speicherung gespeichert.");
         }
 
-        console.info("Erstelle Kategorien und Mapping...");
+        //        console.info("Erstelle Kategorien und Mapping...");
         for (const mission of Object.values(missions)) {
             if (mission.mission_categories && Array.isArray(mission.mission_categories)) {
                 mission.mission_categories.forEach(category => categories.add(category));
@@ -152,26 +151,25 @@
             missionCategoryMap.set(mission.id, mission.mission_categories || []);
         }
 
-        console.info("Lade die Benutzereinstellungen...");
+        //        console.info("Lade die Benutzereinstellungen...");
         await loadSettings();
 
-        console.info("Erstelle die Kategorie-Buttons...");
+        //        console.info("Erstelle die Kategorie-Buttons...");
         createCategoryButtons();
     }
 
     // Funktion um den Modus (Dark/White) abzurufen
     async function loadSettings() {
-        console.log('loadSettings aufgerufen');
         try {
             const response = await fetch(settingsApiUrl);
             const settings = await response.json();
 
-            console.log("API Antwortstruktur: ", settings);
+            //            console.log("API Antwortstruktur: ", settings);
 
             if (settings && settings.design_mode !== undefined) {
                 const designMode = settings.design_mode;
                 isDarkMode = (designMode === 1 || designMode === 4);
-                console.info("Designmodus aktiviert:", isDarkMode ? "Dunkelmodus" : "Hellmodus");
+                //                console.info("Designmodus aktiviert:", isDarkMode ? "Dunkelmodus" : "Hellmodus");
             } else {
                 console.error("Die erwartete Struktur wurde in der API-Antwort nicht gefunden.");
             }
@@ -198,7 +196,6 @@
 
     // Funktion um die Filterbuttons zu erstellen
     function createCategoryButtons() {
-        console.log('createCategoryButtons aufgerufen');
         const searchInput = document.getElementById('search_input_field_missions');
         if (!searchInput) {
             console.error("Suchfeld nicht gefunden!");
@@ -226,7 +223,7 @@
                 button.title = customTooltips[category] || `Zeigt Einsätze der Kategorie ${customCategoryLabels[category] || category}`;
 
                 button.addEventListener('click', () => {
-                    console.info(`Kategoriefilter aktiviert: ${category}`);
+                    //                    console.info(`Kategoriefilter aktiviert: ${category}`);
                     filterMissionListByCategory(category);
                     setActiveButton(button);
                 });
@@ -245,7 +242,7 @@
             groupButton.title = groupTooltip;
 
             groupButton.addEventListener('click', () => {
-                console.info(`Kategoriegruppen-Filter aktiviert: ${groupName}`);
+                //                console.info(`Kategoriegruppen-Filter aktiviert: ${groupName}`);
                 filterMissionListByCategoryGroup(groupCategories);
                 setActiveButton(groupButton);
             });
@@ -261,7 +258,7 @@
         unoButton.title = customTooltips['VGSL/ÜO'] || "Zeigt Verbandsgroßschadenslagen und Übergabeorte an";
 
         unoButton.addEventListener('click', () => {
-            console.info("VGE/ÜO-Filter aktiviert: Zeige alle VGE's und Übergabeorte an");
+            //            console.info("VGE/ÜO-Filter aktiviert: Zeige alle VGE's und Übergabeorte an");
             filterMissionListWithoutCategory();
             setActiveButton(unoButton);
         });
@@ -275,7 +272,7 @@
         resetButton.title = customTooltips['reset'] || "Alle Einsätze anzeigen";
 
         resetButton.addEventListener('click', () => {
-            console.info("Reset-Filter aktiviert: Alle Einsätze anzeigen");
+            //            console.info("Reset-Filter aktiviert: Alle Einsätze anzeigen");
             resetMissionList();
             resetActiveButton();
         });
@@ -286,7 +283,6 @@
 
     // Funktion für die Tooltips der Buttons
     function generateGroupTooltip(groupCategories) {
-        console.log('generateGroupTooltip aufgerufen', groupCategories);
         const categoryLabels = groupCategories.map(category => customCategoryLabels[category] || category);
         const tooltipText = `Zeigt alle Einsätze der Kategorien: ${categoryLabels.join(', ')}`;
         return tooltipText;
@@ -318,7 +314,6 @@
 
     // Funktion um die Buttonfarbe dem Dark- oder White-Modus anzupassen
     function styleButtonForCurrentTheme(button) {
-        console.log('styleButtonForCurrentTheme aufgerufen', button);
         if (isDarkMode) {
             button.style.backgroundColor = '#333';
             button.style.color = '#fff';
@@ -383,7 +378,6 @@
 
     // Funktion um neue Einsätze direkt zu filtern
     function updateMissionVisibility() {
-        console.log('updateMissionVisibility aufgerufen');
         document.querySelectorAll('.missionSideBarEntry').forEach(mission => {
             let missionId = mission.getAttribute('mission_type_id');
             let missionType = mission.getAttribute('data-mission-type-filter');
@@ -450,89 +444,37 @@
         activeCategoryButton = null;
     }
 
-    function getNextMissionId(currentMissionId, category) {
-    console.log(`getNextMissionId aufgerufen mit currentMissionId: ${currentMissionId}, category: ${category}`);
-    const missionElements = Array.from(document.querySelectorAll('.missionSideBarEntry')).filter(element => {
-        const missionId = element.getAttribute('mission_type_id');
-        const missionCategories = missionCategoryMap.get(missionId);
-        return missionCategories && missionCategories.includes(category);
-    });
+    // Funktion zum Überprüfen des "Alarmieren und weiter"-Buttons in allen iFrames
+    function debugAlertNextButtonInIframe() {
+        // Suche alle iFrames, deren id mit "lightbox_iframe_" beginnt
+        const iframes = document.querySelectorAll('[id^="lightbox_iframe_"]');
 
-    console.log(`Gefundene Einsätze in der Kategorie ${category}:`, missionElements.map(e => e.getAttribute('mission_id')));
+        // Durchlaufe alle iFrames und suche nach dem Button
+        for (let iframe of iframes) {
+            const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
 
-    const currentMissionIndex = missionElements.findIndex(element => element.getAttribute('mission_id') === currentMissionId);
-    console.log(`Index des aktuellen Einsatzes: ${currentMissionIndex}`);
-
-    if (currentMissionIndex === -1 || currentMissionIndex + 1 >= missionElements.length) {
-        return null; // Kein nächster Einsatz gefunden
-    }
-
-    return missionElements[currentMissionIndex + 1].getAttribute('mission_id');
-}
-
-function debugAlertNextButtonInIframe(currentMissionId, category) {
-    console.log('debugAlertNextButtonInIframe aufgerufen');
-    const iframes = document.querySelectorAll('[id^="lightbox_iframe_"]');
-
-    for (let iframe of iframes) {
-        const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-
-        if (!iframeDocument) {
-            console.log(`❌ Kein Zugriff auf das iFrame-Dokument von ${iframe.id}!`);
-            continue;
-        }
-
-        const alertNextButton = iframeDocument.querySelector('.alert_next');
-
-        if (alertNextButton) {
-            console.log(`✅ "Alarmieren und weiter"-Button im iFrame ${iframe.id} gefunden!`);
-            if (alertNextButton.href === "#") { // Check if href is still the default
-                const nextMissionId = getNextMissionId(currentMissionId, category);
-                if (nextMissionId) {
-                    const url = `https://www.leitstellenspiel.de/missions/${nextMissionId}?sd=a&sk=cr&ift=kt_al_ae_sw&ifs=&ifp=`;
-                    console.log(`🚨 Setze href auf: ${url}`);
-                    alertNextButton.setAttribute('href', url); // Überschreibe das href Attribut
-                } else {
-                    console.log('🚨 Kein nächster Einsatz gefunden');
-                }
-            } else {
-                console.log(`🚨 "Alarmieren und weiter"-Button href bereits gesetzt: ${alertNextButton.href}`);
+            if (!iframeDocument) {
+                console.log(`❌ Kein Zugriff auf das iFrame-Dokument von ${iframe.id}!`);
+                continue;
             }
-            return true;
-        } else {
-            console.log(`❌ "Alarmieren und weiter"-Button nicht im iFrame ${iframe.id} gefunden!`);
+
+            const alertNextButton = iframeDocument.querySelector('.alert_next');
+
+            if (alertNextButton) {
+                console.log(`✅ "Alarmieren und weiter"-Button im iFrame ${iframe.id} gefunden!`);
+                alertNextButton.addEventListener('click', function () {
+                    console.log(`🚨 "Alarmieren und weiter"-Button im iFrame ${iframe.id} wurde geklickt!`);
+                });
+                return true; // Button gefunden, Schleife beenden
+            } else {
+                console.log(`❌ "Alarmieren und weiter"-Button nicht im iFrame ${iframe.id} gefunden!`);
+            }
         }
+
+        return false; // Button in keinem der iFrames gefunden
     }
 
-    return false;
-}
-
-function sendAlarmRequest(currentMissionId, category) {
-    console.log(`sendAlarmRequest aufgerufen mit currentMissionId: ${currentMissionId}, category: ${category}`);
-    const intervalId = setInterval(() => {
-        if (debugAlertNextButtonInIframe(currentMissionId, category)) {
-            clearInterval(intervalId); // Stoppt die Schleife, wenn der Button gefunden und href überschrieben wurde
-        }
-    }, 1000); // 1 Sekunde
-}
-
-// Beispielaufruf
-const currentMissionId = '3733269402';
-const category = 'fire'; // Beispielkategorie
-sendAlarmRequest(currentMissionId, category);
-
-function processMissionsSequentially(missionIds) {
-    if (missionIds.length === 0) return;
-
-    let currentMissionId = missionIds[0];
-
-    sendAlarmRequest(currentMissionId);
-
-    missionIds.shift();
-    setTimeout(() => processMissionsSequentially(missionIds), 2000); // 2 Sekunden Verzögerung zwischen den Einsätzen
-}
-
-     // Beobachtet Änderungen im DOM (Lightbox-Öffnung)
+    // Beobachtet Änderungen im DOM (Lightbox-Öffnung)
     const observer = new MutationObserver(mutations => {
         mutations.forEach(mutation => {
             if (mutation.addedNodes.length > 0) {
@@ -563,5 +505,6 @@ function processMissionsSequentially(missionIds) {
 
     console.log("🔍 Debugging-Observer für iFrame-Alarmmaske gestartet.");
 
+    //    console.log("Starte das Script...");
     loadMissionData();
 })();
