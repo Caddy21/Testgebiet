@@ -664,24 +664,24 @@
     }
 
     // Funktion um die aktuelle Credits und Coins des USERS abzurufen
-async function getUserCredits() {
-    try {
-        const response = await fetch('https://www.leitstellenspiel.de/api/userinfo');
-        if (!response.ok) {
-            throw new Error('Fehler beim Abrufen der Credits und Coins');
+    async function getUserCredits() {
+        try {
+            const response = await fetch('https://www.leitstellenspiel.de/api/userinfo');
+            if (!response.ok) {
+                throw new Error('Fehler beim Abrufen der Credits und Coins');
+            }
+            const data = await response.json();
+            console.log('Benutzer Credits und Coins abgerufen:', data);
+            return {
+                credits: data.credits_user_current,
+                coins: data.coins_user_current,
+                premium: data.premium // Fügen Sie diese Zeile hinzu, um den Premium-Status zurückzugeben
+            };
+        } catch (error) {
+            console.error('Fehler beim Abrufen der Credits und Coins:', error);
+            throw error;
         }
-        const data = await response.json();
-        console.log('Benutzer Credits und Coins abgerufen:', data);
-        return {
-            credits: data.credits_user_current,
-            coins: data.coins_user_current,
-            premium: data.premium // Fügen Sie diese Zeile hinzu, um den Premium-Status zurückzugeben
-        };
-    } catch (error) {
-        console.error('Fehler beim Abrufen der Credits und Coins:', error);
-        throw error;
     }
-}
 
     async function renderMissingExtensions(buildings) {
         const userInfo = await getUserCredits();
@@ -1125,118 +1125,118 @@ async function getUserCredits() {
         }
     });
 
-   // Funktion zum Überprüfen der maximalen Erweiterungen für Kleinwachen
-function checkMaxExtensions(buildingId, selectedExtensions) {
-    const building = buildingsData.find(b => String(b.id) === String(buildingId));
-    if (!building) return false;
+    // Funktion zum Überprüfen der maximalen Erweiterungen für Kleinwachen
+    function checkMaxExtensions(buildingId, selectedExtensions) {
+        const building = buildingsData.find(b => String(b.id) === String(buildingId));
+        if (!building) return false;
 
-    if (building.building_type === 0 && building.small_building) {
-        // Feuerwehr Kleinwache: maximal 1 Erweiterung + 2 AB-Stellplätze + 2 Anhänger-Stellplätze
-        const maxExtensions = 1;
-        const maxABStellplatz = 2;
-        const maxAnhStellplatz = 2;
+        if (building.building_type === 0 && building.small_building) {
+            // Feuerwehr Kleinwache: maximal 1 Erweiterung + 2 AB-Stellplätze + 2 Anhänger-Stellplätze
+            const maxExtensions = 1;
+            const maxABStellplatz = 2;
+            const maxAnhStellplatz = 2;
 
-        let extensionCount = 0;
-        let abStellplatzCount = 0;
-        let anhStellplatzCount = 0;
+            let extensionCount = 0;
+            let abStellplatzCount = 0;
+            let anhStellplatzCount = 0;
 
-        selectedExtensions.forEach(extensionId => {
-            if ([0, 6, 8, 13, 14, 16, 18, 19, 25].includes(extensionId)) {
-                extensionCount++;
-            } else if (extensionId === 1) {
-                abStellplatzCount++;
-            } else if (extensionId === 20) {
-                anhStellplatzCount++;
+            selectedExtensions.forEach(extensionId => {
+                if ([0, 6, 8, 13, 14, 16, 18, 19, 25].includes(extensionId)) {
+                    extensionCount++;
+                } else if (extensionId === 1) {
+                    abStellplatzCount++;
+                } else if (extensionId === 20) {
+                    anhStellplatzCount++;
+                }
+            });
+
+            if (extensionCount > maxExtensions || abStellplatzCount > maxABStellplatz || anhStellplatzCount > maxAnhStellplatz) {
+                return false;
             }
-        });
-
-        if (extensionCount > maxExtensions || abStellplatzCount > maxABStellplatz || anhStellplatzCount > maxAnhStellplatz) {
-            return false;
         }
-    }
 
-    if (building.building_type === 6 && building.small_building) {
-        // Polizei Kleinwache: maximal 1 Erweiterung + 2 Zellen
-        const maxExtensions = 1;
-        const maxZellen = 2;
+        if (building.building_type === 6 && building.small_building) {
+            // Polizei Kleinwache: maximal 1 Erweiterung + 2 Zellen
+            const maxExtensions = 1;
+            const maxZellen = 2;
 
-        let extensionCount = 0;
-        let zellenCount = 0;
+            let extensionCount = 0;
+            let zellenCount = 0;
 
-        selectedExtensions.forEach(extensionId => {
-            if ([10, 11, 12, 13].includes(extensionId)) {
-                extensionCount++;
-            } else if (extensionId === 0) {
-                zellenCount++;
+            selectedExtensions.forEach(extensionId => {
+                if ([10, 11, 12, 13].includes(extensionId)) {
+                    extensionCount++;
+                } else if (extensionId === 0) {
+                    zellenCount++;
+                }
+            });
+
+            if (extensionCount > maxExtensions || zellenCount > maxZellen) {
+                return false;
             }
-        });
-
-        if (extensionCount > maxExtensions || zellenCount > maxZellen) {
-            return false;
         }
+
+        return true;
     }
 
-    return true;
-}
-
-// Funktion zum Überprüfen der maximalen Anzahl ausgewählter Erweiterungen
-function checkMaxSelectedExtensions(selectedExtensions) {
-    const maxSelections = user_premium ? Infinity : 2;
-
-    if (selectedExtensions.length > maxSelections) {
-        if (!user_premium) {
-            alert(`Nicht-Premium-Nutzer dürfen maximal ${maxSelections} Erweiterungen gleichzeitig auswählen.`);
-        }
-        return false;
-    }
-
-    return true;
-}
-
-// Event-Listener für Checkbox-Änderungen hinzufügen
-document.addEventListener('change', (event) => {
-    if (event.target.classList.contains('extension-checkbox')) {
-        const selectedExtensions = document.querySelectorAll('.extension-checkbox:checked');
+    // Funktion zum Überprüfen der maximalen Anzahl ausgewählter Erweiterungen
+    function checkMaxSelectedExtensions(selectedExtensions) {
         const maxSelections = user_premium ? Infinity : 2;
 
         if (selectedExtensions.length > maxSelections) {
             if (!user_premium) {
                 alert(`Nicht-Premium-Nutzer dürfen maximal ${maxSelections} Erweiterungen gleichzeitig auswählen.`);
             }
-            event.target.checked = false; // Checkbox deaktivieren
+            return false;
         }
+
+        return true;
     }
-});
 
-// Funktion zum Bauen ausgewählter Erweiterungen
-async function buildSelectedExtensions() {
-    const selectedExtensions = document.querySelectorAll('.extension-checkbox:checked');
-    const selectedExtensionsByBuilding = {};
+    // Event-Listener für Checkbox-Änderungen hinzufügen
+    document.addEventListener('change', (event) => {
+        if (event.target.classList.contains('extension-checkbox')) {
+            const selectedExtensions = document.querySelectorAll('.extension-checkbox:checked');
+            const maxSelections = user_premium ? Infinity : 2;
 
-    selectedExtensions.forEach(checkbox => {
-        const buildingId = checkbox.dataset.buildingId;
-        const extensionId = checkbox.dataset.extensionId;
-
-        if (!selectedExtensionsByBuilding[buildingId]) {
-            selectedExtensionsByBuilding[buildingId] = [];
+            if (selectedExtensions.length > maxSelections) {
+                if (!user_premium) {
+                    alert(`Nicht-Premium-Nutzer dürfen maximal ${maxSelections} Erweiterungen gleichzeitig auswählen.`);
+                }
+                event.target.checked = false; // Checkbox deaktivieren
+            }
         }
-        selectedExtensionsByBuilding[buildingId].push(parseInt(extensionId, 10));
     });
 
-    for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
-        if (!checkMaxExtensions(buildingId, extensions)) {
-            alert(`Zu viele Erweiterungen für Gebäude ${getBuildingCaption(buildingId)} ausgewählt.`);
+    // Funktion zum Bauen ausgewählter Erweiterungen
+    async function buildSelectedExtensions() {
+        const selectedExtensions = document.querySelectorAll('.extension-checkbox:checked');
+        const selectedExtensionsByBuilding = {};
+
+        selectedExtensions.forEach(checkbox => {
+            const buildingId = checkbox.dataset.buildingId;
+            const extensionId = checkbox.dataset.extensionId;
+
+            if (!selectedExtensionsByBuilding[buildingId]) {
+                selectedExtensionsByBuilding[buildingId] = [];
+            }
+            selectedExtensionsByBuilding[buildingId].push(parseInt(extensionId, 10));
+        });
+
+        for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
+            if (!checkMaxExtensions(buildingId, extensions)) {
+                alert(`Zu viele Erweiterungen für Gebäude ${getBuildingCaption(buildingId)} ausgewählt.`);
+                return;
+            }
+        }
+
+        const allSelectedExtensions = Object.values(selectedExtensionsByBuilding).flat();
+        if (!checkMaxSelectedExtensions(allSelectedExtensions)) {
             return;
         }
-    }
 
-    const allSelectedExtensions = Object.values(selectedExtensionsByBuilding).flat();
-    if (!checkMaxSelectedExtensions(allSelectedExtensions)) {
-        return;
+        showCurrencySelection(selectedExtensionsByBuilding);
     }
-
-    showCurrencySelection(selectedExtensionsByBuilding);
-}
 
     async function showCurrencySelection(selectedExtensionsByBuilding) {
         const userSettings = await getUserMode();
@@ -1264,12 +1264,12 @@ async function buildSelectedExtensions() {
         selectionDiv.style.borderColor = isDarkMode ? '#444' : '#ccc';
 
         const totalText = document.createElement('p');
-        totalText.textContent = `Gesamtsumme: ${formatNumber(totalCredits)} Credits / ${totalCoins} Coins`;
+        totalText.textContent = `Wähle zwischen Credits oder Coins`;
         selectionDiv.appendChild(totalText);
 
         const creditsButton = document.createElement('button');
         creditsButton.className = 'currency-button credits-button';
-        creditsButton.textContent = `Mit Credits zahlen (${formatNumber(totalCredits)} Credits)`;
+        creditsButton.textContent = `${formatNumber(totalCredits)} Credits`;
         creditsButton.onclick = async () => {
             for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
                 for (const extensionId of extensions) {
@@ -1285,7 +1285,7 @@ async function buildSelectedExtensions() {
 
         const coinsButton = document.createElement('button');
         coinsButton.className = 'currency-button coins-button';
-        coinsButton.textContent = `Mit Coins zahlen (${formatNumber(totalCoins)} Coins)`;
+        coinsButton.textContent = `${formatNumber(totalCoins)} Coins`;
         coinsButton.onclick = async () => {
             for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
                 for (const extensionId of extensions) {
