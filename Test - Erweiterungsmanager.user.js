@@ -603,7 +603,7 @@
         }
 
         if (typeof user_premium !== 'undefined') {
-            //            console.log("Die Variable 'user_premium' ist definiert."); // Debugging-Info
+                       console.log("Die Variable 'user_premium' ist definiert."); // Debugging-Info
 
             if (!user_premium) {
                 console.warn("Der Nutzer hat keinen Premium-Account.");
@@ -613,7 +613,7 @@
                     fetchBuildingsAndRender(); // API-Daten abrufen, wenn das Script geöffnet wird
                 });
             } else {
-                //                console.log("Der Nutzer hat einen Premium-Account.");
+                                console.log("Der Nutzer hat einen Premium-Account.");
                 const lightbox = document.getElementById('extension-lightbox');
                 lightbox.style.display = 'flex';
                 fetchBuildingsAndRender(); // API-Daten abrufen, wenn das Script geöffnet wird
@@ -766,7 +766,7 @@
         buttonContainer.appendChild(buildSelectedButton);
 
         const buildAllButton = document.createElement('button');
-        buildAllButton.textContent = 'Alle Erweiterungen bauen';
+        buildAllButton.textContent = 'Alle Erweiterungen bei allen Wachen bauen';
         buildAllButton.classList.add('build-all-button');
         buildAllButton.onclick = () => showCurrencySelectionForAll(groupKey);
         buttonContainer.appendChild(buildAllButton);
@@ -1195,21 +1195,25 @@
     }
 
     // Funktion zum Überprüfen der maximalen Anzahl ausgewählter Erweiterungen
-    function checkMaxSelectedExtensions(selectedExtensions) {
-        const maxSelections = user_premium ? Infinity : 2;
+async function checkMaxSelectedExtensions(selectedExtensions) {
+    const userInfo = await getUserCredits();
+    const user_premium = userInfo.premium;
 
-        if (selectedExtensions.length > maxSelections) {
-            if (!user_premium) {
-                alert(`Da du keinen Premium-Account hast kannst du maximal ${maxSelections} Erweiterungen gleichzeitig auswählen und in Bau geben.`);
-            }
-            return false;
-        }
-
-        return true;
+    if (user_premium) {
+        return true; // Keine Begrenzung für Premium-Nutzer
     }
 
-    // Funktion zum Bauen ausgewählter Erweiterungen
-    async function buildSelectedExtensions() {
+    const maxSelections = 2; // Begrenzung für Nicht-Premium-Nutzer
+    if (selectedExtensions.length > maxSelections) {
+        alert(`Da du keinen Premium-Account hast, kannst du maximal ${maxSelections} Erweiterungen gleichzeitig auswählen und in Bau geben.`);
+        return false;
+    }
+
+    return true;
+}
+
+// Funktion zum Bauen ausgewählter Erweiterungen
+async function buildSelectedExtensions() {
     const selectedExtensions = document.querySelectorAll('.extension-checkbox:checked');
     const selectedExtensionsByBuilding = {};
 
@@ -1223,9 +1227,12 @@
         selectedExtensionsByBuilding[buildingId].push(parseInt(extensionId, 10));
     });
 
+    const userInfo = await getUserCredits();
+    const isPremium = userInfo.premium;
+
     for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
-        if (extensions.length > 2) {
-            alert(`Zu viele Erweiterungen für Gebäude ${getBuildingCaption(buildingId)} ausgewählt. Als Nicht-Premium-Benutzer kannst  maximal 2 Erweiterungen pro Gebäude starten.`);
+        if (!isPremium && extensions.length > 2) {
+            alert(`Zu viele Erweiterungen für Gebäude ${getBuildingCaption(buildingId)} ausgewählt. Als Nicht-Premium-Benutzer kannst du maximal 2 Erweiterungen pro Gebäude starten.`);
             return;
         }
         if (!checkMaxExtensions(buildingId, extensions)) {
@@ -1245,9 +1252,8 @@
         });
     }
 
-    const userInfo = await getUserCredits();
     if ((userInfo.credits < totalCredits) || (userInfo.coins < totalCoins)) {
-        alert(`Nicht genügend Credits oder Coins. Der Bauversuch wird abgebrochen.`);
+        alert(`Du hast leider nicht genung Credits oder Coins für dein Bauvorhaben.`);
         return;
     }
 
