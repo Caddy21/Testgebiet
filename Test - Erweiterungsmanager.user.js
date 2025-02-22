@@ -1253,7 +1253,7 @@ async function buildSelectedExtensions() {
     }
 
     if ((userInfo.credits < totalCredits) || (userInfo.coins < totalCoins)) {
-        alert(`Du hast leider nicht genung Credits oder Coins für dein Bauvorhaben.`);
+        alert(`Du hast leider nicht genung Credits oder Coins für den .`);
         return;
     }
 
