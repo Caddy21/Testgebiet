@@ -19,31 +19,31 @@
     // Hier könnt Ihr auswählen welche Erweiterung in der Tabelle angezeigt werden soll, dafür die nicht benötigten einfach mit // ausklammern.
     const manualExtensions = {
         '0_normal': [ // Feuerwache (normal)
-//            { id: 0, name: 'Rettungsdienst', cost: 100000, coins: 20 },
-//            { id: 1, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
-//            { id: 2, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
-//            { id: 3, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
-//            { id: 4, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
-//            { id: 5, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
-//            { id: 6, name: 'Wasserrettung', cost: 400000, coins: 25 },
-//            { id: 7, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
-//            { id: 8, name: 'Flughafenfeuerwehr', cost: 300000, coins: 25 },
-//            { id: 9, name: 'Großwache', cost: 1000000, coins: 50 },
-//            { id: 10, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
-//            { id: 11, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
-//            { id: 12, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
-//            { id: 13, name: 'Werkfeuerwehr', cost: 100000, coins: 20 },
-//            { id: 14, name: 'Netzersatzanlage 50', cost: 100000, coins: 20 },
-//           { id: 15, name: 'Netzersatzanlage 200', cost: 100000, coins: 20 },
+            { id: 0, name: 'Rettungsdienst', cost: 100000, coins: 20 },
+            { id: 1, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 2, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 3, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 4, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 5, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 6, name: 'Wasserrettung', cost: 400000, coins: 25 },
+            { id: 7, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 8, name: 'Flughafenfeuerwehr', cost: 300000, coins: 25 },
+            { id: 9, name: 'Großwache', cost: 1000000, coins: 50 },
+            { id: 10, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 11, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 12, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 13, name: 'Werkfeuerwehr', cost: 100000, coins: 20 },
+            { id: 14, name: 'Netzersatzanlage 50', cost: 100000, coins: 20 },
+            { id: 15, name: 'Netzersatzanlage 200', cost: 100000, coins: 20 },
             { id: 16, name: 'Großlüfter', cost: 75000, coins: 25 },
-//            { id: 17, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
-//            { id: 18, name: 'Drohneneinheit', cost: 150000, coins: 25 },
-//            { id: 19, name: 'Verpflegungsdienst', cost: 200000, coins: 25 },
-//            { id: 20, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
-//            { id: 21, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
-//            { id: 22, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
-//            { id: 23, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
-//            { id: 24, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
+            { id: 17, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 18, name: 'Drohneneinheit', cost: 150000, coins: 25 },
+            { id: 19, name: 'Verpflegungsdienst', cost: 200000, coins: 25 },
+            { id: 20, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
+            { id: 21, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
+            { id: 22, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
+            { id: 23, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
+            { id: 24, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
             { id: 25, name: 'Bahnrettung', cost: 125000, coins: 25 },
         ],
 
@@ -54,7 +54,7 @@
         ],
 
         '2_normal': [ // Rettungswache
-//            { id: 0, name: 'Großwache', cost: 1000000, coins: 50 },
+            { id: 0, name: 'Großwache', cost: 1000000, coins: 50 },
         ],
 
         '3_normal': [ // Rettungsschule
@@ -73,11 +73,11 @@
             { id: 6, name: 'Neurochirugie', cost: 70000, coins: 15 },
             { id: 7, name: 'Kardiologie', cost: 70000, coins: 15 },
             { id: 8, name: 'Kardiochirugie', cost: 70000, coins: 15 },
-//            { id: 9, name: 'Großkrankenhaus', cost: 200000, coins: 50 },
+            { id: 9, name: 'Großkrankenhaus', cost: 200000, coins: 50 },
         ],
 
         '5_normal': [ // Rettungshubschrauber-Station
-//            { id: 0, name: 'Windenrettung', cost: 200000, coins: 15 },
+            { id: 0, name: 'Windenrettung', cost: 200000, coins: 15 },
         ],
 
         '6_normal': [ // Polizeiwache
@@ -86,17 +86,17 @@
             { id: 2, name: '3te Zelle', cost: 25000, coins: 5 },
             { id: 3, name: '4te Zelle', cost: 25000, coins: 5 },
             { id: 4, name: '5te Zelle', cost: 25000, coins: 5 },
-//            { id: 5, name: '6te Zelle', cost: 25000, coins: 5 },
-//            { id: 6, name: '7te Zelle', cost: 25000, coins: 5 },
-//            { id: 7, name: '8te Zelle', cost: 25000, coins: 5 },
-//            { id: 8, name: '9te Zelle', cost: 25000, coins: 5 },
-//            { id: 9, name: '10te Zelle', cost: 25000, coins: 5 },
+            { id: 5, name: '6te Zelle', cost: 25000, coins: 5 },
+            { id: 6, name: '7te Zelle', cost: 25000, coins: 5 },
+            { id: 7, name: '8te Zelle', cost: 25000, coins: 5 },
+            { id: 8, name: '9te Zelle', cost: 25000, coins: 5 },
+            { id: 9, name: '10te Zelle', cost: 25000, coins: 5 },
             { id: 10, name: 'Diensthundestaffel', cost: 100000, coins: 10 },
             { id: 11, name: 'Kriminalpolizei', cost: 100000, coins: 20 },
             { id: 12, name: 'Dienstgruppenleitung', cost: 200000, coins: 25 },
             { id: 13, name: 'Motorradstaffel', cost: 75000, coins: 15 },
-//            { id: 14, name: 'Großwache', cost: 1000000, coins: 50 },
-//            { id: 15, name: 'Großgewahrsam', cost: 200000, coins: 50 },
+            { id: 14, name: 'Großwache', cost: 1000000, coins: 50 },
+            { id: 15, name: 'Großgewahrsam', cost: 200000, coins: 50 },
         ],
 
         '8_normal': [ // Polizeischule
@@ -117,8 +117,8 @@
             { id: 8, name: 'Fachgruppe Wasserschaden/Pumpen', cost: 200000, coins: 25 },
             { id: 9, name: 'Fachruppe Schwere Bergung', cost: 200000, coins: 25 },
             { id: 10, name: 'Fachgruppe Elektroversorgung', cost: 200000, coins: 25 },
-//            { id: 11, name: 'Ortsverband-Mannschaftstransportwagen', cost: 50000, coins: 15 },
-//            { id: 12, name: 'Trupp Unbenannte Luftfahrtsysteme', cost: 50000, coins: 15 },
+            { id: 11, name: 'Ortsverband-Mannschaftstransportwagen', cost: 50000, coins: 15 },
+            { id: 12, name: 'Trupp Unbenannte Luftfahrtsysteme', cost: 50000, coins: 15 },
             { id: 13, name: 'Fachzug Führung und Kommunikation', cost: 300000, coins: 25 },
         ],
 
@@ -152,56 +152,57 @@
         ],
 
         '13_normal': [ // Polizeihubschrauberstation
-//            { id: 0, name: 'Außenlastbehälter', cost: 200000, coins: 15 },
-//            { id: 1, name: 'Windenrettung', cost: 200000, coins: 15 },
+            { id: 0, name: 'Außenlastbehälter', cost: 200000, coins: 15 },
+            { id: 1, name: 'Windenrettung', cost: 200000, coins: 15 },
         ],
 
         '17_normal': [ // Polizeisondereinheit
-//            { id: 0, name: 'SEK: 1. Zug', cost: 100000, coins: 10 },
-//            { id: 1, name: 'SEK: 2. Zug', cost: 100000, coins: 10 },
-//            { id: 2, name: 'MEK: 1. Zug', cost: 100000, coins: 10 },
-//            { id: 3, name: 'MEK: 2. Zug', cost: 100000, coins: 10 },
-//            { id: 4, name: 'Diensthundestaffel', cost: 100000, coins: 10 },
+            { id: 0, name: 'SEK: 1. Zug', cost: 100000, coins: 10 },
+            { id: 1, name: 'SEK: 2. Zug', cost: 100000, coins: 10 },
+            { id: 2, name: 'MEK: 1. Zug', cost: 100000, coins: 10 },
+            { id: 3, name: 'MEK: 2. Zug', cost: 100000, coins: 10 },
+            { id: 4, name: 'Diensthundestaffel', cost: 100000, coins: 10 },
+ 
         ],
         '0_small': [ // Feuerwehr (Kleinwache)
-//            { id: 0, name: 'Rettungsdienst', cost: 100000, coins: 20 },
-//            { id: 1, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
-//            { id: 2, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
-//            { id: 6, name: 'Wasserrettung', cost: 400000, coins: 25 },
-//            { id: 8, name: 'Flughafenfeuerwehr', cost: 300000, coins: 25 },
-//            { id: 13, name: 'Werkfeuerwehr', cost: 100000, coins: 20 },
-//            { id: 14, name: 'Netzersatzanlage 50', cost: 100000, coins: 20 },
-//            { id: 16, name: 'Großlüfter', cost: 75000, coins: 25 },
-//            { id: 18, name: 'Drohneneinheit', cost: 150000, coins: 25 },
-//            { id: 19, name: 'Verpflegungsdienst', cost: 200000, coins: 25 },
-//            { id: 20, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
-//            { id: 21, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
-//            { id: 25, name: 'Bahnrettung', cost: 125000, coins: 25 },
+            { id: 0, name: 'Rettungsdienst', cost: 100000, coins: 20 },
+            { id: 1, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 2, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 6, name: 'Wasserrettung', cost: 400000, coins: 25 },
+            { id: 8, name: 'Flughafenfeuerwehr', cost: 300000, coins: 25 },
+            { id: 13, name: 'Werkfeuerwehr', cost: 100000, coins: 20 },
+            { id: 14, name: 'Netzersatzanlage 50', cost: 100000, coins: 20 },
+            { id: 16, name: 'Großlüfter', cost: 75000, coins: 25 },
+            { id: 18, name: 'Drohneneinheit', cost: 150000, coins: 25 },
+            { id: 19, name: 'Verpflegungsdienst', cost: 200000, coins: 25 },
+            { id: 20, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
+            { id: 21, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
+            { id: 25, name: 'Bahnrettung', cost: 125000, coins: 25 },
         ],
 
         '6_small': [ // Polizei (Kleinwache)
             { id: 0, name: '1te Zelle', cost: 25000, coins: 5 },
             { id: 1, name: '2te Zelle', cost: 25000, coins: 5 },
-//            { id: 10, name: 'Diensthundestaffel', cost: 100000, coins: 10 },
-//            { id: 11, name: 'Kriminalpolizei', cost: 100000, coins: 20 },
-//            { id: 12, name: 'Dienstgruppenleitung', cost: 200000, coins: 25 },
-//            { id: 13, name: 'Motorradstaffel', cost: 75000, coins: 15 },
+            { id: 10, name: 'Diensthundestaffel', cost: 100000, coins: 10 },
+            { id: 11, name: 'Kriminalpolizei', cost: 100000, coins: 20 },
+            { id: 12, name: 'Dienstgruppenleitung', cost: 200000, coins: 25 },
+            { id: 13, name: 'Motorradstaffel', cost: 75000, coins: 15 },
         ],
 
         '24_normal': [ // Reiterstaffel
-//            { id: 0, name: 'Reiterstaffel', cost: 300000, coins: 25 },
-//            { id: 1, name: 'Reiterstaffel', cost: 300000, coins: 25 },
-//            { id: 2, name: 'Reiterstaffel', cost: 300000, coins: 25 },
-//            { id: 3, name: 'Reiterstaffel', cost: 300000, coins: 25 },
-//            { id: 4, name: 'Reiterstaffel', cost: 300000, coins: 25 },
-//            { id: 5, name: 'Reiterstaffel', cost: 300000, coins: 25 },
+            { id: 0, name: 'Reiterstaffel', cost: 300000, coins: 25 },
+            { id: 1, name: 'Reiterstaffel', cost: 300000, coins: 25 },
+            { id: 2, name: 'Reiterstaffel', cost: 300000, coins: 25 },
+            { id: 3, name: 'Reiterstaffel', cost: 300000, coins: 25 },
+            { id: 4, name: 'Reiterstaffel', cost: 300000, coins: 25 },
+            { id: 5, name: 'Reiterstaffel', cost: 300000, coins: 25 },
         ],
 
         '25_normal': [ // Bergrettungswache
             { id: 0, name: 'Höhenrettung', cost: 50000, coins: 25 },
-//            { id: 1, name: 'Drohneneinheit', cost: 75000, coins: 25 },
+            { id: 1, name: 'Drohneneinheit', cost: 75000, coins: 25 },
             { id: 2, name: 'Rettungshundestaffel', cost: 350000, coins: 25 },
-//            { id: 3, name: 'Rettungsdienst', cost: 100000, coins: 20 },
+            { id: 3, name: 'Rettungsdienst', cost: 100000, coins: 20 },
         ],
 
         '27_normal': [ // Schule für Seefahrt und Seenotrettung
@@ -214,7 +215,7 @@
 
     // Ab hier nichts mehr ändern! (Es sei denn Ihr wisst was Ihr tut)
 
-    // Fügt die Stile hinzu
+    // Funktion um die Lightbox und Stile zu erstellen
     const styles = `
         #extension-lightbox {
             position: fixed;
@@ -382,44 +383,44 @@
     // Funktion zum Abrufen der Benutzereinstellungen vom API
     async function getUserMode() {
         try {
-            //            console.log("Versuche, Benutzereinstellungen von der API abzurufen...");
+                console.log("Versuche, Benutzereinstellungen von der API abzurufen...");
             const response = await fetch('https://www.leitstellenspiel.de/api/settings');
             const data = await response.json();
-            //            console.log("Benutzereinstellungen abgerufen:", data);
+                console.log("Benutzereinstellungen abgerufen:", data);
             return data; // Gibt die vollständige Antwort zurück
         } catch (error) {
-            console.error("Fehler beim Abrufen der Einstellungen: ", error);
+                console.error("Fehler beim Abrufen der Einstellungen: ", error);
             return null;
         }
     }
 
     // Funktion zum Anwenden des Dark- oder Light-Modus basierend auf der API-Antwort
     async function applyMode() {
-        //        console.log("Wende Modus an...");
+            console.log("Wende Modus an...");
 
         const userSettings = await getUserMode();
         if (!userSettings) {
-            //            console.log("Keine Benutzereinstellungen gefunden oder Fehler beim Abrufen.");
+                console.log("Keine Benutzereinstellungen gefunden oder Fehler beim Abrufen.");
             return;
         }
 
         const mode = userSettings.design_mode; // Benutze jetzt "design_mode" anstelle von "mode"
-        //        console.log("Aktueller Design-Modus:", mode);
+            console.log("Aktueller Design-Modus:", mode);
 
         // Warten auf das Lightbox-Element
         const lightboxContent = document.getElementById('extension-lightbox-content');
         if (!lightboxContent) {
-            //            console.log("Lightbox-Inhalt nicht gefunden.");
+                 console.log("Lightbox-Inhalt nicht gefunden.");
             return;
         }
 
-        //        console.log("Lightbox-Inhalt gefunden, entferne alte Modus-Klassen...");
+            console.log("Lightbox-Inhalt gefunden, entferne alte Modus-Klassen...");
         // Entferne alle möglichen Modus-Klassen
         lightboxContent.classList.remove('dark', 'light');
 
         // Modus anwenden
         if (mode === 1 || mode === 4) { // Dunkelmodus
-            //            console.log("Dunkelmodus aktivieren...");
+                console.log("Dunkelmodus aktivieren...");
             lightboxContent.classList.add('dark');
 
             // Dark Mode für Tabelle
@@ -427,7 +428,7 @@
             document.documentElement.style.setProperty('--text-color', '#fff');
             document.documentElement.style.setProperty('--border-color', '#444');
         } else if (mode === 2 || mode === 3) { // Hellmodus
-            //            console.log("Hellmodus aktivieren...");
+                console.log("Hellmodus aktivieren...");
             lightboxContent.classList.add('light');
 
             // Light Mode für Tabelle
@@ -435,7 +436,7 @@
             document.documentElement.style.setProperty('--text-color', '#000');
             document.documentElement.style.setProperty('--border-color', '#ccc');
         } else { // Standardmodus (wenn der Modus unbekannt ist)
-            //            console.log("Unbekannter Modus, standardmäßig Hellmodus aktivieren...");
+                 console.log("Unbekannter Modus, standardmäßig Hellmodus aktivieren...");
             lightboxContent.classList.add('light'); // Standardmäßig hell
 
             // Standard Light Mode für Tabelle
@@ -447,20 +448,20 @@
 
     // Funktion zur Beobachtung der Lightbox auf Änderungen (für dynamisch geladene Elemente)
     function observeLightbox() {
-        //        console.log("Beobachte die Lightbox auf Änderungen...");
+             console.log("Beobachte die Lightbox auf Änderungen...");
 
         const lightboxContainer = document.getElementById('extension-lightbox');
         if (!lightboxContainer) {
-            //            console.log("Lightbox-Container nicht gefunden.");
+            console.log("Lightbox-Container nicht gefunden.");
             return;
         }
 
         const observer = new MutationObserver(() => {
-            //            console.log("MutationObserver ausgelöst - Überprüfe, ob das Content-Element da ist...");
+            console.log("MutationObserver ausgelöst - Überprüfe, ob das Content-Element da ist...");
             // Überprüfe, ob das Content-Element in der Lightbox existiert
             const lightboxContent = document.getElementById('extension-lightbox-content');
             if (lightboxContent) {
-                //                console.log("Lightbox-Inhalt gefunden, wende Modus an...");
+                console.log("Lightbox-Inhalt gefunden, wende Modus an...");
                 applyMode(); // Wenn das Lightbox-Inhalt gefunden wird, Modus anwenden
                 observer.disconnect(); // Beende die Beobachtung, wenn die Lightbox gefunden wurde
             }
@@ -472,7 +473,7 @@
 
     // Wende den Modus an, wenn das DOM bereit ist
     window.addEventListener('load', () => {
-        //        console.log("DOM vollständig geladen. Wende Modus an...");
+            console.log("DOM vollständig geladen. Wende Modus an...");
         applyMode();
         observeLightbox(); // Beobachtet dynamische Änderungen
     });
@@ -543,7 +544,7 @@
                     profileMenu.appendChild(menuButton);
                 }
             }
-            // Remove href attribute to prevent default link behavior
+            // Entfernen des href-Attribut, um das Standard-Linkverhalten zu verhindern
             const link = menuButton.querySelector('a');
             link.removeAttribute('href');
             link.addEventListener('click', (e) => {
@@ -627,13 +628,13 @@
     // Funktion, um den Namen eines Gebäudes anhand der ID zu bekommen
     function getBuildingCaption(buildingId) {
 
-        //        console.log('Übergebene buildingId:', buildingId);  // Überprüfen, welche ID übergeben wird
+             console.log('Übergebene buildingId:', buildingId);  // Überprüfen, welche ID übergeben wird
         const building = buildingsData.find(b => String(b.id) === String(buildingId));
         if (building) {
-            //            console.log('Gefundenes Gebäude:', building);  // Protokolliere das gefundene Gebäude
+             console.log('Gefundenes Gebäude:', building);  // Protokolliere das gefundene Gebäude
             return building.caption; // Direkt den Gebäudennamen zurückgeben
         }
-        //        console.log('Gebäude nicht gefunden. ID:', buildingId); // Wenn das Gebäude nicht gefunden wird
+             console.log('Gebäude nicht gefunden. ID:', buildingId); // Wenn das Gebäude nicht gefunden wird
         return 'Unbekanntes Gebäude';
     }
 
@@ -651,12 +652,12 @@
             return response.json();
         })
             .then(data => {
-            //            console.log('Abgerufene Gebäudedaten:', data); // Protokolliere die abgerufenen Daten
+                console.log('Abgerufene Gebäudedaten:', data); // Protokolliere die abgerufenen Daten
             buildingsData = data; // Speichern der Gebäudedaten in einer globalen Variablen
             renderMissingExtensions(data); // Weiterverarbeiten der abgerufenen Daten
         })
             .catch(error => {
-            //            console.error('Es ist ein Fehler aufgetreten:', error);
+                 console.error('Es ist ein Fehler aufgetreten:', error);
             const list = document.getElementById('extension-list');
             list.innerHTML = 'Fehler beim Laden der Gebäudedaten.';
         });
@@ -670,14 +671,14 @@
                 throw new Error('Fehler beim Abrufen der Credits und Coins');
             }
             const data = await response.json();
-            //            console.log('Benutzer Credits und Coins abgerufen:', data);
+                 console.log('Benutzer Credits und Coins abgerufen:', data);
             return {
                 credits: data.credits_user_current,
                 coins: data.coins_user_current,
                 premium: data.premium // Fügen Sie diese Zeile hinzu, um den Premium-Status zurückzugeben
             };
         } catch (error) {
-            //            console.error('Fehler beim Abrufen der Credits und Coins:', error);
+                 console.error('Fehler beim Abrufen der Credits und Coins:', error);
             throw error;
         }
     }
@@ -1036,7 +1037,7 @@
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
                 onload: function(response) {
-                    //                    console.log(`Erweiterung in Gebäude ${building.id} gebaut. Response:`, response);
+                        console.log(`Erweiterung in Gebäude ${building.id} gebaut. Response:`, response);
 
                     // Überprüfen, ob die Zeile existiert
                     if (row) {
@@ -1095,11 +1096,11 @@
         try {
             const userInfo = await getUserCredits();
             const currencyText = currency === 'credits' ? 'Credits' : 'Coins';
-            //            console.log(`Benutzer hat ${userInfo.credits} Credits und ${userInfo.coins} Coins`);
+                console.log(`Benutzer hat ${userInfo.credits} Credits und ${userInfo.coins} Coins`);
 
             if ((currency === 'credits' && userInfo.credits < amount) || (currency === 'coins' && userInfo.coins < amount)) {
                 alert(`Nicht genügend ${currencyText}.`);
-                //                console.log(`Nicht genügend ${currencyText}.`);
+                console.log(`Nicht genügend ${currencyText}.`);
                 return;
             }
         } catch (error) {
@@ -1420,7 +1421,6 @@
     document.body.appendChild(selectionDiv);
 }
 
-
     // Ende der Funktion für * Bau von ausgewählten Erweiterungen *
 
 
@@ -1598,8 +1598,7 @@
         }, 500); // 500ms Pause bevor die Fortschrittsanzeige entfernt wird
     }
 
-
-    // Neue Funktion zum Bauen aller Erweiterungen für alle Wachen mit Pause und Anzeige
+    // Funktion zum Bauen aller Erweiterungen für alle Wachen mit Pause und Anzeige
     async function buildAllExtensionsWithPause(groupKey, currency) {
         const group = buildingGroups[groupKey];
         let builtCount = 0;
