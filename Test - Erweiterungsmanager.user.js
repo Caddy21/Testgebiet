@@ -19,31 +19,31 @@
     // Hier könnt Ihr auswählen welche Erweiterung in der Tabelle angezeigt werden soll, dafür die nicht benötigten einfach mit // ausklammern.
     const manualExtensions = {
         '0_normal': [ // Feuerwache (normal)
-            { id: 0, name: 'Rettungsdienst', cost: 100000, coins: 20 },
-            { id: 1, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 2, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 3, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 4, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 5, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 6, name: 'Wasserrettung', cost: 400000, coins: 25 },
-            { id: 7, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 8, name: 'Flughafenfeuerwehr', cost: 300000, coins: 25 },
-            { id: 9, name: 'Großwache', cost: 1000000, coins: 50 },
-            { id: 10, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 11, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 12, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 13, name: 'Werkfeuerwehr', cost: 100000, coins: 20 },
-            { id: 14, name: 'Netzersatzanlage 50', cost: 100000, coins: 20 },
-            { id: 15, name: 'Netzersatzanlage 200', cost: 100000, coins: 20 },
+//            { id: 0, name: 'Rettungsdienst', cost: 100000, coins: 20 },
+//            { id: 1, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
+//            { id: 2, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
+//            { id: 3, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
+//            { id: 4, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
+//            { id: 5, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
+//            { id: 6, name: 'Wasserrettung', cost: 400000, coins: 25 },
+//            { id: 7, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
+//            { id: 8, name: 'Flughafenfeuerwehr', cost: 300000, coins: 25 },
+//            { id: 9, name: 'Großwache', cost: 1000000, coins: 50 },
+//            { id: 10, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
+//            { id: 11, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
+//            { id: 12, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
+//            { id: 13, name: 'Werkfeuerwehr', cost: 100000, coins: 20 },
+//            { id: 14, name: 'Netzersatzanlage 50', cost: 100000, coins: 20 },
+//           { id: 15, name: 'Netzersatzanlage 200', cost: 100000, coins: 20 },
             { id: 16, name: 'Großlüfter', cost: 75000, coins: 25 },
-            { id: 17, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 18, name: 'Drohneneinheit', cost: 150000, coins: 25 },
-            { id: 19, name: 'Verpflegungsdienst', cost: 200000, coins: 25 },
-            { id: 20, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
-            { id: 21, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
-            { id: 22, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
-            { id: 23, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
-            { id: 24, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
+//            { id: 17, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
+//            { id: 18, name: 'Drohneneinheit', cost: 150000, coins: 25 },
+//            { id: 19, name: 'Verpflegungsdienst', cost: 200000, coins: 25 },
+//            { id: 20, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
+//            { id: 21, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
+//            { id: 22, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
+//            { id: 23, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
+//            { id: 24, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
             { id: 25, name: 'Bahnrettung', cost: 125000, coins: 25 },
         ],
 
@@ -54,7 +54,7 @@
         ],
 
         '2_normal': [ // Rettungswache
-            { id: 0, name: 'Großwache', cost: 1000000, coins: 50 },
+//            { id: 0, name: 'Großwache', cost: 1000000, coins: 50 },
         ],
 
         '3_normal': [ // Rettungsschule
@@ -73,7 +73,7 @@
             { id: 6, name: 'Neurochirugie', cost: 70000, coins: 15 },
             { id: 7, name: 'Kardiologie', cost: 70000, coins: 15 },
             { id: 8, name: 'Kardiochirugie', cost: 70000, coins: 15 },
-            { id: 9, name: 'Großkrankenhaus', cost: 200000, coins: 50 },
+//            { id: 9, name: 'Großkrankenhaus', cost: 200000, coins: 50 },
         ],
 
         '5_normal': [ // Rettungshubschrauber-Station
@@ -86,17 +86,17 @@
             { id: 2, name: '3te Zelle', cost: 25000, coins: 5 },
             { id: 3, name: '4te Zelle', cost: 25000, coins: 5 },
             { id: 4, name: '5te Zelle', cost: 25000, coins: 5 },
-            { id: 5, name: '6te Zelle', cost: 25000, coins: 5 },
-            { id: 6, name: '7te Zelle', cost: 25000, coins: 5 },
-            { id: 7, name: '8te Zelle', cost: 25000, coins: 5 },
-            { id: 8, name: '9te Zelle', cost: 25000, coins: 5 },
-            { id: 9, name: '10te Zelle', cost: 25000, coins: 5 },
+//            { id: 5, name: '6te Zelle', cost: 25000, coins: 5 },
+//            { id: 6, name: '7te Zelle', cost: 25000, coins: 5 },
+//            { id: 7, name: '8te Zelle', cost: 25000, coins: 5 },
+//            { id: 8, name: '9te Zelle', cost: 25000, coins: 5 },
+//            { id: 9, name: '10te Zelle', cost: 25000, coins: 5 },
             { id: 10, name: 'Diensthundestaffel', cost: 100000, coins: 10 },
             { id: 11, name: 'Kriminalpolizei', cost: 100000, coins: 20 },
             { id: 12, name: 'Dienstgruppenleitung', cost: 200000, coins: 25 },
             { id: 13, name: 'Motorradstaffel', cost: 75000, coins: 15 },
-            { id: 14, name: 'Großwache', cost: 1000000, coins: 50 },
-            { id: 15, name: 'Großgewahrsam', cost: 200000, coins: 50 },
+//            { id: 14, name: 'Großwache', cost: 1000000, coins: 50 },
+//            { id: 15, name: 'Großgewahrsam', cost: 200000, coins: 50 },
         ],
 
         '8_normal': [ // Polizeischule
@@ -117,8 +117,8 @@
             { id: 8, name: 'Fachgruppe Wasserschaden/Pumpen', cost: 200000, coins: 25 },
             { id: 9, name: 'Fachruppe Schwere Bergung', cost: 200000, coins: 25 },
             { id: 10, name: 'Fachgruppe Elektroversorgung', cost: 200000, coins: 25 },
-            { id: 11, name: 'Ortsverband-Mannschaftstransportwagen', cost: 50000, coins: 15 },
-            { id: 12, name: 'Trupp Unbenannte Luftfahrtsysteme', cost: 50000, coins: 15 },
+//            { id: 11, name: 'Ortsverband-Mannschaftstransportwagen', cost: 50000, coins: 15 },
+//            { id: 12, name: 'Trupp Unbenannte Luftfahrtsysteme', cost: 50000, coins: 15 },
             { id: 13, name: 'Fachzug Führung und Kommunikation', cost: 300000, coins: 25 },
         ],
 
@@ -152,56 +152,56 @@
         ],
 
         '13_normal': [ // Polizeihubschrauberstation
-            { id: 0, name: 'Außenlastbehälter', cost: 200000, coins: 15 },
-            { id: 1, name: 'Windenrettung', cost: 200000, coins: 15 },
+//            { id: 0, name: 'Außenlastbehälter', cost: 200000, coins: 15 },
+//            { id: 1, name: 'Windenrettung', cost: 200000, coins: 15 },
         ],
 
         '17_normal': [ // Polizeisondereinheit
-            { id: 0, name: 'SEK: 1. Zug', cost: 100000, coins: 10 },
-            { id: 1, name: 'SEK: 2. Zug', cost: 100000, coins: 10 },
-            { id: 2, name: 'MEK: 1. Zug', cost: 100000, coins: 10 },
-            { id: 3, name: 'MEK: 2. Zug', cost: 100000, coins: 10 },
-            { id: 4, name: 'Diensthundestaffel', cost: 100000, coins: 10 },
+//            { id: 0, name: 'SEK: 1. Zug', cost: 100000, coins: 10 },
+//            { id: 1, name: 'SEK: 2. Zug', cost: 100000, coins: 10 },
+//            { id: 2, name: 'MEK: 1. Zug', cost: 100000, coins: 10 },
+//            { id: 3, name: 'MEK: 2. Zug', cost: 100000, coins: 10 },
+//            { id: 4, name: 'Diensthundestaffel', cost: 100000, coins: 10 },
         ],
         '0_small': [ // Feuerwehr (Kleinwache)
-            { id: 0, name: 'Rettungsdienst', cost: 100000, coins: 20 },
-            { id: 1, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 2, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 6, name: 'Wasserrettung', cost: 400000, coins: 25 },
-            { id: 8, name: 'Flughafenfeuerwehr', cost: 300000, coins: 25 },
-            { id: 13, name: 'Werkfeuerwehr', cost: 100000, coins: 20 },
-            { id: 14, name: 'Netzersatzanlage 50', cost: 100000, coins: 20 },
-            { id: 16, name: 'Großlüfter', cost: 75000, coins: 25 },
-            { id: 18, name: 'Drohneneinheit', cost: 150000, coins: 25 },
-            { id: 19, name: 'Verpflegungsdienst', cost: 200000, coins: 25 },
-            { id: 20, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
-            { id: 21, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
-            { id: 25, name: 'Bahnrettung', cost: 125000, coins: 25 },
+//            { id: 0, name: 'Rettungsdienst', cost: 100000, coins: 20 },
+//            { id: 1, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
+//            { id: 2, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
+//            { id: 6, name: 'Wasserrettung', cost: 400000, coins: 25 },
+//            { id: 8, name: 'Flughafenfeuerwehr', cost: 300000, coins: 25 },
+//            { id: 13, name: 'Werkfeuerwehr', cost: 100000, coins: 20 },
+//            { id: 14, name: 'Netzersatzanlage 50', cost: 100000, coins: 20 },
+//            { id: 16, name: 'Großlüfter', cost: 75000, coins: 25 },
+//            { id: 18, name: 'Drohneneinheit', cost: 150000, coins: 25 },
+//            { id: 19, name: 'Verpflegungsdienst', cost: 200000, coins: 25 },
+//            { id: 20, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
+//            { id: 21, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
+//            { id: 25, name: 'Bahnrettung', cost: 125000, coins: 25 },
         ],
 
         '6_small': [ // Polizei (Kleinwache)
             { id: 0, name: '1te Zelle', cost: 25000, coins: 5 },
             { id: 1, name: '2te Zelle', cost: 25000, coins: 5 },
-            { id: 10, name: 'Diensthundestaffel', cost: 100000, coins: 10 },
-            { id: 11, name: 'Kriminalpolizei', cost: 100000, coins: 20 },
-            { id: 12, name: 'Dienstgruppenleitung', cost: 200000, coins: 25 },
-            { id: 13, name: 'Motorradstaffel', cost: 75000, coins: 15 },
+//            { id: 10, name: 'Diensthundestaffel', cost: 100000, coins: 10 },
+//            { id: 11, name: 'Kriminalpolizei', cost: 100000, coins: 20 },
+//            { id: 12, name: 'Dienstgruppenleitung', cost: 200000, coins: 25 },
+//            { id: 13, name: 'Motorradstaffel', cost: 75000, coins: 15 },
         ],
 
         '24_normal': [ // Reiterstaffel
-            { id: 0, name: 'Reiterstaffel', cost: 300000, coins: 25 },
-            { id: 1, name: 'Reiterstaffel', cost: 300000, coins: 25 },
-            { id: 2, name: 'Reiterstaffel', cost: 300000, coins: 25 },
-            { id: 3, name: 'Reiterstaffel', cost: 300000, coins: 25 },
-            { id: 4, name: 'Reiterstaffel', cost: 300000, coins: 25 },
-            { id: 5, name: 'Reiterstaffel', cost: 300000, coins: 25 },
+//            { id: 0, name: 'Reiterstaffel', cost: 300000, coins: 25 },
+//            { id: 1, name: 'Reiterstaffel', cost: 300000, coins: 25 },
+//            { id: 2, name: 'Reiterstaffel', cost: 300000, coins: 25 },
+//            { id: 3, name: 'Reiterstaffel', cost: 300000, coins: 25 },
+//            { id: 4, name: 'Reiterstaffel', cost: 300000, coins: 25 },
+//            { id: 5, name: 'Reiterstaffel', cost: 300000, coins: 25 },
         ],
 
         '25_normal': [ // Bergrettungswache
             { id: 0, name: 'Höhenrettung', cost: 50000, coins: 25 },
-            { id: 1, name: 'Drohneneinheit', cost: 75000, coins: 25 },
+//            { id: 1, name: 'Drohneneinheit', cost: 75000, coins: 25 },
             { id: 2, name: 'Rettungshundestaffel', cost: 350000, coins: 25 },
-            { id: 3, name: 'Rettungsdienst', cost: 100000, coins: 20 },
+//            { id: 3, name: 'Rettungsdienst', cost: 100000, coins: 20 },
         ],
 
         '27_normal': [ // Schule für Seefahrt und Seenotrettung
@@ -489,9 +489,10 @@
     lightbox.innerHTML = `
             <div id="extension-lightbox-content">
                 <button id="close-extension-helper">Schließen</button>
-                <h2>Erweiterungs-Manager<br><h5>Hier kommt bald noch mehr Infos
+                <h2>Erweiterungs-Manager<br><h5>Hier kommen bald noch mehr Infos
                 <br>
-                <div id="extension-list">Lade Gebäude und Erweiterungsdaten...</div>
+                <br>
+                <div id="extension-list">Lade Gebäudedaten und erstelle die Tabellen...</div>
             </div>
         `;
     document.body.appendChild(lightbox);
@@ -603,7 +604,7 @@
         }
 
         if (typeof user_premium !== 'undefined') {
-                       console.log("Die Variable 'user_premium' ist definiert."); // Debugging-Info
+            console.log("Die Variable 'user_premium' ist definiert."); // Debugging-Info
 
             if (!user_premium) {
                 console.warn("Der Nutzer hat keinen Premium-Account.");
@@ -613,7 +614,7 @@
                     fetchBuildingsAndRender(); // API-Daten abrufen, wenn das Script geöffnet wird
                 });
             } else {
-                                console.log("Der Nutzer hat einen Premium-Account.");
+                console.log("Der Nutzer hat einen Premium-Account.");
                 const lightbox = document.getElementById('extension-lightbox');
                 lightbox.style.display = 'flex';
                 fetchBuildingsAndRender(); // API-Daten abrufen, wenn das Script geöffnet wird
@@ -682,122 +683,122 @@
     }
 
     async function renderMissingExtensions(buildings) {
-    const userInfo = await getUserCredits();
-    const list = document.getElementById('extension-list');
-    list.innerHTML = ''; // Lösche den Inhalt der Lightbox
+        const userInfo = await getUserCredits();
+        const list = document.getElementById('extension-list');
+        list.innerHTML = ''; // Lösche den Inhalt der Lightbox
 
-    // Setze die globalen Variablen zurück
-    buildingGroups = {};
-    buildingsData = buildings;
+        // Setze die globalen Variablen zurück
+        buildingGroups = {};
+        buildingsData = buildings;
 
-    buildings.sort((a, b) => {
-        if (a.building_type === b.building_type) {
-            return a.caption.localeCompare(b.caption);
-        }
-        return a.building_type - b.building_type;
-    });
-
-    buildings.forEach(building => {
-        const buildingTypeKey = `${building.building_type}_${building.small_building ? 'small' : 'normal'}`;
-        const extensions = manualExtensions[buildingTypeKey];
-        if (!extensions) return;
-
-        const existingExtensions = new Set(building.extensions.map(e => e.type_id));
-
-        const allowedExtensions = extensions.filter(extension => {
-            if (isExtensionLimitReached(building, extension.id)) {
-                return false;
+        buildings.sort((a, b) => {
+            if (a.building_type === b.building_type) {
+                return a.caption.localeCompare(b.caption);
             }
-            return !existingExtensions.has(extension.id);
+            return a.building_type - b.building_type;
         });
 
-        if (allowedExtensions.length > 0) {
-            if (!buildingGroups[buildingTypeKey]) {
-                buildingGroups[buildingTypeKey] = [];
-            }
-            buildingGroups[buildingTypeKey].push({ building, missingExtensions: allowedExtensions });
-        }
-    });
+        buildings.forEach(building => {
+            const buildingTypeKey = `${building.building_type}_${building.small_building ? 'small' : 'normal'}`;
+            const extensions = manualExtensions[buildingTypeKey];
+            if (!extensions) return;
 
-    const buildingTypeNames = {
-        '0_normal': 'Feuerwache (Normal)',
-        '0_small': 'Feuerwache (Kleinwache)',
-        '1_normal': 'Feuerwehrschule',
-        '2_normal': 'Rettungswache',
-        '3_normal': 'Rettungsschule',
-        '4_normal': 'Krankenhaus',
-        '5_normal': 'Rettungshubschrauber-Station',
-        '6_normal': 'Polizeiwache',
-        '6_small': 'Polizeiwache (Klein)',
-        '8_normal': 'Polizeischule',
-        '9_normal': 'THW',
-        '10_normal': 'THW-Bundesschule',
-        '11_normal': 'Bereitschaftspolizei',
-        '12_normal': 'SEG',
-        '13_normal': 'Polizeihubschrauberstation',
-        '17_normal': 'Polizei-Sondereinheiten',
-        '24_normal': 'Reiterstaffel',
-        '25_normal': 'Bergrettungswache',
-        '27_normal': 'Schule für Seefahrt und Seenotrettung',
-    };
+            const existingExtensions = new Set(building.extensions.map(e => e.type_id));
 
-    Object.keys(buildingGroups).forEach(groupKey => {
-        const group = buildingGroups[groupKey];
-        const buildingType = buildingTypeNames[groupKey] || 'Unbekannt';
+            const allowedExtensions = extensions.filter(extension => {
+                if (isExtensionLimitReached(building, extension.id)) {
+                    return false;
+                }
+                return !existingExtensions.has(extension.id);
+            });
 
-        const buildingHeader = document.createElement('h4');
-        buildingHeader.textContent = `Typ: ${buildingType}`;
-        list.appendChild(buildingHeader);
-
-        const buttonContainer = document.createElement('div');
-        buttonContainer.style.display = 'flex';
-        buttonContainer.style.gap = '10px';
-
-        const spoilerButton = document.createElement('button');
-        spoilerButton.textContent = 'Erweiterungen anzeigen';
-        spoilerButton.classList.add('spoiler-button');
-        buttonContainer.appendChild(spoilerButton);
-
-        const buildSelectedButton = document.createElement('button');
-        buildSelectedButton.textContent = 'Ausgewählte Erweiterungen bauen';
-        buildSelectedButton.classList.add('btn', 'build-selected-button');
-        buildSelectedButton.disabled = true; // Initial disabled
-        buildSelectedButton.onclick = () => buildSelectedExtensions();
-        buttonContainer.appendChild(buildSelectedButton);
-
-        const buildAllButton = document.createElement('button');
-        buildAllButton.textContent = 'Alle Erweiterungen bei allen Wachen bauen';
-        buildAllButton.classList.add('build-all-button');
-        buildAllButton.onclick = () => showCurrencySelectionForAll(groupKey);
-        buttonContainer.appendChild(buildAllButton);
-
-        list.appendChild(buttonContainer);
-
-        const contentWrapper = document.createElement('div');
-        contentWrapper.className = 'spoiler-content';
-        contentWrapper.style.display = 'none';
-
-        const searchInput = document.createElement('input');
-        searchInput.type = "text";
-        searchInput.placeholder = "🔍 Nach Wachennamen oder Erweiterungen suchen...";
-        searchInput.style.width = "100%";
-        searchInput.style.marginBottom = "10px";
-        searchInput.style.padding = "5px";
-        searchInput.style.fontSize = "14px";
-        searchInput.style.display = 'block';
-
-        spoilerButton.addEventListener('click', () => {
-            if (contentWrapper.style.display === 'none') {
-                contentWrapper.style.display = 'block';
-                spoilerButton.textContent = 'Erweiterungen ausblenden';
-            } else {
-                contentWrapper.style.display = 'none';
-                spoilerButton.textContent = 'Erweiterungen anzeigen';
+            if (allowedExtensions.length > 0) {
+                if (!buildingGroups[buildingTypeKey]) {
+                    buildingGroups[buildingTypeKey] = [];
+                }
+                buildingGroups[buildingTypeKey].push({ building, missingExtensions: allowedExtensions });
             }
         });
 
-        const table = document.createElement('table');
-        table.innerHTML = `
+        const buildingTypeNames = {
+            '0_normal': 'Feuerwache (Normal)',
+            '0_small': 'Feuerwache (Kleinwache)',
+            '1_normal': 'Feuerwehrschule',
+            '2_normal': 'Rettungswache',
+            '3_normal': 'Rettungsschule',
+            '4_normal': 'Krankenhaus',
+            '5_normal': 'Rettungshubschrauber-Station',
+            '6_normal': 'Polizeiwache',
+            '6_small': 'Polizeiwache (Klein)',
+            '8_normal': 'Polizeischule',
+            '9_normal': 'THW',
+            '10_normal': 'THW-Bundesschule',
+            '11_normal': 'Bereitschaftspolizei',
+            '12_normal': 'SEG',
+            '13_normal': 'Polizeihubschrauberstation',
+            '17_normal': 'Polizei-Sondereinheiten',
+            '24_normal': 'Reiterstaffel',
+            '25_normal': 'Bergrettungswache',
+            '27_normal': 'Schule für Seefahrt und Seenotrettung',
+        };
+
+        Object.keys(buildingGroups).forEach(groupKey => {
+            const group = buildingGroups[groupKey];
+            const buildingType = buildingTypeNames[groupKey] || 'Unbekannt';
+
+            const buildingHeader = document.createElement('h4');
+            buildingHeader.textContent = `Typ: ${buildingType}`;
+            list.appendChild(buildingHeader);
+
+            const buttonContainer = document.createElement('div');
+            buttonContainer.style.display = 'flex';
+            buttonContainer.style.gap = '10px';
+
+            const spoilerButton = document.createElement('button');
+            spoilerButton.textContent = 'Erweiterungen anzeigen';
+            spoilerButton.classList.add('spoiler-button');
+            buttonContainer.appendChild(spoilerButton);
+
+            const buildSelectedButton = document.createElement('button');
+            buildSelectedButton.textContent = 'Ausgewählte Erweiterungen bauen';
+            buildSelectedButton.classList.add('btn', 'build-selected-button');
+            buildSelectedButton.disabled = true; // Initial disabled
+            buildSelectedButton.onclick = () => buildSelectedExtensions();
+            buttonContainer.appendChild(buildSelectedButton);
+
+            const buildAllButton = document.createElement('button');
+            buildAllButton.textContent = 'Alle Erweiterungen bei allen Wachen bauen';
+            buildAllButton.classList.add('build-all-button');
+            buildAllButton.onclick = () => showCurrencySelectionForAll(groupKey);
+            buttonContainer.appendChild(buildAllButton);
+
+            list.appendChild(buttonContainer);
+
+            const contentWrapper = document.createElement('div');
+            contentWrapper.className = 'spoiler-content';
+            contentWrapper.style.display = 'none';
+
+            const searchInput = document.createElement('input');
+            searchInput.type = "text";
+            searchInput.placeholder = "🔍 Nach Wachennamen oder Erweiterungen suchen...";
+            searchInput.style.width = "100%";
+            searchInput.style.marginBottom = "10px";
+            searchInput.style.padding = "5px";
+            searchInput.style.fontSize = "14px";
+            searchInput.style.display = 'block';
+
+            spoilerButton.addEventListener('click', () => {
+                if (contentWrapper.style.display === 'none') {
+                    contentWrapper.style.display = 'block';
+                    spoilerButton.textContent = 'Erweiterungen ausblenden';
+                } else {
+                    contentWrapper.style.display = 'none';
+                    spoilerButton.textContent = 'Erweiterungen anzeigen';
+                }
+            });
+
+            const table = document.createElement('table');
+            table.innerHTML = `
         <thead>
             <tr>
                 <th></th> <!-- Checkbox column -->
@@ -809,72 +810,72 @@
         </thead>
         <tbody></tbody>
     `;
-        const tbody = table.querySelector('tbody');
+            const tbody = table.querySelector('tbody');
 
-        group.forEach(({ building, missingExtensions }) => {
-            missingExtensions.forEach(extension => {
-                if (isExtensionLimitReached(building, extension.id)) {
-                    return;
-                }
+            group.forEach(({ building, missingExtensions }) => {
+                missingExtensions.forEach(extension => {
+                    if (isExtensionLimitReached(building, extension.id)) {
+                        return;
+                    }
 
-                const row = document.createElement('tr');
-                row.classList.add(`row-${building.id}-${extension.id}`);
+                    const row = document.createElement('tr');
+                    row.classList.add(`row-${building.id}-${extension.id}`);
 
-                const checkboxCell = document.createElement('td');
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.className = 'extension-checkbox';
-                checkbox.dataset.buildingId = building.id;
-                checkbox.dataset.extensionId = extension.id;
-                checkbox.disabled = userInfo.credits < extension.cost || userInfo.coins < extension.coins; // Deaktiviert die Checkboxen wenn zu wenig Credits/Coins vorhanden sind
-                checkbox.addEventListener('change', updateBuildSelectedButton); // Add event listener
-                checkboxCell.appendChild(checkbox);
-                row.appendChild(checkboxCell);
+                    const checkboxCell = document.createElement('td');
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.className = 'extension-checkbox';
+                    checkbox.dataset.buildingId = building.id;
+                    checkbox.dataset.extensionId = extension.id;
+                    checkbox.disabled = userInfo.credits < extension.cost || userInfo.coins < extension.coins; // Deaktiviert die Checkboxen wenn zu wenig Credits/Coins vorhanden sind
+                    checkbox.addEventListener('change', updateBuildSelectedButton); // Add event listener
+                    checkboxCell.appendChild(checkbox);
+                    row.appendChild(checkboxCell);
 
-                const nameCell = document.createElement('td');
-                nameCell.textContent = building.caption;
-                row.appendChild(nameCell);
+                    const nameCell = document.createElement('td');
+                    nameCell.textContent = building.caption;
+                    row.appendChild(nameCell);
 
-                const extensionCell = document.createElement('td');
-                extensionCell.textContent = extension.name;
-                row.appendChild(extensionCell);
+                    const extensionCell = document.createElement('td');
+                    extensionCell.textContent = extension.name;
+                    row.appendChild(extensionCell);
 
-                const creditCell = document.createElement('td');
-                const creditButton = document.createElement('button');
-                creditButton.textContent = `${formatNumber(extension.cost)} Credits`;
-                creditButton.classList.add('btn', 'btn-xl', 'credit-button');
-                creditButton.style.backgroundColor = '#28a745';
-                creditButton.style.color = 'white';
-                creditButton.disabled = userInfo.credits < extension.cost;
-                creditButton.onclick = () => buildExtension(building, extension.id, 'credits', extension.cost, row);
-                creditCell.appendChild(creditButton);
-                row.appendChild(creditCell);
+                    const creditCell = document.createElement('td');
+                    const creditButton = document.createElement('button');
+                    creditButton.textContent = `${formatNumber(extension.cost)} Credits`;
+                    creditButton.classList.add('btn', 'btn-xl', 'credit-button');
+                    creditButton.style.backgroundColor = '#28a745';
+                    creditButton.style.color = 'white';
+                    creditButton.disabled = userInfo.credits < extension.cost;
+                    creditButton.onclick = () => buildExtension(building, extension.id, 'credits', extension.cost, row);
+                    creditCell.appendChild(creditButton);
+                    row.appendChild(creditCell);
 
-                const coinsCell = document.createElement('td');
-                const coinsButton = document.createElement('button');
-                coinsButton.textContent = `${extension.coins} Coins`;
-                coinsButton.classList.add('btn', 'btn-xl', 'coins-button');
-                coinsButton.style.backgroundColor = '#dc3545';
-                coinsButton.style.color = 'white';
-                coinsButton.disabled = userInfo.coins < extension.coins;
-                coinsButton.onclick = () => buildExtension(building, extension.id, 'coins', extension.coins, row);
-                coinsCell.appendChild(coinsButton);
-                row.appendChild(coinsCell);
+                    const coinsCell = document.createElement('td');
+                    const coinsButton = document.createElement('button');
+                    coinsButton.textContent = `${extension.coins} Coins`;
+                    coinsButton.classList.add('btn', 'btn-xl', 'coins-button');
+                    coinsButton.style.backgroundColor = '#dc3545';
+                    coinsButton.style.color = 'white';
+                    coinsButton.disabled = userInfo.coins < extension.coins;
+                    coinsButton.onclick = () => buildExtension(building, extension.id, 'coins', extension.coins, row);
+                    coinsCell.appendChild(coinsButton);
+                    row.appendChild(coinsCell);
 
-                tbody.appendChild(row);
+                    tbody.appendChild(row);
+                });
+            });
+
+            contentWrapper.appendChild(searchInput);
+            contentWrapper.appendChild(table);
+            list.appendChild(contentWrapper);
+
+            searchInput.addEventListener("input", function() {
+                const searchTerm = searchInput.value.toLowerCase();
+                filterTable(tbody, searchTerm);
             });
         });
-
-        contentWrapper.appendChild(searchInput);
-        contentWrapper.appendChild(table);
-        list.appendChild(contentWrapper);
-
-        searchInput.addEventListener("input", function() {
-            const searchTerm = searchInput.value.toLowerCase();
-            filterTable(tbody, searchTerm);
-        });
-    });
-}
+    }
 
     // Schließen-Button-Funktionalität
     document.getElementById('close-extension-helper').addEventListener('click', () => {
@@ -1101,15 +1102,6 @@
                 //                console.log(`Nicht genügend ${currencyText}.`);
                 return;
             }
-
-            //            console.log('Übergebene buildingId:', buildingId);
-            //            console.log('Aktuelle Gebäudedaten:', buildingsData);
-            if (confirm(`Möchten Sie wirklich ${formatNumber(amount)} ${currencyText} für diese Erweiterung ausgeben?`)) {
-                const buildingCaption = getBuildingCaption(buildingId);
-                //                console.log('Gefundener Gebäudename:', buildingCaption);
-
-                buildExtension(buildingId, extensionId, currency, buildingCaption, null, null, true);
-            }
         } catch (error) {
             console.error('Fehler beim Überprüfen der Credits und Coins:', error);
             alert('Fehler beim Überprüfen der Credits und Coins.');
@@ -1195,70 +1187,72 @@
     }
 
     // Funktion zum Überprüfen der maximalen Anzahl ausgewählter Erweiterungen
-async function checkMaxSelectedExtensions(selectedExtensions) {
-    const userInfo = await getUserCredits();
-    const user_premium = userInfo.premium;
+    async function checkMaxSelectedExtensions(selectedExtensions) {
+        const userInfo = await getUserCredits();
+        const user_premium = userInfo.premium;
 
-    if (user_premium) {
-        return true; // Keine Begrenzung für Premium-Nutzer
+        if (user_premium) {
+            return true; // Keine Begrenzung für Premium-Nutzer
+        }
+
+        const maxSelections = 2; // Begrenzung für Nicht-Premium-Nutzer
+        if (selectedExtensions.length > maxSelections) {
+            alert(`Da du keinen Premium-Account hast, kannst du maximal ${maxSelections} Erweiterungen gleichzeitig auswählen und in Bau geben.`);
+            return false;
+        }
+
+        return true;
     }
 
-    const maxSelections = 2; // Begrenzung für Nicht-Premium-Nutzer
-    if (selectedExtensions.length > maxSelections) {
-        alert(`Da du keinen Premium-Account hast, kannst du maximal ${maxSelections} Erweiterungen gleichzeitig auswählen und in Bau geben.`);
-        return false;
-    }
+    // Funktion zum Bauen ausgewählter Erweiterungen
+    async function buildSelectedExtensions() {
+        const selectedExtensions = document.querySelectorAll('.extension-checkbox:checked');
+        const selectedExtensionsByBuilding = {};
 
-    return true;
-}
+        selectedExtensions.forEach(checkbox => {
+            const buildingId = checkbox.dataset.buildingId;
+            const extensionId = checkbox.dataset.extensionId;
 
-// Funktion zum Bauen ausgewählter Erweiterungen
-async function buildSelectedExtensions() {
-    const selectedExtensions = document.querySelectorAll('.extension-checkbox:checked');
-    const selectedExtensionsByBuilding = {};
-
-    selectedExtensions.forEach(checkbox => {
-        const buildingId = checkbox.dataset.buildingId;
-        const extensionId = checkbox.dataset.extensionId;
-
-        if (!selectedExtensionsByBuilding[buildingId]) {
-            selectedExtensionsByBuilding[buildingId] = [];
-        }
-        selectedExtensionsByBuilding[buildingId].push(parseInt(extensionId, 10));
-    });
-
-    const userInfo = await getUserCredits();
-    const isPremium = userInfo.premium;
-
-    for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
-        if (!isPremium && extensions.length > 2) {
-            alert(`Zu viele Erweiterungen für Gebäude ${getBuildingCaption(buildingId)} ausgewählt. Als Nicht-Premium-Benutzer kannst du maximal 2 Erweiterungen pro Gebäude starten.`);
-            return;
-        }
-        if (!checkMaxExtensions(buildingId, extensions)) {
-            alert(`Zu viele Erweiterungen für Gebäude ${getBuildingCaption(buildingId)} ausgewählt.`);
-            return;
-        }
-    }
-
-    let totalCredits = 0;
-    let totalCoins = 0;
-
-    for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
-        extensions.forEach(extensionId => {
-            const row = document.querySelector(`.row-${buildingId}-${extensionId}`);
-            totalCredits += parseInt(row.querySelector('.credit-button').innerText.replace(/\D/g, ''), 10);
-            totalCoins += parseInt(row.querySelector('.coins-button').innerText.replace(/\D/g, ''), 10);
+            if (!selectedExtensionsByBuilding[buildingId]) {
+                selectedExtensionsByBuilding[buildingId] = [];
+            }
+            selectedExtensionsByBuilding[buildingId].push(parseInt(extensionId, 10));
         });
-    }
 
-    if ((userInfo.credits < totalCredits) || (userInfo.coins < totalCoins)) {
-        alert(`Du hast leider nicht genung Credits oder Coins für den .`);
-        return;
-    }
+        const userInfo = await getUserCredits();
+        const isPremium = userInfo.premium;
 
-    showCurrencySelection(selectedExtensionsByBuilding);
-}
+
+        for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
+            if (!user_premium && extensions.length > 2) {
+                alert(`Zu viele Erweiterungen für Gebäude ${getBuildingCaption(buildingId)} ausgewählt.\n\nDa du keinen Premium-Account hast kannst du maximal 2 Ausbauten auswählen`);
+                return;
+            }
+            if (!checkMaxExtensions(buildingId, extensions)) {
+                alert(`Zu viele Erweiterungen für Gebäude ${getBuildingCaption(buildingId)} ausgewählt.`);
+                return;
+            }
+        }
+
+        let totalCredits = 0;
+        let totalCoins = 0;
+
+        for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
+            extensions.forEach(extensionId => {
+                const row = document.querySelector(`.row-${buildingId}-${extensionId}`);
+                totalCredits += parseInt(row.querySelector('.credit-button').innerText.replace(/\D/g, ''), 10);
+                totalCoins += parseInt(row.querySelector('.coins-button').innerText.replace(/\D/g, ''), 10);
+            });
+        }
+        
+
+        if ((userInfo.credits < totalCredits) || (userInfo.coins < totalCoins)) {
+            alert(`Du hast leider nicht genung Credits oder Coins für den .`);
+            return;
+        }
+
+        showCurrencySelection(selectedExtensionsByBuilding);
+    }
 
     // Funktion zur
     async function showCurrencySelection(selectedExtensionsByBuilding) {
@@ -1286,8 +1280,9 @@ async function buildSelectedExtensions() {
         selectionDiv.style.color = isDarkMode ? '#fff' : '#000';
         selectionDiv.style.borderColor = isDarkMode ? '#444' : '#ccc';
 
+        
         const totalText = document.createElement('p');
-        totalText.textContent = `Wähle zwischen Credits oder Coins`;
+        totalText.innerHTML = `Wähle zwischen <b>Credits (grün)</b> oder <b>Coins (rot)</b><br><br>Info:<br>Sollte eine Währung <b>nicht</b> ausreichend vorhanden sein,<br>kannst Du diese nicht auswählen`;
         selectionDiv.appendChild(totalText);
 
         const creditsButton = document.createElement('button');
@@ -1344,109 +1339,109 @@ async function buildSelectedExtensions() {
     // Anfang der Funktion * Alle Erweiterungen * in einem Gebäude bauen
 
     async function showCurrencySelectionForAll(groupKey) {
-    const userSettings = await getUserMode();
-    const isDarkMode = userSettings && (userSettings.design_mode === 1 || userSettings.design_mode === 4);
+        const userSettings = await getUserMode();
+        const isDarkMode = userSettings && (userSettings.design_mode === 1 || userSettings.design_mode === 4);
 
-    const group = buildingGroups[groupKey];
-    let totalCredits = 0;
-    let totalCoins = 0;
+        const group = buildingGroups[groupKey];
+        let totalCredits = 0;
+        let totalCoins = 0;
 
-    group.forEach(({ missingExtensions }) => {
-        missingExtensions.forEach(extension => {
-            totalCredits += extension.cost;
-            totalCoins += extension.coins;
+        group.forEach(({ missingExtensions }) => {
+            missingExtensions.forEach(extension => {
+                totalCredits += extension.cost;
+                totalCoins += extension.coins;
+            });
         });
-    });
 
-    const userInfo = await getUserCredits();
-    if (userInfo.credits < totalCredits && userInfo.coins < totalCoins) {
-        alert("Nicht genügend Credits oder Coins.");
-        return;
-    }
-
-    const selectionDiv = document.createElement('div');
-    selectionDiv.className = 'currency-selection';
-    selectionDiv.style.background = isDarkMode ? '#333' : '#fff';
-    selectionDiv.style.color = isDarkMode ? '#fff' : '#000';
-    selectionDiv.style.borderColor = isDarkMode ? '#444' : '#ccc';
-
-    const totalText = document.createElement('p');
-    totalText.textContent = `Wähle zwischen Credits oder Coins`;
-    selectionDiv.appendChild(totalText);
-
-    const creditsButton = document.createElement('button');
-    creditsButton.className = 'currency-button credits-button';
-    creditsButton.textContent = `${formatNumber(totalCredits)} Credits`;
-    creditsButton.disabled = userInfo.credits < totalCredits;
-    creditsButton.onclick = async () => {
-        document.body.removeChild(selectionDiv); // Auswahlfenster schließen
-        await calculateAndBuildAllExtensions(groupKey, 'credits');
-    };
-
-    const coinsButton = document.createElement('button');
-    coinsButton.className = 'currency-button coins-button';
-    coinsButton.textContent = `${formatNumber(totalCoins)} Coins`;
-    coinsButton.disabled = userInfo.coins < totalCoins;
-    coinsButton.onclick = async () => {
-        document.body.removeChild(selectionDiv); // Auswahlfenster schließen
-        await calculateAndBuildAllExtensions(groupKey, 'coins');
-    };
-
-    const cancelButton = document.createElement('button');
-    cancelButton.className = 'cancel-button';
-    cancelButton.textContent = 'Abbrechen';
-    cancelButton.onclick = () => {
-        document.body.removeChild(selectionDiv);
-    };
-
-    selectionDiv.appendChild(creditsButton);
-    selectionDiv.appendChild(coinsButton);
-    selectionDiv.appendChild(cancelButton);
-
-    document.body.appendChild(selectionDiv);
-}
-
-    async function calculateAndBuildAllExtensions(groupKey, currency) {
-    const group = buildingGroups[groupKey];
-    const totalExtensions = group.reduce((sum, { missingExtensions }) => sum + missingExtensions.length, 0);
-    const totalCost = group.reduce((sum, { missingExtensions }) => {
-        return sum + missingExtensions.reduce((extSum, extension) => extSum + extension[currency], 0);
-    }, 0);
-
-    try {
         const userInfo = await getUserCredits();
-        if ((currency === 'credits' && userInfo.credits < totalCost) || (currency === 'coins' && userInfo.coins < totalCost)) {
-            alert(`Nicht genügend ${currency === 'credits' ? 'Credits' : 'Coins'}. Der Bauversuch wird abgebrochen.`);
+        if (userInfo.credits < totalCredits && userInfo.coins < totalCoins) {
+            alert("Nicht genügend Credits oder Coins.");
             return;
         }
 
-        // Erstelle die Fortschrittsanzeige
-        const { progressContainer, progressText, progressFill } = await createProgressBar(totalExtensions);
-        let builtCount = 0;
+        const selectionDiv = document.createElement('div');
+        selectionDiv.className = 'currency-selection';
+        selectionDiv.style.background = isDarkMode ? '#333' : '#fff';
+        selectionDiv.style.color = isDarkMode ? '#fff' : '#000';
+        selectionDiv.style.borderColor = isDarkMode ? '#444' : '#ccc';
 
-        // Baue alle Erweiterungen nur für den spezifischen Wachentyp
-        for (const { building, missingExtensions } of group) {
-            for (const extension of missingExtensions) {
-                // Überprüfe, ob die Erweiterung gebaut werden kann
-                if (!isExtensionLimitReached(building, extension.id)) {
-                    // Baue die Erweiterung
-                    await buildExtension(building, extension.id, currency, extension[currency]);
-                    builtCount++;
-                    updateProgress(builtCount, totalExtensions, progressText, progressFill);
+        const totalText = document.createElement('p');
+        totalText.textContent = `Wähle zwischen Credits oder Coins`;
+        selectionDiv.appendChild(totalText);
+
+        const creditsButton = document.createElement('button');
+        creditsButton.className = 'currency-button credits-button';
+        creditsButton.textContent = `${formatNumber(totalCredits)} Credits`;
+        creditsButton.disabled = userInfo.credits < totalCredits;
+        creditsButton.onclick = async () => {
+            document.body.removeChild(selectionDiv); // Auswahlfenster schließen
+            await calculateAndBuildAllExtensions(groupKey, 'credits');
+        };
+
+        const coinsButton = document.createElement('button');
+        coinsButton.className = 'currency-button coins-button';
+        coinsButton.textContent = `${formatNumber(totalCoins)} Coins`;
+        coinsButton.disabled = userInfo.coins < totalCoins;
+        coinsButton.onclick = async () => {
+            document.body.removeChild(selectionDiv); // Auswahlfenster schließen
+            await calculateAndBuildAllExtensions(groupKey, 'coins');
+        };
+
+        const cancelButton = document.createElement('button');
+        cancelButton.className = 'cancel-button';
+        cancelButton.textContent = 'Abbrechen';
+        cancelButton.onclick = () => {
+            document.body.removeChild(selectionDiv);
+        };
+
+        selectionDiv.appendChild(creditsButton);
+        selectionDiv.appendChild(coinsButton);
+        selectionDiv.appendChild(cancelButton);
+
+        document.body.appendChild(selectionDiv);
+    }
+
+    async function calculateAndBuildAllExtensions(groupKey, currency) {
+        const group = buildingGroups[groupKey];
+        const totalExtensions = group.reduce((sum, { missingExtensions }) => sum + missingExtensions.length, 0);
+        const totalCost = group.reduce((sum, { missingExtensions }) => {
+            return sum + missingExtensions.reduce((extSum, extension) => extSum + extension[currency], 0);
+        }, 0);
+
+        try {
+            const userInfo = await getUserCredits();
+            if ((currency === 'credits' && userInfo.credits < totalCost) || (currency === 'coins' && userInfo.coins < totalCost)) {
+                alert(`Nicht genügend ${currency === 'credits' ? 'Credits' : 'Coins'}. Der Bauversuch wird abgebrochen.`);
+                return;
+            }
+
+            // Erstelle die Fortschrittsanzeige
+            const { progressContainer, progressText, progressFill } = await createProgressBar(totalExtensions);
+            let builtCount = 0;
+
+            // Baue alle Erweiterungen nur für den spezifischen Wachentyp
+            for (const { building, missingExtensions } of group) {
+                for (const extension of missingExtensions) {
+                    // Überprüfe, ob die Erweiterung gebaut werden kann
+                    if (!isExtensionLimitReached(building, extension.id)) {
+                        // Baue die Erweiterung
+                        await buildExtension(building, extension.id, currency, extension[currency]);
+                        builtCount++;
+                        updateProgress(builtCount, totalExtensions, progressText, progressFill);
+                    }
                 }
             }
+
+            // Entferne die Fortschrittsanzeige, wenn alle Erweiterungen gebaut wurden
+            removeProgressBar(progressContainer);
+
+            // Aktualisiere die Tabelle
+            renderMissingExtensions(buildingsData);
+        } catch (error) {
+            console.error('Fehler beim Abrufen der Credits und Coins:', error);
+            alert('Fehler beim Abrufen der Credits und Coins.');
         }
-
-        // Entferne die Fortschrittsanzeige, wenn alle Erweiterungen gebaut wurden
-        removeProgressBar(progressContainer);
-
-        // Aktualisiere die Tabelle
-        renderMissingExtensions(buildingsData);
-    } catch (error) {
-        console.error('Fehler beim Abrufen der Credits und Coins:', error);
-        alert('Fehler beim Abrufen der Credits und Coins.');
     }
-}
 
     // Funktion zur Erstellung der Fortschrittsanzeige
     async function createProgressBar(totalExtensions) {
