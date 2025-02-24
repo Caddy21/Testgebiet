@@ -162,7 +162,7 @@
             { id: 2, name: 'MEK: 1. Zug', cost: 100000, coins: 10 },
             { id: 3, name: 'MEK: 2. Zug', cost: 100000, coins: 10 },
             { id: 4, name: 'Diensthundestaffel', cost: 100000, coins: 10 },
- 
+
         ],
         '0_small': [ // Feuerwehr (Kleinwache)
             { id: 0, name: 'Rettungsdienst', cost: 100000, coins: 20 },
@@ -491,8 +491,12 @@
             <div id="extension-lightbox-content">
                 <button id="close-extension-helper">Schließen</button>
                 <h2>Erweiterungs-Manager<br><h5>
+                <br>Über Feedback jeglicher Art bin ich dankbar, da dies noch eine Beta-Version ist steht hier auch noch kein Finaler Text.
                 <br>
-                <div id="extension-list">Bitte habe einen Moment geduld<br>
+                <div id="extension-list">
+                Bitte habe einen Moment geduld
+                <br>
+                <br>
                 Lade Gebäudedaten und erstelle die Tabellen...</div>
             </div>
         `;
@@ -1209,6 +1213,7 @@
 
     // Funktion zum Bauen ausgewählter Erweiterungen
     async function buildSelectedExtensions() {
+
         const selectedExtensions = document.querySelectorAll('.extension-checkbox:checked');
         const selectedExtensionsByBuilding = {};
 
@@ -1247,18 +1252,18 @@
                 totalCoins += parseInt(row.querySelector('.coins-button').innerText.replace(/\D/g, ''), 10);
             });
         }
-        
 
-        if ((userInfo.credits < totalCredits) || (userInfo.coins < totalCoins)) {
-            alert(`Du hast leider nicht genung Credits oder Coins für den .`);
-            return;
-        }
 
-        showCurrencySelection(selectedExtensionsByBuilding);
+        if (userInfo.credits < totalCredits && userInfo.coins < totalCoins) {
+    alert(`Wähle zwischen <b>Credits (grün)</b> oder <b>Coins (rot)</b><br><br>Info:<br>Sollte eine Währung <b>nicht</b> ausreichend vorhanden sein,<br>kannst Du diese nicht auswählen`);
+    return;
+}
+
+       showCurrencySelection(selectedExtensionsByBuilding, userInfo);
     }
 
     // Funktion zur Auswahl der Währung
-    async function showCurrencySelection(selectedExtensionsByBuilding) {
+    async function showCurrencySelection(selectedExtensionsByBuilding, userInfo) {
     const userSettings = await getUserMode();
     const isDarkMode = userSettings && (userSettings.design_mode === 1 || userSettings.design_mode === 4);
 
@@ -1290,6 +1295,7 @@
     const creditsButton = document.createElement('button');
     creditsButton.className = 'currency-button credits-button';
     creditsButton.textContent = `${formatNumber(totalCredits)} Credits`;
+    creditsButton.disabled = userInfo.credits < totalCredits;
     creditsButton.onclick = async () => {
         // Fortschrittsanzeige erst nach Auswahl
         const progressContainer = document.createElement('div');
@@ -1350,6 +1356,7 @@
     const coinsButton = document.createElement('button');
     coinsButton.className = 'currency-button coins-button';
     coinsButton.textContent = `${formatNumber(totalCoins)} Coins`;
+    coinsButton.disabled = userInfo.coins < totalCoins;
     coinsButton.onclick = async () => {
         // Fortschrittsanzeige erst nach Auswahl
         const progressContainer = document.createElement('div');
@@ -1443,11 +1450,12 @@
                 totalCredits += extension.cost;
                 totalCoins += extension.coins;
             });
+
         });
 
         const userInfo = await getUserCredits();
         if (userInfo.credits < totalCredits && userInfo.coins < totalCoins) {
-            alert("Nicht genügend Credits oder Coins.");
+            alert("Leider zu wenig Credits oder Coins.");
             return;
         }
 
@@ -1458,7 +1466,7 @@
         selectionDiv.style.borderColor = isDarkMode ? '#444' : '#ccc';
 
         const totalText = document.createElement('p');
-        totalText.textContent = `Wähle zwischen Credits oder Coins`;
+        totalText.textContent = `Wähle zwischen <b>Credits (grün)</b> oder <b>Coins (rot)</b><br><br>Info:<br>Sollte eine Währung <b>nicht</b> ausreichend vorhanden sein,<br>kannst Du diese nicht auswählen`;
         selectionDiv.appendChild(totalText);
 
         const creditsButton = document.createElement('button');
