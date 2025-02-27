@@ -183,10 +183,10 @@
         '6_small': [ // Polizei (Kleinwache)
             { id: 0, name: '1te Zelle', cost: 25000, coins: 5 },
             { id: 1, name: '2te Zelle', cost: 25000, coins: 5 },
-            { id: 10, name: 'Diensthundestaffel', cost: 100000, coins: 10 },
-            { id: 11, name: 'Kriminalpolizei', cost: 100000, coins: 20 },
-            { id: 12, name: 'Dienstgruppenleitung', cost: 200000, coins: 25 },
-            { id: 13, name: 'Motorradstaffel', cost: 75000, coins: 15 },
+//            { id: 10, name: 'Diensthundestaffel', cost: 100000, coins: 10 },
+//            { id: 11, name: 'Kriminalpolizei', cost: 100000, coins: 20 },
+//            { id: 12, name: 'Dienstgruppenleitung', cost: 200000, coins: 25 },
+//            { id: 13, name: 'Motorradstaffel', cost: 75000, coins: 15 },
         ],
 
         '24_normal': [ // Reiterstaffel
@@ -507,6 +507,7 @@
                 <button id="close-extension-helper">Schließen</button>
                 <h2>Erweiterungs-Manager<br><h5>
                 <br>Über Feedback jeglicher Art bin ich dankbar, da dies noch eine Beta-Version ist steht hier auch noch kein Finaler Text.
+                <br>
                 <br>
                 <div id="extension-list">
                 Bitte habe einen Moment geduld
@@ -941,7 +942,6 @@
         });
     }
 
-
     // Schließen-Button-Funktionalität
     document.getElementById('close-extension-helper').addEventListener('click', () => {
         const lightbox = document.getElementById('extension-lightbox');
@@ -1315,12 +1315,6 @@
             });
         }
 
-
-        if (userInfo.credits < totalCredits && userInfo.coins < totalCoins) {
-    alert(`Wähle zwischen <b>Credits (grün)</b> oder <b>Coins (rot)</b><br><br>Info:<br>Sollte eine Währung <b>nicht</b> ausreichend vorhanden sein,<br>kannst Du diese nicht auswählen`);
-    return;
-}
-
        showCurrencySelection(selectedExtensionsByBuilding, userInfo);
     }
 
@@ -1527,8 +1521,8 @@
         selectionDiv.style.color = isDarkMode ? '#fff' : '#000';
         selectionDiv.style.borderColor = isDarkMode ? '#444' : '#ccc';
 
-        const totalText = document.createElement('p');
-        totalText.textContent = `Wähle zwischen <b>Credits (grün)</b> oder <b>Coins (rot)</b><br><br>Info:<br>Sollte eine Währung <b>nicht</b> ausreichend vorhanden sein,<br>kannst Du diese nicht auswählen`;
+       const totalText = document.createElement('p');
+        totalText.innerHTML = `Wähle zwischen <b>Credits (grün)</b> oder <b>Coins (rot)</b><br><br>Info:<br>Sollte eine Währung <b>nicht</b> ausreichend vorhanden sein,<br>kannst Du diese nicht auswählen`;
         selectionDiv.appendChild(totalText);
 
         const creditsButton = document.createElement('button');
