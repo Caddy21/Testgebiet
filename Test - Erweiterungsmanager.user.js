@@ -183,10 +183,10 @@
         '6_small': [ // Polizei (Kleinwache)
             { id: 0, name: '1te Zelle', cost: 25000, coins: 5 },
             { id: 1, name: '2te Zelle', cost: 25000, coins: 5 },
-//            { id: 10, name: 'Diensthundestaffel', cost: 100000, coins: 10 },
-//            { id: 11, name: 'Kriminalpolizei', cost: 100000, coins: 20 },
-//            { id: 12, name: 'Dienstgruppenleitung', cost: 200000, coins: 25 },
-//            { id: 13, name: 'Motorradstaffel', cost: 75000, coins: 15 },
+            { id: 10, name: 'Diensthundestaffel', cost: 100000, coins: 10 },
+            { id: 11, name: 'Kriminalpolizei', cost: 100000, coins: 20 },
+            { id: 12, name: 'Dienstgruppenleitung', cost: 200000, coins: 25 },
+            { id: 13, name: 'Motorradstaffel', cost: 75000, coins: 15 },
         ],
 
         '24_normal': [ // Reiterstaffel
@@ -1157,24 +1157,6 @@
         });
     }
 
-    // Funktion, um eine Erweiterung in einem Gebäude zu bauen
-    async function confirmAndBuildExtension(buildingId, extensionId, amount, currency) {
-        try {
-            const userInfo = await getUserCredits();
-            const currencyText = currency === 'credits' ? 'Credits' : 'Coins';
-//                console.log(`Benutzer hat ${userInfo.credits} Credits und ${userInfo.coins} Coins`);
-
-            if ((currency === 'credits' && userInfo.credits < amount) || (currency === 'coins' && userInfo.coins < amount)) {
-                alert(`Nicht genügend ${currencyText}.`);
-//                console.log(`Nicht genügend ${currencyText}.`);
-                return;
-            }
-        } catch (error) {
-            console.error('Fehler beim Überprüfen der Credits und Coins:', error);
-            alert('Fehler beim Überprüfen der Credits und Coins.');
-        }
-    }
-
     // Ende des Bereichs für den Bau * einer Erweiterung * in einem Gebäude
 
 
@@ -1182,24 +1164,6 @@
 
 
     // Anfang der Funktion für * Bau von ausgewählten Erweiterungen *
-
-    function updateBuildSelectedButton() {
-        const groups = document.querySelectorAll('.spoiler-content');
-        groups.forEach(group => {
-            const buildSelectedButton = group.previousElementSibling.querySelector('.build-selected-button');
-            const selectedCheckboxes = group.querySelectorAll('.extension-checkbox:checked');
-            if (buildSelectedButton) {
-                buildSelectedButton.disabled = selectedCheckboxes.length === 0;
-            }
-        });
-    }
-
-    // Event-Listener für Checkbox-Änderungen hinzufügen
-    document.addEventListener('change', (event) => {
-        if (event.target.classList.contains('extension-checkbox')) {
-            updateBuildSelectedButton();
-        }
-    });
 
     // Funktion zum Überprüfen der maximalen Erweiterungen für Kleinwachen
     function checkMaxExtensions(buildingId, selectedExtensions) {
@@ -1273,50 +1237,57 @@
         return true;
     }
 
-    // Funktion zum Bauen ausgewählter Erweiterungen
     async function buildSelectedExtensions() {
+    const selectedExtensions = document.querySelectorAll('.extension-checkbox:checked');
 
-        const selectedExtensions = document.querySelectorAll('.extension-checkbox:checked');
-        const selectedExtensionsByBuilding = {};
+    // **Sofort Checkboxen deaktivieren**
+    selectedExtensions.forEach(checkbox => {
+        checkbox.checked = false;
+    });
 
-        selectedExtensions.forEach(checkbox => {
-            const buildingId = checkbox.dataset.buildingId;
-            const extensionId = checkbox.dataset.extensionId;
+    // Danach regulär fortfahren:
+    const selectedExtensionsByBuilding = {};
 
-            if (!selectedExtensionsByBuilding[buildingId]) {
-                selectedExtensionsByBuilding[buildingId] = [];
-            }
-            selectedExtensionsByBuilding[buildingId].push(parseInt(extensionId, 10));
-        });
+    selectedExtensions.forEach(checkbox => {
+        const buildingId = checkbox.dataset.buildingId;
+        const extensionId = checkbox.dataset.extensionId;
 
-        const userInfo = await getUserCredits();
-        const isPremium = userInfo.premium;
-
-
-        for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
-            if (!user_premium && extensions.length > 2) {
-                alert(`Zu viele Erweiterungen für Gebäude ${getBuildingCaption(buildingId)} ausgewählt.\n\nDa du keinen Premium-Account hast kannst du maximal 2 Ausbauten auswählen`);
-                return;
-            }
-            if (!checkMaxExtensions(buildingId, extensions)) {
-                alert(`Zu viele Erweiterungen für Gebäude ${getBuildingCaption(buildingId)} ausgewählt.`);
-                return;
-            }
+        if (!selectedExtensionsByBuilding[buildingId]) {
+            selectedExtensionsByBuilding[buildingId] = [];
         }
+        selectedExtensionsByBuilding[buildingId].push(parseInt(extensionId, 10));
+    });
 
-        let totalCredits = 0;
-        let totalCoins = 0;
+    const userInfo = await getUserCredits();
+    const isPremium = userInfo.premium;
 
-        for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
-            extensions.forEach(extensionId => {
-                const row = document.querySelector(`.row-${buildingId}-${extensionId}`);
-                totalCredits += parseInt(row.querySelector('.credit-button').innerText.replace(/\D/g, ''), 10);
-                totalCoins += parseInt(row.querySelector('.coins-button').innerText.replace(/\D/g, ''), 10);
-            });
+    for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
+        if (!isPremium && extensions.length > 2) {
+            alert(`Zu viele Erweiterungen für Gebäude ${getBuildingCaption(buildingId)} ausgewählt.\n\nDa du keinen Premium-Account hast, kannst du maximal 2 Ausbauten auswählen.`);
+            return;
         }
-
-       showCurrencySelection(selectedExtensionsByBuilding, userInfo);
+        if (!checkMaxExtensions(buildingId, extensions)) {
+            alert(`Zu viele Erweiterungen für Gebäude ${getBuildingCaption(buildingId)} ausgewählt.`);
+            return;
+        }
     }
+
+    let totalCredits = 0;
+    let totalCoins = 0;
+
+    for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
+        extensions.forEach(extensionId => {
+            const row = document.querySelector(`.row-${buildingId}-${extensionId}`);
+            totalCredits += parseInt(row.querySelector('.credit-button').innerText.replace(/\D/g, ''), 10);
+            totalCoins += parseInt(row.querySelector('.coins-button').innerText.replace(/\D/g, ''), 10);
+        });
+    }
+
+    showCurrencySelection(selectedExtensionsByBuilding, userInfo);
+
+    // **Nach DOM-Update sicherstellen, dass der Button deaktiviert wird**
+    setTimeout(updateBuildSelectedButton, 100);
+}
 
     // Funktion zur Auswahl der Währung
     async function showCurrencySelection(selectedExtensionsByBuilding, userInfo) {
@@ -1483,6 +1454,24 @@
 
     document.body.appendChild(selectionDiv);
 }
+
+    function updateBuildSelectedButton() {
+        const groups = document.querySelectorAll('.spoiler-content');
+        groups.forEach(group => {
+            const buildSelectedButton = group.previousElementSibling.querySelector('.build-selected-button');
+            const selectedCheckboxes = group.querySelectorAll('.extension-checkbox:checked');
+            if (buildSelectedButton) {
+                buildSelectedButton.disabled = selectedCheckboxes.length === 0;
+            }
+        });
+    }
+
+    // Event-Listener für Checkbox-Änderungen hinzufügen
+    document.addEventListener('change', (event) => {
+        if (event.target.classList.contains('extension-checkbox')) {
+            updateBuildSelectedButton();
+        }
+    });
 
     // Ende der Funktion für * Bau von ausgewählten Erweiterungen *
 
