@@ -235,7 +235,7 @@
             border: 1px solid var(--border-color, black);
             padding: 20px;
             width: 80%;
-            max-width: 1200px;
+            max-width: 1500px;
             max-height: 90vh;
             overflow-y: auto;
             position: relative;
@@ -378,15 +378,31 @@
         #open-extension-helper {
             cursor: pointer; /* Set cursor to pointer */
         }
+        th {
+           text-align: center; /* Zentriert den Text in der Überschriften-Zeile */
+           vertical-align: middle; /* Stellt sicher, dass der Text vertikal mittig bleibt */
+        }
+
+        .select-all-btn {
+            background-color: #ff7700; /* Kräftiges Orange */
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-weight: bold;
+            display: block; /* Macht den Button zum Block-Element */
+            margin: 0 auto; /* Zentriert den Button innerhalb der Zelle */
+        }
+
     `;
 
     // Funktion zum Abrufen der Benutzereinstellungen vom API
     async function getUserMode() {
         try {
-                console.log("Versuche, Benutzereinstellungen von der API abzurufen...");
+//                console.log("Versuche, Benutzereinstellungen von der API abzurufen...");
             const response = await fetch('https://www.leitstellenspiel.de/api/settings');
             const data = await response.json();
-                console.log("Benutzereinstellungen abgerufen:", data);
+//                console.log("Benutzereinstellungen abgerufen:", data);
             return data; // Gibt die vollständige Antwort zurück
         } catch (error) {
                 console.error("Fehler beim Abrufen der Einstellungen: ", error);
@@ -396,31 +412,31 @@
 
     // Funktion zum Anwenden des Dark- oder Light-Modus basierend auf der API-Antwort
     async function applyMode() {
-            console.log("Wende Modus an...");
+//            console.log("Wende Modus an...");
 
         const userSettings = await getUserMode();
         if (!userSettings) {
-                console.log("Keine Benutzereinstellungen gefunden oder Fehler beim Abrufen.");
+//                console.log("Keine Benutzereinstellungen gefunden oder Fehler beim Abrufen.");
             return;
         }
 
         const mode = userSettings.design_mode; // Benutze jetzt "design_mode" anstelle von "mode"
-            console.log("Aktueller Design-Modus:", mode);
+//            console.log("Aktueller Design-Modus:", mode);
 
         // Warten auf das Lightbox-Element
         const lightboxContent = document.getElementById('extension-lightbox-content');
         if (!lightboxContent) {
-                 console.log("Lightbox-Inhalt nicht gefunden.");
+//                 console.log("Lightbox-Inhalt nicht gefunden.");
             return;
         }
 
-            console.log("Lightbox-Inhalt gefunden, entferne alte Modus-Klassen...");
+//            console.log("Lightbox-Inhalt gefunden, entferne alte Modus-Klassen...");
         // Entferne alle möglichen Modus-Klassen
         lightboxContent.classList.remove('dark', 'light');
 
         // Modus anwenden
         if (mode === 1 || mode === 4) { // Dunkelmodus
-                console.log("Dunkelmodus aktivieren...");
+//                console.log("Dunkelmodus aktivieren...");
             lightboxContent.classList.add('dark');
 
             // Dark Mode für Tabelle
@@ -428,7 +444,7 @@
             document.documentElement.style.setProperty('--text-color', '#fff');
             document.documentElement.style.setProperty('--border-color', '#444');
         } else if (mode === 2 || mode === 3) { // Hellmodus
-                console.log("Hellmodus aktivieren...");
+//                console.log("Hellmodus aktivieren...");
             lightboxContent.classList.add('light');
 
             // Light Mode für Tabelle
@@ -436,7 +452,7 @@
             document.documentElement.style.setProperty('--text-color', '#000');
             document.documentElement.style.setProperty('--border-color', '#ccc');
         } else { // Standardmodus (wenn der Modus unbekannt ist)
-                 console.log("Unbekannter Modus, standardmäßig Hellmodus aktivieren...");
+//                 console.log("Unbekannter Modus, standardmäßig Hellmodus aktivieren...");
             lightboxContent.classList.add('light'); // Standardmäßig hell
 
             // Standard Light Mode für Tabelle
@@ -448,20 +464,20 @@
 
     // Funktion zur Beobachtung der Lightbox auf Änderungen (für dynamisch geladene Elemente)
     function observeLightbox() {
-             console.log("Beobachte die Lightbox auf Änderungen...");
+//             console.log("Beobachte die Lightbox auf Änderungen...");
 
         const lightboxContainer = document.getElementById('extension-lightbox');
         if (!lightboxContainer) {
-            console.log("Lightbox-Container nicht gefunden.");
+//            console.log("Lightbox-Container nicht gefunden.");
             return;
         }
 
         const observer = new MutationObserver(() => {
-            console.log("MutationObserver ausgelöst - Überprüfe, ob das Content-Element da ist...");
+//            console.log("MutationObserver ausgelöst - Überprüfe, ob das Content-Element da ist...");
             // Überprüfe, ob das Content-Element in der Lightbox existiert
             const lightboxContent = document.getElementById('extension-lightbox-content');
             if (lightboxContent) {
-                console.log("Lightbox-Inhalt gefunden, wende Modus an...");
+//                console.log("Lightbox-Inhalt gefunden, wende Modus an...");
                 applyMode(); // Wenn das Lightbox-Inhalt gefunden wird, Modus anwenden
                 observer.disconnect(); // Beende die Beobachtung, wenn die Lightbox gefunden wurde
             }
@@ -473,7 +489,7 @@
 
     // Wende den Modus an, wenn das DOM bereit ist
     window.addEventListener('load', () => {
-            console.log("DOM vollständig geladen. Wende Modus an...");
+//            console.log("DOM vollständig geladen. Wende Modus an...");
         applyMode();
         observeLightbox(); // Beobachtet dynamische Änderungen
     });
@@ -609,7 +625,7 @@
         }
 
         if (typeof user_premium !== 'undefined') {
-            console.log("Die Variable 'user_premium' ist definiert."); // Debugging-Info
+//            console.log("Die Variable 'user_premium' ist definiert."); // Debugging-Info
 
             if (!user_premium) {
                 console.warn("Der Nutzer hat keinen Premium-Account.");
@@ -619,7 +635,7 @@
                     fetchBuildingsAndRender(); // API-Daten abrufen, wenn das Script geöffnet wird
                 });
             } else {
-                console.log("Der Nutzer hat einen Premium-Account.");
+//                console.log("Der Nutzer hat einen Premium-Account.");
                 const lightbox = document.getElementById('extension-lightbox');
                 lightbox.style.display = 'flex';
                 fetchBuildingsAndRender(); // API-Daten abrufen, wenn das Script geöffnet wird
@@ -632,13 +648,13 @@
     // Funktion, um den Namen eines Gebäudes anhand der ID zu bekommen
     function getBuildingCaption(buildingId) {
 
-             console.log('Übergebene buildingId:', buildingId);  // Überprüfen, welche ID übergeben wird
+//             console.log('Übergebene buildingId:', buildingId);  // Überprüfen, welche ID übergeben wird
         const building = buildingsData.find(b => String(b.id) === String(buildingId));
         if (building) {
-             console.log('Gefundenes Gebäude:', building);  // Protokolliere das gefundene Gebäude
+//             console.log('Gefundenes Gebäude:', building);  // Protokolliere das gefundene Gebäude
             return building.caption; // Direkt den Gebäudennamen zurückgeben
         }
-             console.log('Gebäude nicht gefunden. ID:', buildingId); // Wenn das Gebäude nicht gefunden wird
+//             console.log('Gebäude nicht gefunden. ID:', buildingId); // Wenn das Gebäude nicht gefunden wird
         return 'Unbekanntes Gebäude';
     }
 
@@ -656,15 +672,23 @@
             return response.json();
         })
             .then(data => {
-                console.log('Abgerufene Gebäudedaten:', data); // Protokolliere die abgerufenen Daten
+//                console.log('Abgerufene Gebäudedaten:', data); // Protokolliere die abgerufenen Daten
             buildingsData = data; // Speichern der Gebäudedaten in einer globalen Variablen
             renderMissingExtensions(data); // Weiterverarbeiten der abgerufenen Daten
         })
             .catch(error => {
-                 console.error('Es ist ein Fehler aufgetreten:', error);
+//                 console.error('Es ist ein Fehler aufgetreten:', error);
             const list = document.getElementById('extension-list');
             list.innerHTML = 'Fehler beim Laden der Gebäudedaten.';
         });
+    }
+
+    // Funktion, um den Namen der zugehörigen Leitstelle zu ermitteln
+    function getLeitstelleName(building) {
+        if (!building.leitstelle_building_id) return 'Keine Leitstelle';
+
+        const leitstelle = buildingsData.find(b => b.id === building.leitstelle_building_id);
+        return leitstelle ? leitstelle.caption : 'Unbekannt';
     }
 
     // Funktion um die aktuelle Credits und Coins des USERS abzurufen
@@ -675,7 +699,7 @@
                 throw new Error('Fehler beim Abrufen der Credits und Coins');
             }
             const data = await response.json();
-                 console.log('Benutzer Credits und Coins abgerufen:', data);
+//                 console.log('Benutzer Credits und Coins abgerufen:', data);
             return {
                 credits: data.credits_user_current,
                 coins: data.coins_user_current,
@@ -688,199 +712,229 @@
     }
 
     async function renderMissingExtensions(buildings) {
-        const userInfo = await getUserCredits();
-        const list = document.getElementById('extension-list');
-        list.innerHTML = ''; // Lösche den Inhalt der Lightbox
+    const userInfo = await getUserCredits();
+    const list = document.getElementById('extension-list');
+    list.innerHTML = ''; // Lösche den Inhalt der Lightbox
 
-        // Setze die globalen Variablen zurück
-        buildingGroups = {};
-        buildingsData = buildings;
+    // Setze die globalen Variablen zurück
+    buildingGroups = {};
+    buildingsData = buildings;
 
-        buildings.sort((a, b) => {
-            if (a.building_type === b.building_type) {
-                return a.caption.localeCompare(b.caption);
+    buildings.sort((a, b) => {
+        if (a.building_type === b.building_type) {
+            return a.caption.localeCompare(b.caption);
+        }
+        return a.building_type - b.building_type;
+    });
+
+    buildings.forEach(building => {
+        const buildingTypeKey = `${building.building_type}_${building.small_building ? 'small' : 'normal'}`;
+        const extensions = manualExtensions[buildingTypeKey];
+        if (!extensions) return;
+
+        const existingExtensions = new Set(building.extensions.map(e => e.type_id));
+
+        const allowedExtensions = extensions.filter(extension => {
+            if (isExtensionLimitReached(building, extension.id)) {
+                return false;
             }
-            return a.building_type - b.building_type;
+            return !existingExtensions.has(extension.id);
         });
 
-        buildings.forEach(building => {
-            const buildingTypeKey = `${building.building_type}_${building.small_building ? 'small' : 'normal'}`;
-            const extensions = manualExtensions[buildingTypeKey];
-            if (!extensions) return;
+        if (allowedExtensions.length > 0) {
+            if (!buildingGroups[buildingTypeKey]) {
+                buildingGroups[buildingTypeKey] = [];
+            }
+            buildingGroups[buildingTypeKey].push({ building, missingExtensions: allowedExtensions });
+        }
+    });
 
-            const existingExtensions = new Set(building.extensions.map(e => e.type_id));
+    const buildingTypeNames = {
+        '0_normal': 'Feuerwache (Normal)',
+        '0_small': 'Feuerwache (Kleinwache)',
+        '1_normal': 'Feuerwehrschule',
+        '2_normal': 'Rettungswache',
+        '3_normal': 'Rettungsschule',
+        '4_normal': 'Krankenhaus',
+        '5_normal': 'Rettungshubschrauber-Station',
+        '6_normal': 'Polizeiwache',
+        '6_small': 'Polizeiwache (Klein)',
+        '8_normal': 'Polizeischule',
+        '9_normal': 'THW',
+        '10_normal': 'THW-Bundesschule',
+        '11_normal': 'Bereitschaftspolizei',
+        '12_normal': 'SEG',
+        '13_normal': 'Polizeihubschrauberstation',
+        '17_normal': 'Polizei-Sondereinheiten',
+        '24_normal': 'Reiterstaffel',
+        '25_normal': 'Bergrettungswache',
+        '27_normal': 'Schule für Seefahrt und Seenotrettung',
+    };
 
-            const allowedExtensions = extensions.filter(extension => {
-                if (isExtensionLimitReached(building, extension.id)) {
-                    return false;
-                }
-                return !existingExtensions.has(extension.id);
-            });
+    Object.keys(buildingGroups).forEach(groupKey => {
+        const group = buildingGroups[groupKey];
+        const buildingType = buildingTypeNames[groupKey] || 'Unbekannt';
 
-            if (allowedExtensions.length > 0) {
-                if (!buildingGroups[buildingTypeKey]) {
-                    buildingGroups[buildingTypeKey] = [];
-                }
-                buildingGroups[buildingTypeKey].push({ building, missingExtensions: allowedExtensions });
+        const buildingHeader = document.createElement('h4');
+        buildingHeader.textContent = `Typ: ${buildingType}`;
+        list.appendChild(buildingHeader);
+
+        const buttonContainer = document.createElement('div');
+        buttonContainer.style.display = 'flex';
+        buttonContainer.style.gap = '10px';
+
+        const spoilerButton = document.createElement('button');
+        spoilerButton.textContent = 'Erweiterungen anzeigen';
+        spoilerButton.classList.add('spoiler-button');
+        buttonContainer.appendChild(spoilerButton);
+
+        const buildSelectedButton = document.createElement('button');
+        buildSelectedButton.textContent = 'Ausgewählte Erweiterungen bauen';
+        buildSelectedButton.classList.add('btn', 'build-selected-button');
+        buildSelectedButton.disabled = true; // Initial disabled
+        buildSelectedButton.onclick = () => buildSelectedExtensions();
+        buttonContainer.appendChild(buildSelectedButton);
+
+        const buildAllButton = document.createElement('button');
+        buildAllButton.textContent = 'Alle Erweiterungen bei allen Wachen bauen';
+        buildAllButton.classList.add('build-all-button');
+        buildAllButton.onclick = () => showCurrencySelectionForAll(groupKey);
+        buttonContainer.appendChild(buildAllButton);
+
+        list.appendChild(buttonContainer);
+
+        const contentWrapper = document.createElement('div');
+        contentWrapper.className = 'spoiler-content';
+        contentWrapper.style.display = 'none';
+
+        const searchInput = document.createElement('input');
+        searchInput.type = "text";
+        searchInput.placeholder = "🔍 Hier könnt Ihr nach Leistellen, Wachen oder Erweiterungen suchen...";
+        searchInput.style.width = "100%";
+        searchInput.style.marginBottom = "10px";
+        searchInput.style.padding = "5px";
+        searchInput.style.fontSize = "14px";
+        searchInput.style.display = 'block';
+
+        spoilerButton.addEventListener('click', () => {
+            if (contentWrapper.style.display === 'none') {
+                contentWrapper.style.display = 'block';
+                spoilerButton.textContent = 'Erweiterungen ausblenden';
+            } else {
+                contentWrapper.style.display = 'none';
+                spoilerButton.textContent = 'Erweiterungen anzeigen';
             }
         });
 
-        const buildingTypeNames = {
-            '0_normal': 'Feuerwache (Normal)',
-            '0_small': 'Feuerwache (Kleinwache)',
-            '1_normal': 'Feuerwehrschule',
-            '2_normal': 'Rettungswache',
-            '3_normal': 'Rettungsschule',
-            '4_normal': 'Krankenhaus',
-            '5_normal': 'Rettungshubschrauber-Station',
-            '6_normal': 'Polizeiwache',
-            '6_small': 'Polizeiwache (Klein)',
-            '8_normal': 'Polizeischule',
-            '9_normal': 'THW',
-            '10_normal': 'THW-Bundesschule',
-            '11_normal': 'Bereitschaftspolizei',
-            '12_normal': 'SEG',
-            '13_normal': 'Polizeihubschrauberstation',
-            '17_normal': 'Polizei-Sondereinheiten',
-            '24_normal': 'Reiterstaffel',
-            '25_normal': 'Bergrettungswache',
-            '27_normal': 'Schule für Seefahrt und Seenotrettung',
-        };
-
-        Object.keys(buildingGroups).forEach(groupKey => {
-            const group = buildingGroups[groupKey];
-            const buildingType = buildingTypeNames[groupKey] || 'Unbekannt';
-
-            const buildingHeader = document.createElement('h4');
-            buildingHeader.textContent = `Typ: ${buildingType}`;
-            list.appendChild(buildingHeader);
-
-            const buttonContainer = document.createElement('div');
-            buttonContainer.style.display = 'flex';
-            buttonContainer.style.gap = '10px';
-
-            const spoilerButton = document.createElement('button');
-            spoilerButton.textContent = 'Erweiterungen anzeigen';
-            spoilerButton.classList.add('spoiler-button');
-            buttonContainer.appendChild(spoilerButton);
-
-            const buildSelectedButton = document.createElement('button');
-            buildSelectedButton.textContent = 'Ausgewählte Erweiterungen bauen';
-            buildSelectedButton.classList.add('btn', 'build-selected-button');
-            buildSelectedButton.disabled = true; // Initial disabled
-            buildSelectedButton.onclick = () => buildSelectedExtensions();
-            buttonContainer.appendChild(buildSelectedButton);
-
-            const buildAllButton = document.createElement('button');
-            buildAllButton.textContent = 'Alle Erweiterungen bei allen Wachen bauen';
-            buildAllButton.classList.add('build-all-button');
-            buildAllButton.onclick = () => showCurrencySelectionForAll(groupKey);
-            buttonContainer.appendChild(buildAllButton);
-
-            list.appendChild(buttonContainer);
-
-            const contentWrapper = document.createElement('div');
-            contentWrapper.className = 'spoiler-content';
-            contentWrapper.style.display = 'none';
-
-            const searchInput = document.createElement('input');
-            searchInput.type = "text";
-            searchInput.placeholder = "🔍 Nach Wachennamen oder Erweiterungen suchen...";
-            searchInput.style.width = "100%";
-            searchInput.style.marginBottom = "10px";
-            searchInput.style.padding = "5px";
-            searchInput.style.fontSize = "14px";
-            searchInput.style.display = 'block';
-
-            spoilerButton.addEventListener('click', () => {
-                if (contentWrapper.style.display === 'none') {
-                    contentWrapper.style.display = 'block';
-                    spoilerButton.textContent = 'Erweiterungen ausblenden';
-                } else {
-                    contentWrapper.style.display = 'none';
-                    spoilerButton.textContent = 'Erweiterungen anzeigen';
-                }
-            });
-
-            const table = document.createElement('table');
-            table.innerHTML = `
+        const table = document.createElement('table');
+        table.innerHTML = `
         <thead>
             <tr>
-                <th></th> <!-- Checkbox column -->
-                <th>Wache</th>
-                <th>Fehlende Erweiterung</th>
-                <th>Bauen mit Credits</th>
-                <th>Bauen mit Coins</th>
+                <th style="text-align: center; vertical-align: middle;">Hier kommt > <input type="checkbox" class="select-all-checkbox" data-group="${groupKey}"> < noch Text hinein  <!-- Master-Checkbox --> </th>
+                <th style="text-align: center; vertical-align: middle;">Leitstelle</th>
+                <th style="text-align: center; vertical-align: middle;">Wache</th>
+                <th style="text-align: center; vertical-align: middle;">Fehlende Erweiterung</th>
+                <th style="text-align: center; vertical-align: middle;">Bauen mit Credits</th>
+                <th style="text-align: center; vertical-align: middle;">Bauen mit Coins</th>
             </tr>
         </thead>
         <tbody></tbody>
     `;
-            const tbody = table.querySelector('tbody');
+        const tbody = table.querySelector('tbody');
+        const selectAllCheckbox = table.querySelector('.select-all-checkbox'); // Die Master-Checkbox der Gruppe
 
-            group.forEach(({ building, missingExtensions }) => {
-                missingExtensions.forEach(extension => {
-                    if (isExtensionLimitReached(building, extension.id)) {
-                        return;
-                    }
-
-                    const row = document.createElement('tr');
-                    row.classList.add(`row-${building.id}-${extension.id}`);
-
-                    const checkboxCell = document.createElement('td');
-                    const checkbox = document.createElement('input');
-                    checkbox.type = 'checkbox';
-                    checkbox.className = 'extension-checkbox';
-                    checkbox.dataset.buildingId = building.id;
-                    checkbox.dataset.extensionId = extension.id;
-                    checkbox.disabled = userInfo.credits < extension.cost || userInfo.coins < extension.coins; // Deaktiviert die Checkboxen wenn zu wenig Credits/Coins vorhanden sind
-                    checkbox.addEventListener('change', updateBuildSelectedButton); // Add event listener
-                    checkboxCell.appendChild(checkbox);
-                    row.appendChild(checkboxCell);
-
-                    const nameCell = document.createElement('td');
-                    nameCell.textContent = building.caption;
-                    row.appendChild(nameCell);
-
-                    const extensionCell = document.createElement('td');
-                    extensionCell.textContent = extension.name;
-                    row.appendChild(extensionCell);
-
-                    const creditCell = document.createElement('td');
-                    const creditButton = document.createElement('button');
-                    creditButton.textContent = `${formatNumber(extension.cost)} Credits`;
-                    creditButton.classList.add('btn', 'btn-xl', 'credit-button');
-                    creditButton.style.backgroundColor = '#28a745';
-                    creditButton.style.color = 'white';
-                    creditButton.disabled = userInfo.credits < extension.cost;
-                    creditButton.onclick = () => buildExtension(building, extension.id, 'credits', extension.cost, row);
-                    creditCell.appendChild(creditButton);
-                    row.appendChild(creditCell);
-
-                    const coinsCell = document.createElement('td');
-                    const coinsButton = document.createElement('button');
-                    coinsButton.textContent = `${extension.coins} Coins`;
-                    coinsButton.classList.add('btn', 'btn-xl', 'coins-button');
-                    coinsButton.style.backgroundColor = '#dc3545';
-                    coinsButton.style.color = 'white';
-                    coinsButton.disabled = userInfo.coins < extension.coins;
-                    coinsButton.onclick = () => buildExtension(building, extension.id, 'coins', extension.coins, row);
-                    coinsCell.appendChild(coinsButton);
-                    row.appendChild(coinsCell);
-
-                    tbody.appendChild(row);
-                });
+        // Event Listener für "Alle auswählen"-Checkbox in der aktuellen Gruppe
+        selectAllCheckbox.addEventListener('change', function() {
+            const groupCheckboxes = table.querySelectorAll('.extension-checkbox');
+            groupCheckboxes.forEach(checkbox => {
+                if (!checkbox.disabled) {
+                    checkbox.checked = selectAllCheckbox.checked;
+                }
             });
+            updateBuildSelectedButton(); // Aktualisiert den Zustand des "Bauen"-Buttons
+        });
 
-            contentWrapper.appendChild(searchInput);
-            contentWrapper.appendChild(table);
-            list.appendChild(contentWrapper);
+        group.forEach(({ building, missingExtensions }) => {
+            missingExtensions.forEach(extension => {
+                if (isExtensionLimitReached(building, extension.id)) {
+                    return;
+                }
 
-            searchInput.addEventListener("input", function() {
-                const searchTerm = searchInput.value.toLowerCase();
-                filterTable(tbody, searchTerm);
+                const row = document.createElement('tr');
+                row.classList.add(`row-${building.id}-${extension.id}`);
+
+                const checkboxCell = document.createElement('td');
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'extension-checkbox';
+                checkbox.dataset.buildingId = building.id;
+                checkbox.dataset.extensionId = extension.id;
+                checkbox.disabled = userInfo.credits < extension.cost || userInfo.coins < extension.coins; // Deaktiviert die Checkboxen wenn zu wenig Credits/Coins vorhanden sind
+                checkbox.addEventListener('change', updateBuildSelectedButton); // Add event listener
+                checkboxCell.style.textAlign = 'center'; // Mitte für Checkbox
+                checkboxCell.style.verticalAlign = 'middle'; // Vertikale Mitte
+                checkboxCell.appendChild(checkbox);
+                row.appendChild(checkboxCell);
+
+                const leitstelleCell = document.createElement('td');
+                leitstelleCell.textContent = getLeitstelleName(building); // Holt den Leitstellen-Namen
+                leitstelleCell.style.textAlign = 'center'; // Mitte für Leitstelle
+                leitstelleCell.style.verticalAlign = 'middle'; // Vertikale Mitte
+                row.appendChild(leitstelleCell);
+
+                const nameCell = document.createElement('td');
+                nameCell.textContent = building.caption;
+                nameCell.style.textAlign = 'center'; // Mitte für Wachen-Name
+                nameCell.style.verticalAlign = 'middle'; // Vertikale Mitte
+                row.appendChild(nameCell);
+
+                const extensionCell = document.createElement('td');
+                extensionCell.textContent = extension.name;
+                extensionCell.style.textAlign = 'center'; // Mitte für Erweiterung
+                extensionCell.style.verticalAlign = 'middle'; // Vertikale Mitte
+                row.appendChild(extensionCell);
+
+                const creditCell = document.createElement('td');
+                const creditButton = document.createElement('button');
+                creditButton.textContent = `${formatNumber(extension.cost)} Credits`;
+                creditButton.classList.add('btn', 'btn-xl', 'credit-button');
+                creditButton.style.backgroundColor = '#28a745';
+                creditButton.style.color = 'white';
+                creditButton.disabled = userInfo.credits < extension.cost;
+                creditButton.onclick = () => buildExtension(building, extension.id, 'credits', extension.cost, row);
+                creditCell.style.textAlign = 'center'; // Mitte für Credits
+                creditCell.style.verticalAlign = 'middle'; // Vertikale Mitte
+                creditCell.appendChild(creditButton);
+                row.appendChild(creditCell);
+
+                const coinsCell = document.createElement('td');
+                const coinsButton = document.createElement('button');
+                coinsButton.textContent = `${extension.coins} Coins`;
+                coinsButton.classList.add('btn', 'btn-xl', 'coins-button');
+                coinsButton.style.backgroundColor = '#dc3545';
+                coinsButton.style.color = 'white';
+                coinsButton.disabled = userInfo.coins < extension.coins;
+                coinsButton.onclick = () => buildExtension(building, extension.id, 'coins', extension.coins, row);
+                coinsCell.style.textAlign = 'center'; // Mitte für Coins
+                coinsCell.style.verticalAlign = 'middle'; // Vertikale Mitte
+                coinsCell.appendChild(coinsButton);
+                row.appendChild(coinsCell);
+
+                tbody.appendChild(row);
             });
         });
-    }
+
+        contentWrapper.appendChild(searchInput);
+        contentWrapper.appendChild(table);
+        list.appendChild(contentWrapper);
+
+        searchInput.addEventListener("input", function() {
+            const searchTerm = searchInput.value.toLowerCase();
+            filterTable(tbody, searchTerm);
+        });
+    });
+}
+
 
     // Schließen-Button-Funktionalität
     document.getElementById('close-extension-helper').addEventListener('click', () => {
@@ -900,10 +954,12 @@
         const rows = tbody.querySelectorAll("tr");
 
         rows.forEach(row => {
-            const wachenName = row.cells[1]?.textContent.toLowerCase() || "";
-            const erweiterung = row.cells[2]?.textContent.toLowerCase() || "";
+            const leitstelle = row.cells[2]?.textContent.toLowerCase() || "";
+            const wachenName = row.cells[3]?.textContent.toLowerCase() || "";
+            const erweiterung = row.cells[4]?.textContent.toLowerCase() || "";
 
-            if (wachenName.includes(searchTerm) || erweiterung.includes(searchTerm)) {
+
+            if (leitstelle.includes(searchTerm) || wachenName.includes(searchTerm) || erweiterung.includes(searchTerm)) {
                 row.style.display = "";
             } else {
                 row.style.display = "none";
@@ -1041,7 +1097,7 @@
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
                 onload: function(response) {
-                        console.log(`Erweiterung in Gebäude ${building.id} gebaut. Response:`, response);
+//                        console.log(`Erweiterung in Gebäude ${building.id} gebaut. Response:`, response);
 
                     // Überprüfen, ob die Zeile existiert
                     if (row) {
@@ -1100,11 +1156,11 @@
         try {
             const userInfo = await getUserCredits();
             const currencyText = currency === 'credits' ? 'Credits' : 'Coins';
-                console.log(`Benutzer hat ${userInfo.credits} Credits und ${userInfo.coins} Coins`);
+//                console.log(`Benutzer hat ${userInfo.credits} Credits und ${userInfo.coins} Coins`);
 
             if ((currency === 'credits' && userInfo.credits < amount) || (currency === 'coins' && userInfo.coins < amount)) {
                 alert(`Nicht genügend ${currencyText}.`);
-                console.log(`Nicht genügend ${currencyText}.`);
+//                console.log(`Nicht genügend ${currencyText}.`);
                 return;
             }
         } catch (error) {
