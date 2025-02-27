@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         [LSS] 02 - Erweiterungs-Manager (Betaversion)
+// @name         [LSS] Erweiterungs-Manager (Betaversion)
 // @namespace    http://tampermonkey.net/
 // @version      0.5 (Beta)
 // @description  Listet Wachen auf, bei denen bestimmte Erweiterungen fehlen und ermöglicht das Hinzufügen dieser Erweiterungen.
@@ -18,7 +18,7 @@
 
     // Hier könnt Ihr auswählen welche Erweiterung in der Tabelle angezeigt werden soll, dafür die nicht benötigten einfach mit // ausklammern.
     const manualExtensions = {
-        '0_normal': [ // Feuerwache (normal)
+        '0_normal': [ // Feuerwache (Normal)
             { id: 0, name: 'Rettungsdienst', cost: 100000, coins: 20 },
             { id: 1, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
             { id: 2, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
@@ -80,7 +80,7 @@
             { id: 0, name: 'Windenrettung', cost: 200000, coins: 15 },
         ],
 
-        '6_normal': [ // Polizeiwache
+        '6_normal': [ // Polizeiwache (Normal)
             { id: 0, name: '1te Zelle', cost: 25000, coins: 5 },
             { id: 1, name: '2te Zelle', cost: 25000, coins: 5 },
             { id: 2, name: '3te Zelle', cost: 25000, coins: 5 },
@@ -183,10 +183,10 @@
         '6_small': [ // Polizei (Kleinwache)
             { id: 0, name: '1te Zelle', cost: 25000, coins: 5 },
             { id: 1, name: '2te Zelle', cost: 25000, coins: 5 },
-//            { id: 10, name: 'Diensthundestaffel', cost: 100000, coins: 10 },
-//            { id: 11, name: 'Kriminalpolizei', cost: 100000, coins: 20 },
-//            { id: 12, name: 'Dienstgruppenleitung', cost: 200000, coins: 25 },
-//            { id: 13, name: 'Motorradstaffel', cost: 75000, coins: 15 },
+            { id: 10, name: 'Diensthundestaffel', cost: 100000, coins: 10 },
+            { id: 11, name: 'Kriminalpolizei', cost: 100000, coins: 20 },
+            { id: 12, name: 'Dienstgruppenleitung', cost: 200000, coins: 25 },
+            { id: 13, name: 'Motorradstaffel', cost: 75000, coins: 15 },
         ],
 
         '24_normal': [ // Reiterstaffel
@@ -235,7 +235,7 @@
             border: 1px solid var(--border-color, black);
             padding: 20px;
             width: 80%;
-            max-width: 1500px;
+            max-width: 1200px;
             max-height: 90vh;
             overflow-y: auto;
             position: relative;
@@ -378,30 +378,15 @@
         #open-extension-helper {
             cursor: pointer; /* Set cursor to pointer */
         }
-        th {
-           text-align: center; /* Zentriert den Text in der Überschriften-Zeile */
-           vertical-align: middle; /* Stellt sicher, dass der Text vertikal mittig bleibt */
-        }
-        thead {
-           background-color: #f2f2f2; /* Heller Hintergrund */
-           font-weight: bold; /* Fettschrift */
-           border-bottom: 2px solid #ccc; /* Trennlinie */
-       }
-       th {
-         padding: 10px;
-         text-align: center;
-         vertical-align: middle;
-      }
-
     `;
 
     // Funktion zum Abrufen der Benutzereinstellungen vom API
     async function getUserMode() {
         try {
-//                console.log("Versuche, Benutzereinstellungen von der API abzurufen...");
+
             const response = await fetch('https://www.leitstellenspiel.de/api/settings');
             const data = await response.json();
-//                console.log("Benutzereinstellungen abgerufen:", data);
+
             return data; // Gibt die vollständige Antwort zurück
         } catch (error) {
                 console.error("Fehler beim Abrufen der Einstellungen: ", error);
@@ -411,31 +396,26 @@
 
     // Funktion zum Anwenden des Dark- oder Light-Modus basierend auf der API-Antwort
     async function applyMode() {
-//            console.log("Wende Modus an...");
 
         const userSettings = await getUserMode();
         if (!userSettings) {
-//                console.log("Keine Benutzereinstellungen gefunden oder Fehler beim Abrufen.");
+                
             return;
         }
 
         const mode = userSettings.design_mode; // Benutze jetzt "design_mode" anstelle von "mode"
-//            console.log("Aktueller Design-Modus:", mode);
 
         // Warten auf das Lightbox-Element
         const lightboxContent = document.getElementById('extension-lightbox-content');
         if (!lightboxContent) {
-//                 console.log("Lightbox-Inhalt nicht gefunden.");
             return;
         }
-
-//            console.log("Lightbox-Inhalt gefunden, entferne alte Modus-Klassen...");
+        
         // Entferne alle möglichen Modus-Klassen
         lightboxContent.classList.remove('dark', 'light');
 
         // Modus anwenden
         if (mode === 1 || mode === 4) { // Dunkelmodus
-//                console.log("Dunkelmodus aktivieren...");
             lightboxContent.classList.add('dark');
 
             // Dark Mode für Tabelle
@@ -443,7 +423,6 @@
             document.documentElement.style.setProperty('--text-color', '#fff');
             document.documentElement.style.setProperty('--border-color', '#444');
         } else if (mode === 2 || mode === 3) { // Hellmodus
-//                console.log("Hellmodus aktivieren...");
             lightboxContent.classList.add('light');
 
             // Light Mode für Tabelle
@@ -451,7 +430,6 @@
             document.documentElement.style.setProperty('--text-color', '#000');
             document.documentElement.style.setProperty('--border-color', '#ccc');
         } else { // Standardmodus (wenn der Modus unbekannt ist)
-//                 console.log("Unbekannter Modus, standardmäßig Hellmodus aktivieren...");
             lightboxContent.classList.add('light'); // Standardmäßig hell
 
             // Standard Light Mode für Tabelle
@@ -463,20 +441,16 @@
 
     // Funktion zur Beobachtung der Lightbox auf Änderungen (für dynamisch geladene Elemente)
     function observeLightbox() {
-//             console.log("Beobachte die Lightbox auf Änderungen...");
 
         const lightboxContainer = document.getElementById('extension-lightbox');
         if (!lightboxContainer) {
-//            console.log("Lightbox-Container nicht gefunden.");
             return;
         }
 
         const observer = new MutationObserver(() => {
-//            console.log("MutationObserver ausgelöst - Überprüfe, ob das Content-Element da ist...");
             // Überprüfe, ob das Content-Element in der Lightbox existiert
             const lightboxContent = document.getElementById('extension-lightbox-content');
             if (lightboxContent) {
-//                console.log("Lightbox-Inhalt gefunden, wende Modus an...");
                 applyMode(); // Wenn das Lightbox-Inhalt gefunden wird, Modus anwenden
                 observer.disconnect(); // Beende die Beobachtung, wenn die Lightbox gefunden wurde
             }
@@ -488,7 +462,6 @@
 
     // Wende den Modus an, wenn das DOM bereit ist
     window.addEventListener('load', () => {
-//            console.log("DOM vollständig geladen. Wende Modus an...");
         applyMode();
         observeLightbox(); // Beobachtet dynamische Änderungen
     });
@@ -507,7 +480,6 @@
                 <button id="close-extension-helper">Schließen</button>
                 <h2>Erweiterungs-Manager<br><h5>
                 <br>Über Feedback jeglicher Art bin ich dankbar, da dies noch eine Beta-Version ist steht hier auch noch kein Finaler Text.
-                <br>
                 <br>
                 <div id="extension-list">
                 Bitte habe einen Moment geduld
@@ -625,17 +597,14 @@
         }
 
         if (typeof user_premium !== 'undefined') {
-//            console.log("Die Variable 'user_premium' ist definiert."); // Debugging-Info
 
             if (!user_premium) {
-                console.warn("Der Nutzer hat keinen Premium-Account.");
                 createCustomAlert("Du kannst dieses Script nur mit Einschränkungen nutzen da du keinen Premium-Account hast.", isDarkMode, () => {
                     const lightbox = document.getElementById('extension-lightbox');
                     lightbox.style.display = 'flex';
                     fetchBuildingsAndRender(); // API-Daten abrufen, wenn das Script geöffnet wird
                 });
             } else {
-//                console.log("Der Nutzer hat einen Premium-Account.");
                 const lightbox = document.getElementById('extension-lightbox');
                 lightbox.style.display = 'flex';
                 fetchBuildingsAndRender(); // API-Daten abrufen, wenn das Script geöffnet wird
@@ -647,14 +616,10 @@
 
     // Funktion, um den Namen eines Gebäudes anhand der ID zu bekommen
     function getBuildingCaption(buildingId) {
-
-//             console.log('Übergebene buildingId:', buildingId);  // Überprüfen, welche ID übergeben wird
         const building = buildingsData.find(b => String(b.id) === String(buildingId));
         if (building) {
-//             console.log('Gefundenes Gebäude:', building);  // Protokolliere das gefundene Gebäude
             return building.caption; // Direkt den Gebäudennamen zurückgeben
         }
-//             console.log('Gebäude nicht gefunden. ID:', buildingId); // Wenn das Gebäude nicht gefunden wird
         return 'Unbekanntes Gebäude';
     }
 
@@ -672,23 +637,14 @@
             return response.json();
         })
             .then(data => {
-//                console.log('Abgerufene Gebäudedaten:', data); // Protokolliere die abgerufenen Daten
             buildingsData = data; // Speichern der Gebäudedaten in einer globalen Variablen
             renderMissingExtensions(data); // Weiterverarbeiten der abgerufenen Daten
         })
             .catch(error => {
-//                 console.error('Es ist ein Fehler aufgetreten:', error);
+                 console.error('Es ist ein Fehler aufgetreten:', error);
             const list = document.getElementById('extension-list');
             list.innerHTML = 'Fehler beim Laden der Gebäudedaten.';
         });
-    }
-
-    // Funktion, um den Namen der zugehörigen Leitstelle zu ermitteln
-    function getLeitstelleName(building) {
-        if (!building.leitstelle_building_id) return 'Keine Leitstelle';
-
-        const leitstelle = buildingsData.find(b => b.id === building.leitstelle_building_id);
-        return leitstelle ? leitstelle.caption : 'Unbekannt';
     }
 
     // Funktion um die aktuelle Credits und Coins des USERS abzurufen
@@ -699,7 +655,6 @@
                 throw new Error('Fehler beim Abrufen der Credits und Coins');
             }
             const data = await response.json();
-//                 console.log('Benutzer Credits und Coins abgerufen:', data);
             return {
                 credits: data.credits_user_current,
                 coins: data.coins_user_current,
@@ -809,7 +764,7 @@
 
             const searchInput = document.createElement('input');
             searchInput.type = "text";
-            searchInput.placeholder = "🔍 Hier könnt Ihr nach Leistellen, Wachen oder Erweiterungen suchen...";
+            searchInput.placeholder = "🔍 Nach Wachennamen oder Erweiterungen suchen...";
             searchInput.style.width = "100%";
             searchInput.style.marginBottom = "10px";
             searchInput.style.padding = "5px";
@@ -828,38 +783,18 @@
 
             const table = document.createElement('table');
             table.innerHTML = `
-            <thead style="background-color: #f2f2f2; font-weight: bold; border-bottom: 2px solid #ccc;">
-                 <tr>
-                   <th style="padding: 10px; text-align: center; vertical-align: middle;">
-                   Alle An- / Abwählen <br>
-                   <input type="checkbox" class="select-all-checkbox" data-group="${groupKey}">
-                 </th>
-                     <th style="padding: 10px; text-align: center; vertical-align: middle;">Leitstelle</th>
-                     <th style="padding: 10px; text-align: center; vertical-align: middle;">Wache</th>
-                     <th style="padding: 10px; text-align: center; vertical-align: middle;">Fehlende Erweiterung</th>
-                     <th style="padding: 10px; text-align: center; vertical-align: middle;">Bauen mit Credits</th>
-                     <th style="padding: 10px; text-align: center; vertical-align: middle;">Bauen mit Coins</th>
-                </tr>
-              </thead>
-          <tbody></tbody>
+        <thead>
+            <tr>
+                <th></th> <!-- Checkbox column -->
+                <th>Wache</th>
+                <th>Fehlende Erweiterung</th>
+                <th>Bauen mit Credits</th>
+                <th>Bauen mit Coins</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
     `;
-
             const tbody = table.querySelector('tbody');
-            const selectAllCheckbox = table.querySelector('.select-all-checkbox'); // Die Master-Checkbox der Gruppe
-
-            // Event Listener für "Alle auswählen"-Checkbox in der aktuellen Gruppe
-            selectAllCheckbox.addEventListener('change', function() {
-                const groupCheckboxes = table.querySelectorAll('.extension-checkbox');
-
-                groupCheckboxes.forEach(checkbox => {
-                    // Prüft, ob die Checkbox nicht deaktiviert und sichtbar ist
-                    if (!checkbox.disabled && checkbox.offsetParent !== null) {
-                        checkbox.checked = selectAllCheckbox.checked;
-                    }
-                });
-
-                updateBuildSelectedButton(); // Aktualisiert den Zustand des "Bauen"-Buttons
-            });
 
             group.forEach(({ building, missingExtensions }) => {
                 missingExtensions.forEach(extension => {
@@ -878,27 +813,15 @@
                     checkbox.dataset.extensionId = extension.id;
                     checkbox.disabled = userInfo.credits < extension.cost || userInfo.coins < extension.coins; // Deaktiviert die Checkboxen wenn zu wenig Credits/Coins vorhanden sind
                     checkbox.addEventListener('change', updateBuildSelectedButton); // Add event listener
-                    checkboxCell.style.textAlign = 'center'; // Mitte für Checkbox
-                    checkboxCell.style.verticalAlign = 'middle'; // Vertikale Mitte
                     checkboxCell.appendChild(checkbox);
                     row.appendChild(checkboxCell);
 
-                    const leitstelleCell = document.createElement('td');
-                    leitstelleCell.textContent = getLeitstelleName(building); // Holt den Leitstellen-Namen
-                    leitstelleCell.style.textAlign = 'center'; // Mitte für Leitstelle
-                    leitstelleCell.style.verticalAlign = 'middle'; // Vertikale Mitte
-                    row.appendChild(leitstelleCell);
-
                     const nameCell = document.createElement('td');
                     nameCell.textContent = building.caption;
-                    nameCell.style.textAlign = 'center'; // Mitte für Wachen-Name
-                    nameCell.style.verticalAlign = 'middle'; // Vertikale Mitte
                     row.appendChild(nameCell);
 
                     const extensionCell = document.createElement('td');
                     extensionCell.textContent = extension.name;
-                    extensionCell.style.textAlign = 'center'; // Mitte für Erweiterung
-                    extensionCell.style.verticalAlign = 'middle'; // Vertikale Mitte
                     row.appendChild(extensionCell);
 
                     const creditCell = document.createElement('td');
@@ -909,8 +832,6 @@
                     creditButton.style.color = 'white';
                     creditButton.disabled = userInfo.credits < extension.cost;
                     creditButton.onclick = () => buildExtension(building, extension.id, 'credits', extension.cost, row);
-                    creditCell.style.textAlign = 'center'; // Mitte für Credits
-                    creditCell.style.verticalAlign = 'middle'; // Vertikale Mitte
                     creditCell.appendChild(creditButton);
                     row.appendChild(creditCell);
 
@@ -922,8 +843,6 @@
                     coinsButton.style.color = 'white';
                     coinsButton.disabled = userInfo.coins < extension.coins;
                     coinsButton.onclick = () => buildExtension(building, extension.id, 'coins', extension.coins, row);
-                    coinsCell.style.textAlign = 'center'; // Mitte für Coins
-                    coinsCell.style.verticalAlign = 'middle'; // Vertikale Mitte
                     coinsCell.appendChild(coinsButton);
                     row.appendChild(coinsCell);
 
@@ -960,12 +879,10 @@
         const rows = tbody.querySelectorAll("tr");
 
         rows.forEach(row => {
-            const leitstelle = row.cells[2]?.textContent.toLowerCase() || "";
-            const wachenName = row.cells[3]?.textContent.toLowerCase() || "";
-            const erweiterung = row.cells[4]?.textContent.toLowerCase() || "";
+            const wachenName = row.cells[1]?.textContent.toLowerCase() || "";
+            const erweiterung = row.cells[2]?.textContent.toLowerCase() || "";
 
-
-            if (leitstelle.includes(searchTerm) || wachenName.includes(searchTerm) || erweiterung.includes(searchTerm)) {
+            if (wachenName.includes(searchTerm) || erweiterung.includes(searchTerm)) {
                 row.style.display = "";
             } else {
                 row.style.display = "none";
@@ -1103,7 +1020,6 @@
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
                 onload: function(response) {
-//                        console.log(`Erweiterung in Gebäude ${building.id} gebaut. Response:`, response);
 
                     // Überprüfen, ob die Zeile existiert
                     if (row) {
@@ -1162,11 +1078,9 @@
         try {
             const userInfo = await getUserCredits();
             const currencyText = currency === 'credits' ? 'Credits' : 'Coins';
-//                console.log(`Benutzer hat ${userInfo.credits} Credits und ${userInfo.coins} Coins`);
 
             if ((currency === 'credits' && userInfo.credits < amount) || (currency === 'coins' && userInfo.coins < amount)) {
                 alert(`Nicht genügend ${currencyText}.`);
-//                console.log(`Nicht genügend ${currencyText}.`);
                 return;
             }
         } catch (error) {
@@ -1314,6 +1228,12 @@
                 totalCoins += parseInt(row.querySelector('.coins-button').innerText.replace(/\D/g, ''), 10);
             });
         }
+
+
+        if (userInfo.credits < totalCredits && userInfo.coins < totalCoins) {
+    alert(`Wähle zwischen <b>Credits (grün)</b> oder <b>Coins (rot)</b><br><br>Info:<br>Sollte eine Währung <b>nicht</b> ausreichend vorhanden sein,<br>kannst Du diese nicht auswählen`);
+    return;
+}
 
        showCurrencySelection(selectedExtensionsByBuilding, userInfo);
     }
@@ -1521,8 +1441,8 @@
         selectionDiv.style.color = isDarkMode ? '#fff' : '#000';
         selectionDiv.style.borderColor = isDarkMode ? '#444' : '#ccc';
 
-       const totalText = document.createElement('p');
-        totalText.innerHTML = `Wähle zwischen <b>Credits (grün)</b> oder <b>Coins (rot)</b><br><br>Info:<br>Sollte eine Währung <b>nicht</b> ausreichend vorhanden sein,<br>kannst Du diese nicht auswählen`;
+        const totalText = document.createElement('p');
+        totalText.textContent = `Wähle zwischen <b>Credits (grün)</b> oder <b>Coins (rot)</b><br><br>Info:<br>Sollte eine Währung <b>nicht</b> ausreichend vorhanden sein,<br>kannst Du diese nicht auswählen`;
         selectionDiv.appendChild(totalText);
 
         const creditsButton = document.createElement('button');
