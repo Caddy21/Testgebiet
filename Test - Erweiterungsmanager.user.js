@@ -35,7 +35,7 @@
             { id: 13, name: 'Werkfeuerwehr', cost: 100000, coins: 20 },
             { id: 14, name: 'Netzersatzanlage 50', cost: 100000, coins: 20 },
             { id: 15, name: 'Netzersatzanlage 200', cost: 100000, coins: 20 },
-            { id: 16, name: 'Großlüfter', cost: 75000, coins: 25 },
+            { id: 16, name: 'Großlüfter', cost: 75000, coins: 15 },
             { id: 17, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
             { id: 18, name: 'Drohneneinheit', cost: 150000, coins: 25 },
             { id: 19, name: 'Verpflegungsdienst', cost: 200000, coins: 25 },
@@ -1237,15 +1237,15 @@
         return true;
     }
 
+    // Funktion zum Bau
     async function buildSelectedExtensions() {
     const selectedExtensions = document.querySelectorAll('.extension-checkbox:checked');
 
-    // **Sofort Checkboxen deaktivieren**
+    // Checkboxen sofort entmarkieren
     selectedExtensions.forEach(checkbox => {
         checkbox.checked = false;
     });
 
-    // Danach regulär fortfahren:
     const selectedExtensionsByBuilding = {};
 
     selectedExtensions.forEach(checkbox => {
@@ -1258,17 +1258,16 @@
         selectedExtensionsByBuilding[buildingId].push(parseInt(extensionId, 10));
     });
 
-    const userInfo = await getUserCredits();
-    const isPremium = userInfo.premium;
+    const userInfo = await getUserCredits();  // Holt die User-Daten
+    const isPremium = userInfo?.premium ?? false;  // Stellt sicher, dass isPremium definiert ist
 
-    for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
-        if (!isPremium && extensions.length > 2) {
-            alert(`Zu viele Erweiterungen für Gebäude ${getBuildingCaption(buildingId)} ausgewählt.\n\nDa du keinen Premium-Account hast, kannst du maximal 2 Ausbauten auswählen.`);
-            return;
-        }
-        if (!checkMaxExtensions(buildingId, extensions)) {
-            alert(`Zu viele Erweiterungen für Gebäude ${getBuildingCaption(buildingId)} ausgewählt.`);
-            return;
+    // **Nur für Nicht-Premium-Nutzer begrenzen!**
+    if (!user_premium) {
+        for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
+            if (extensions.length > 2) {
+                alert(`Zu viele Erweiterungen für Gebäude ${getBuildingCaption(buildingId)} ausgewählt.\n\nDa du keinen Premium-Account hast, kannst du maximal 2 Ausbauten auswählen.`);
+                return;
+            }
         }
     }
 
@@ -1285,11 +1284,10 @@
 
     showCurrencySelection(selectedExtensionsByBuilding, userInfo);
 
-    // **Nach DOM-Update sicherstellen, dass der Button deaktiviert wird**
+    // Sicherstellen, dass der Button deaktiviert wird
     setTimeout(updateBuildSelectedButton, 100);
 }
 
-    // Funktion zur Auswahl der Währung
     async function showCurrencySelection(selectedExtensionsByBuilding, userInfo) {
     const userSettings = await getUserMode();
     const isDarkMode = userSettings && (userSettings.design_mode === 1 || userSettings.design_mode === 4);
@@ -1307,6 +1305,15 @@
                 totalCoins += extensionCoins;
             }
         }
+    }
+
+    const fehlendeCredits = Math.max(0, totalCredits - userInfo.credits);
+    const fehlendeCoins = Math.max(0, totalCoins - userInfo.coins);
+
+    // Falls beides nicht reicht, zeige eine Meldung
+    if (userInfo.credits < totalCredits && userInfo.coins < totalCoins) {
+        alert(`Du hast nicht genug Ressourcen!\n\n- Fehlende Credits: ${formatNumber(fehlendeCredits)}\n- Fehlende Coins: ${formatNumber(fehlendeCoins)}`);
+        return;
     }
 
     const selectionDiv = document.createElement('div');
