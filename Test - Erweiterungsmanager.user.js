@@ -836,7 +836,7 @@
                  </th>
                      <th style="padding: 10px; text-align: center; vertical-align: middle;">Leitstelle</th>
                      <th style="padding: 10px; text-align: center; vertical-align: middle;">Wache</th>
-                     <th style="padding: 10px; text-align: center; vertical-align: middle;">Fehlende Erweiterung</th>
+                     <th style="padding: 10px; text-align: center; vertical-align: middle;">Baubare Erweiterung</th>
                      <th style="padding: 10px; text-align: center; vertical-align: middle;">Bauen mit Credits</th>
                      <th style="padding: 10px; text-align: center; vertical-align: middle;">Bauen mit Coins</th>
                 </tr>
