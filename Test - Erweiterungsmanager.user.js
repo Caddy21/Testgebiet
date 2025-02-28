@@ -1237,7 +1237,7 @@
         return true;
     }
 
-    // Funktion zum Bau
+    // Funktion zum Bau der ausgewählten Erweiterungen
     async function buildSelectedExtensions() {
     const selectedExtensions = document.querySelectorAll('.extension-checkbox:checked');
 
@@ -1283,6 +1283,10 @@
     }
 
     showCurrencySelection(selectedExtensionsByBuilding, userInfo);
+
+        document.querySelectorAll('.master-checkbox').forEach(checkbox => {
+    checkbox.checked = false;
+});
 
     // Sicherstellen, dass der Button deaktiviert wird
     setTimeout(updateBuildSelectedButton, 100);
