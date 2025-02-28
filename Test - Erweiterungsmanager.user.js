@@ -1284,14 +1284,16 @@
 
     showCurrencySelection(selectedExtensionsByBuilding, userInfo);
 
-        document.querySelectorAll('.master-checkbox').forEach(checkbox => {
+        document.querySelectorAll('.select-all-checkbox').forEach(checkbox => {
     checkbox.checked = false;
+    checkbox.dispatchEvent(new Event('change')); // Event auslösen, falls nötig
 });
 
     // Sicherstellen, dass der Button deaktiviert wird
     setTimeout(updateBuildSelectedButton, 100);
 }
 
+    // Funktion zur Auswahl der Zahlmöglichkeit sowie Prüfung der ausgewählten Erweiterungen
     async function showCurrencySelection(selectedExtensionsByBuilding, userInfo) {
     const userSettings = await getUserMode();
     const isDarkMode = userSettings && (userSettings.design_mode === 1 || userSettings.design_mode === 4);
@@ -1466,6 +1468,7 @@
     document.body.appendChild(selectionDiv);
 }
 
+    // Updatefunktion des Buttons
     function updateBuildSelectedButton() {
         const groups = document.querySelectorAll('.spoiler-content');
         groups.forEach(group => {
@@ -1492,7 +1495,7 @@
 
     // Anfang der Funktion * Alle Erweiterungen * in einem Gebäude bauen
 
-    // Funktion zur Auswahl der Währung
+    // Funktion zur Auswahl der Währung und Prüfung der Credit/Coins vorhandenheit
     async function showCurrencySelectionForAll(groupKey) {
     const userSettings = await getUserMode();
     const isDarkMode = userSettings && (userSettings.design_mode === 1 || userSettings.design_mode === 4);
@@ -1565,7 +1568,7 @@
     document.body.appendChild(selectionDiv);
 }
 
-    // Funktion um die Kosten zu errechnen
+    // Funktion um die Gesamtkosten zu errechnen
     async function calculateAndBuildAllExtensions(groupKey, currency) {
         const group = buildingGroups[groupKey];
         const totalExtensions = group.reduce((sum, { missingExtensions }) => sum + missingExtensions.length, 0);
