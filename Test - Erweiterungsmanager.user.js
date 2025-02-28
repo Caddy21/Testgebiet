@@ -1481,70 +1481,78 @@
 
     // Anfang der Funktion * Alle Erweiterungen * in einem Gebäude bauen
 
-    // Funktion zur Auswahl der Zahlungsmethode
+    // Funktion zur Auswahl der Währung
     async function showCurrencySelectionForAll(groupKey) {
-        const userSettings = await getUserMode();
-        const isDarkMode = userSettings && (userSettings.design_mode === 1 || userSettings.design_mode === 4);
+    const userSettings = await getUserMode();
+    const isDarkMode = userSettings && (userSettings.design_mode === 1 || userSettings.design_mode === 4);
 
-        const group = buildingGroups[groupKey];
-        let totalCredits = 0;
-        let totalCoins = 0;
-
-        group.forEach(({ missingExtensions }) => {
-            missingExtensions.forEach(extension => {
-                totalCredits += extension.cost;
-                totalCoins += extension.coins;
-            });
-
-        });
-
-        const userInfo = await getUserCredits();
-        if (userInfo.credits < totalCredits && userInfo.coins < totalCoins) {
-            alert("Leider zu wenig Credits oder Coins.");
-            return;
-        }
-
-        const selectionDiv = document.createElement('div');
-        selectionDiv.className = 'currency-selection';
-        selectionDiv.style.background = isDarkMode ? '#333' : '#fff';
-        selectionDiv.style.color = isDarkMode ? '#fff' : '#000';
-        selectionDiv.style.borderColor = isDarkMode ? '#444' : '#ccc';
-
-       const totalText = document.createElement('p');
-        totalText.innerHTML = `Wähle zwischen <b>Credits (grün)</b> oder <b>Coins (rot)</b><br><br>Info:<br>Sollte eine Währung <b>nicht</b> ausreichend vorhanden sein,<br>kannst Du diese nicht auswählen`;
-        selectionDiv.appendChild(totalText);
-
-        const creditsButton = document.createElement('button');
-        creditsButton.className = 'currency-button credits-button';
-        creditsButton.textContent = `${formatNumber(totalCredits)} Credits`;
-        creditsButton.disabled = userInfo.credits < totalCredits;
-        creditsButton.onclick = async () => {
-            document.body.removeChild(selectionDiv); // Auswahlfenster schließen
-            await calculateAndBuildAllExtensions(groupKey, 'credits');
-        };
-
-        const coinsButton = document.createElement('button');
-        coinsButton.className = 'currency-button coins-button';
-        coinsButton.textContent = `${formatNumber(totalCoins)} Coins`;
-        coinsButton.disabled = userInfo.coins < totalCoins;
-        coinsButton.onclick = async () => {
-            document.body.removeChild(selectionDiv); // Auswahlfenster schließen
-            await calculateAndBuildAllExtensions(groupKey, 'coins');
-        };
-
-        const cancelButton = document.createElement('button');
-        cancelButton.className = 'cancel-button';
-        cancelButton.textContent = 'Abbrechen';
-        cancelButton.onclick = () => {
-            document.body.removeChild(selectionDiv);
-        };
-
-        selectionDiv.appendChild(creditsButton);
-        selectionDiv.appendChild(coinsButton);
-        selectionDiv.appendChild(cancelButton);
-
-        document.body.appendChild(selectionDiv);
+    if (!buildingGroups[groupKey]) {
+        console.error(`Ungültiger Gruppen-Key: ${groupKey}`);
+        return;
     }
+
+    const group = buildingGroups[groupKey];
+    let totalCredits = 0;
+    let totalCoins = 0;
+
+    group.forEach(({ missingExtensions }) => {
+        missingExtensions.forEach(extension => {
+            totalCredits += extension.cost;
+            totalCoins += extension.coins;
+        });
+    });
+
+    const userInfo = await getUserCredits();
+    const fehlendeCredits = Math.max(0, totalCredits - userInfo.credits);
+    const fehlendeCoins = Math.max(0, totalCoins - userInfo.coins);
+
+    // Falls beides nicht reicht, zeige eine Meldung
+    if (userInfo.credits < totalCredits && userInfo.coins < totalCoins) {
+        alert(`Du hast nicht genug Ressourcen!\n\n- Fehlende Credits: ${formatNumber(fehlendeCredits)}\n- Fehlende Coins: ${formatNumber(fehlendeCoins)}`);
+        return;
+    }
+
+    const selectionDiv = document.createElement('div');
+    selectionDiv.className = 'currency-selection';
+    selectionDiv.style.background = isDarkMode ? '#333' : '#fff';
+    selectionDiv.style.color = isDarkMode ? '#fff' : '#000';
+    selectionDiv.style.borderColor = isDarkMode ? '#444' : '#ccc';
+
+    const totalText = document.createElement('p');
+    totalText.innerHTML = `Wähle zwischen <b>Credits (grün)</b> oder <b>Coins (rot)</b><br><br>Info:<br>Sollte eine Währung <b>nicht</b> ausreichend vorhanden sein,<br>kannst Du diese nicht auswählen`;
+    selectionDiv.appendChild(totalText);
+
+    const creditsButton = document.createElement('button');
+    creditsButton.className = 'currency-button credits-button';
+    creditsButton.textContent = `${formatNumber(totalCredits)} Credits`;
+    creditsButton.disabled = userInfo.credits < totalCredits;
+    creditsButton.onclick = async () => {
+        document.body.removeChild(selectionDiv);
+        await calculateAndBuildAllExtensions(groupKey, 'credits');
+    };
+
+    const coinsButton = document.createElement('button');
+    coinsButton.className = 'currency-button coins-button';
+    coinsButton.textContent = `${formatNumber(totalCoins)} Coins`;
+    coinsButton.disabled = userInfo.coins < totalCoins;
+    coinsButton.onclick = async () => {
+        document.body.removeChild(selectionDiv);
+        await calculateAndBuildAllExtensions(groupKey, 'coins');
+    };
+
+    const cancelButton = document.createElement('button');
+    cancelButton.className = 'cancel-button';
+    cancelButton.textContent = 'Abbrechen';
+    cancelButton.onclick = () => {
+        document.body.removeChild(selectionDiv);
+    };
+
+    selectionDiv.appendChild(creditsButton);
+    selectionDiv.appendChild(coinsButton);
+    selectionDiv.appendChild(cancelButton);
+
+    document.body.appendChild(selectionDiv);
+}
 
     // Funktion um die Kosten zu errechnen
     async function calculateAndBuildAllExtensions(groupKey, currency) {
