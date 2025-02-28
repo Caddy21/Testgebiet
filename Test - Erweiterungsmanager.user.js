@@ -955,23 +955,21 @@
     // Initial den Button hinzufügen
     addMenuButton();
 
-    // Funktion um die Tabellen zu filtern
     function filterTable(tbody, searchTerm) {
-        const rows = tbody.querySelectorAll("tr");
+    const rows = tbody.querySelectorAll("tr");
 
-        rows.forEach(row => {
-            const leitstelle = row.cells[2]?.textContent.toLowerCase() || "";
-            const wachenName = row.cells[3]?.textContent.toLowerCase() || "";
-            const erweiterung = row.cells[4]?.textContent.toLowerCase() || "";
+    rows.forEach(row => {
+        const leitstelle = row.cells[1]?.textContent.toLowerCase() || "";
+        const wachenName = row.cells[2]?.textContent.toLowerCase() || "";
+        const erweiterung = row.cells[3]?.textContent.toLowerCase() || "";
 
-
-            if (leitstelle.includes(searchTerm) || wachenName.includes(searchTerm) || erweiterung.includes(searchTerm)) {
-                row.style.display = "";
-            } else {
-                row.style.display = "none";
-            }
-        });
-    }
+        if (leitstelle.includes(searchTerm) || wachenName.includes(searchTerm) || erweiterung.includes(searchTerm)) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+    });
+}
 
     // Funktion zur Unterscheidung der Erweiterungswarteschlange zwischen Premium und Nicht Premium User
     function isExtensionLimitReached(building, extensionId) {
