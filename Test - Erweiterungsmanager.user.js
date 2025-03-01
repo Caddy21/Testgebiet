@@ -20,30 +20,30 @@
     const manualExtensions = {
         '0_normal': [ // Feuerwache (normal)
             { id: 0, name: 'Rettungsdienst', cost: 100000, coins: 20 },
-            { id: 1, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 2, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 3, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 4, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 5, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 1, name: '1te AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 2, name: '2te AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 3, name: '3te AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 4, name: '4te AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 5, name: '5te AB-Stellplatz', cost: 100000, coins: 20 },
             { id: 6, name: 'Wasserrettung', cost: 400000, coins: 25 },
-            { id: 7, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 7, name: '6te AB-Stellplatz', cost: 100000, coins: 20 },
             { id: 8, name: 'Flughafenfeuerwehr', cost: 300000, coins: 25 },
             { id: 9, name: 'Großwache', cost: 1000000, coins: 50 },
-            { id: 10, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 11, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 12, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 10, name: '7te AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 11, name: '8te AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 12, name: '9te AB-Stellplatz', cost: 100000, coins: 20 },
             { id: 13, name: 'Werkfeuerwehr', cost: 100000, coins: 20 },
             { id: 14, name: 'Netzersatzanlage 50', cost: 100000, coins: 20 },
             { id: 15, name: 'Netzersatzanlage 200', cost: 100000, coins: 20 },
             { id: 16, name: 'Großlüfter', cost: 75000, coins: 15 },
-            { id: 17, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 17, name: '10te AB-Stellplatz', cost: 100000, coins: 20 },
             { id: 18, name: 'Drohneneinheit', cost: 150000, coins: 25 },
             { id: 19, name: 'Verpflegungsdienst', cost: 200000, coins: 25 },
-            { id: 20, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
-            { id: 21, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
-            { id: 22, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
-            { id: 23, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
-            { id: 24, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
+            { id: 20, name: '1te Anhänger Stellplatz', cost: 75000, coins: 15 },
+            { id: 21, name: '2te Anhänger Stellplatz', cost: 75000, coins: 15 },
+            { id: 22, name: '3te Anhänger Stellplatz', cost: 75000, coins: 15 },
+            { id: 23, name: '4te Anhänger Stellplatz', cost: 75000, coins: 15 },
+            { id: 24, name: '5te Anhänger Stellplatz', cost: 75000, coins: 15 },
             { id: 25, name: 'Bahnrettung', cost: 125000, coins: 25 },
         ],
 
@@ -166,8 +166,8 @@
         ],
         '0_small': [ // Feuerwehr (Kleinwache)
             { id: 0, name: 'Rettungsdienst', cost: 100000, coins: 20 },
-            { id: 1, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 2, name: 'AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 1, name: '1te AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 2, name: '2te AB-Stellplatz', cost: 100000, coins: 20 },
             { id: 6, name: 'Wasserrettung', cost: 400000, coins: 25 },
             { id: 8, name: 'Flughafenfeuerwehr', cost: 300000, coins: 25 },
             { id: 13, name: 'Werkfeuerwehr', cost: 100000, coins: 20 },
@@ -175,8 +175,8 @@
             { id: 16, name: 'Großlüfter', cost: 75000, coins: 25 },
             { id: 18, name: 'Drohneneinheit', cost: 150000, coins: 25 },
             { id: 19, name: 'Verpflegungsdienst', cost: 200000, coins: 25 },
-            { id: 20, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
-            { id: 21, name: 'Anhänger Stellplatz', cost: 75000, coins: 15 },
+            { id: 20, name: '1te Anhänger Stellplatz', cost: 75000, coins: 15 },
+            { id: 21, name: '2te Anhänger Stellplatz', cost: 75000, coins: 15 },
             { id: 25, name: 'Bahnrettung', cost: 125000, coins: 25 },
         ],
 
@@ -239,6 +239,8 @@
             max-height: 90vh;
             overflow-y: auto;
             position: relative;
+            text-align: center
+
         }
         #extension-lightbox #extension-lightbox-content.dark {
             background: #2c2f33;
@@ -391,7 +393,7 @@
          padding: 10px;
          text-align: center;
          vertical-align: middle;
-      }
+       }
 
     `;
 
@@ -510,8 +512,7 @@
                 <br>
                 <br>
                 <div id="extension-list">
-                Bitte habe einen Moment geduld
-                <br>
+                Bitte habe einen Moment Geduld!
                 <br>
                 Lade Gebäudedaten und erstelle die Tabellen...</div>
             </div>
@@ -782,6 +783,8 @@
             const buttonContainer = document.createElement('div');
             buttonContainer.style.display = 'flex';
             buttonContainer.style.gap = '10px';
+            buttonContainer.style.justifyContent = 'center';  // Standard: mittig
+            buttonContainer.style.alignItems = 'center';     // Vertikale Zentrierung
 
             const spoilerButton = document.createElement('button');
             spoilerButton.textContent = 'Erweiterungen anzeigen';
@@ -800,6 +803,27 @@
             buildAllButton.classList.add('build-all-button');
             buildAllButton.onclick = () => showCurrencySelectionForAll(groupKey);
             buttonContainer.appendChild(buildAllButton);
+
+            document.body.appendChild(buttonContainer);  // Füge den Container zum Body hinzu
+
+            // Globale Funktion zum Ändern der Ausrichtung
+            function setButtonAlignment(position) {
+                if (position === 'left') {
+                    buttonContainer.style.justifyContent = 'flex-start';  // Links ausrichten
+                } else if (position === 'center') {
+                    buttonContainer.style.justifyContent = 'center';  // Zentrieren
+                } else if (position === 'right') {
+                    buttonContainer.style.justifyContent = 'flex-end';  // Rechts ausrichten
+                } else {
+                    console.warn('Ungültige Ausrichtungsoption:', position);
+                }
+            }
+
+            // Beispiel-Aufrufe, um die Ausrichtung zu ändern
+            //setButtonAlignment('left');  // Buttons nach links ausrichten
+            setButtonAlignment('center');  // Buttons zentrieren
+            //setButtonAlignment('right');  // Buttons nach rechts ausrichten
+
 
             list.appendChild(buttonContainer);
 
@@ -834,9 +858,9 @@
                    Alle An- / Abwählen <br>
                    <input type="checkbox" class="select-all-checkbox" data-group="${groupKey}">
                  </th>
-                     <th style="padding: 10px; text-align: center; vertical-align: middle;">Leitstelle</th>
-                     <th style="padding: 10px; text-align: center; vertical-align: middle;">Wache</th>
-                     <th style="padding: 10px; text-align: center; vertical-align: middle;">Baubare Erweiterung</th>
+                     <th style="padding: 10px; text-align: center; vertical-align: middle;">Leitstellen</th>
+                     <th style="padding: 10px; text-align: center; vertical-align: middle;">Wachen</th>
+                     <th style="padding: 10px; text-align: center; vertical-align: middle;">Baubare Erweiterungen</th>
                      <th style="padding: 10px; text-align: center; vertical-align: middle;">Bauen mit Credits</th>
                      <th style="padding: 10px; text-align: center; vertical-align: middle;">Bauen mit Coins</th>
                 </tr>
