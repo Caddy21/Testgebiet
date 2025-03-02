@@ -291,6 +291,7 @@
             padding: 5px 10px;
             cursor: pointer;
             border-radius: 4px;
+            margin-top: 10px;
         }
         #extension-lightbox .extension-button:disabled {
             background-color: gray !important; /* Erzwingt die graue Hintergrundfarbe */
@@ -777,7 +778,7 @@
             const buildingType = buildingTypeNames[groupKey] || 'Unbekannt';
 
             const buildingHeader = document.createElement('h4');
-            buildingHeader.textContent = `Typ: ${buildingType}`;
+            buildingHeader.textContent = `${buildingType}`;
             list.appendChild(buildingHeader);
 
             const buttonContainer = document.createElement('div');
@@ -788,7 +789,7 @@
 
             const spoilerButton = document.createElement('button');
             spoilerButton.textContent = 'Erweiterungen anzeigen';
-            spoilerButton.classList.add('spoiler-button');
+            spoilerButton.classList.add('btn', 'spoiler-button');
             buttonContainer.appendChild(spoilerButton);
 
             const buildSelectedButton = document.createElement('button');
@@ -800,7 +801,7 @@
 
             const buildAllButton = document.createElement('button');
             buildAllButton.textContent = 'Alle Erweiterungen bei allen Wachen bauen';
-            buildAllButton.classList.add('build-all-button');
+            buildAllButton.classList.add('btn', 'build-all-button');
             buildAllButton.onclick = () => showCurrencySelectionForAll(groupKey);
             buttonContainer.appendChild(buildAllButton);
 
@@ -1261,234 +1262,234 @@
 
     // Funktion zum Bau der ausgewählten Erweiterungen
     async function buildSelectedExtensions() {
-    const selectedExtensions = document.querySelectorAll('.extension-checkbox:checked');
+        const selectedExtensions = document.querySelectorAll('.extension-checkbox:checked');
 
-    // Checkboxen sofort entmarkieren
-    selectedExtensions.forEach(checkbox => {
-        checkbox.checked = false;
-    });
+        // Checkboxen sofort entmarkieren
+        selectedExtensions.forEach(checkbox => {
+            checkbox.checked = false;
+        });
 
-    const selectedExtensionsByBuilding = {};
+        const selectedExtensionsByBuilding = {};
 
-    selectedExtensions.forEach(checkbox => {
-        const buildingId = checkbox.dataset.buildingId;
-        const extensionId = checkbox.dataset.extensionId;
+        selectedExtensions.forEach(checkbox => {
+            const buildingId = checkbox.dataset.buildingId;
+            const extensionId = checkbox.dataset.extensionId;
 
-        if (!selectedExtensionsByBuilding[buildingId]) {
-            selectedExtensionsByBuilding[buildingId] = [];
-        }
-        selectedExtensionsByBuilding[buildingId].push(parseInt(extensionId, 10));
-    });
+            if (!selectedExtensionsByBuilding[buildingId]) {
+                selectedExtensionsByBuilding[buildingId] = [];
+            }
+            selectedExtensionsByBuilding[buildingId].push(parseInt(extensionId, 10));
+        });
 
-    const userInfo = await getUserCredits();  // Holt die User-Daten
-    const isPremium = userInfo?.premium ?? false;  // Stellt sicher, dass isPremium definiert ist
+        const userInfo = await getUserCredits();  // Holt die User-Daten
+        const isPremium = userInfo?.premium ?? false;  // Stellt sicher, dass isPremium definiert ist
 
-    // **Nur für Nicht-Premium-Nutzer begrenzen!**
-    if (!user_premium) {
-        for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
-            if (extensions.length > 2) {
-                alert(`Zu viele Erweiterungen für Gebäude ${getBuildingCaption(buildingId)} ausgewählt.\n\nDa du keinen Premium-Account hast, kannst du maximal 2 Ausbauten auswählen.`);
-                return;
+        // **Nur für Nicht-Premium-Nutzer begrenzen!**
+        if (!user_premium) {
+            for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
+                if (extensions.length > 2) {
+                    alert(`Zu viele Erweiterungen für Gebäude ${getBuildingCaption(buildingId)} ausgewählt.\n\nDa du keinen Premium-Account hast, kannst du maximal 2 Ausbauten auswählen.`);
+                    return;
+                }
             }
         }
-    }
 
-    let totalCredits = 0;
-    let totalCoins = 0;
+        let totalCredits = 0;
+        let totalCoins = 0;
 
-    for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
-        extensions.forEach(extensionId => {
-            const row = document.querySelector(`.row-${buildingId}-${extensionId}`);
-            totalCredits += parseInt(row.querySelector('.credit-button').innerText.replace(/\D/g, ''), 10);
-            totalCoins += parseInt(row.querySelector('.coins-button').innerText.replace(/\D/g, ''), 10);
-        });
-    }
+        for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
+            extensions.forEach(extensionId => {
+                const row = document.querySelector(`.row-${buildingId}-${extensionId}`);
+                totalCredits += parseInt(row.querySelector('.credit-button').innerText.replace(/\D/g, ''), 10);
+                totalCoins += parseInt(row.querySelector('.coins-button').innerText.replace(/\D/g, ''), 10);
+            });
+        }
 
-    showCurrencySelection(selectedExtensionsByBuilding, userInfo);
+        showCurrencySelection(selectedExtensionsByBuilding, userInfo);
 
         document.querySelectorAll('.select-all-checkbox').forEach(checkbox => {
-    checkbox.checked = false;
-    checkbox.dispatchEvent(new Event('change')); // Event auslösen, falls nötig
-});
+            checkbox.checked = false;
+            checkbox.dispatchEvent(new Event('change')); // Event auslösen, falls nötig
+        });
 
-    // Sicherstellen, dass der Button deaktiviert wird
-    setTimeout(updateBuildSelectedButton, 100);
-}
+        // Sicherstellen, dass der Button deaktiviert wird
+        setTimeout(updateBuildSelectedButton, 100);
+    }
 
     // Funktion zur Auswahl der Zahlmöglichkeit sowie Prüfung der ausgewählten Erweiterungen
     async function showCurrencySelection(selectedExtensionsByBuilding, userInfo) {
-    const userSettings = await getUserMode();
-    const isDarkMode = userSettings && (userSettings.design_mode === 1 || userSettings.design_mode === 4);
+        const userSettings = await getUserMode();
+        const isDarkMode = userSettings && (userSettings.design_mode === 1 || userSettings.design_mode === 4);
 
-    let totalCredits = 0;
-    let totalCoins = 0;
-
-    for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
-        for (const extensionId of extensions) {
-            const row = document.querySelector(`.row-${buildingId}-${extensionId}`);
-            if (row) {
-                const extensionCost = parseInt(row.querySelector('.credit-button').innerText.replace(/\D/g, ''), 10);
-                const extensionCoins = parseInt(row.querySelector('.coins-button').innerText.replace(/\D/g, ''), 10);
-                totalCredits += extensionCost;
-                totalCoins += extensionCoins;
-            }
-        }
-    }
-
-    const fehlendeCredits = Math.max(0, totalCredits - userInfo.credits);
-    const fehlendeCoins = Math.max(0, totalCoins - userInfo.coins);
-
-    // Falls beides nicht reicht, zeige eine Meldung
-    if (userInfo.credits < totalCredits && userInfo.coins < totalCoins) {
-        alert(`Du hast nicht genug Ressourcen!\n\n- Fehlende Credits: ${formatNumber(fehlendeCredits)}\n- Fehlende Coins: ${formatNumber(fehlendeCoins)}`);
-        return;
-    }
-
-    const selectionDiv = document.createElement('div');
-    selectionDiv.className = 'currency-selection';
-    selectionDiv.style.background = isDarkMode ? '#333' : '#fff';
-    selectionDiv.style.color = isDarkMode ? '#fff' : '#000';
-    selectionDiv.style.borderColor = isDarkMode ? '#444' : '#ccc';
-
-    const totalText = document.createElement('p');
-    totalText.innerHTML = `Wähle zwischen <b>Credits (grün)</b> oder <b>Coins (rot)</b><br><br>Info:<br>Sollte eine Währung <b>nicht</b> ausreichend vorhanden sein,<br>kannst Du diese nicht auswählen`;
-    selectionDiv.appendChild(totalText);
-
-    const creditsButton = document.createElement('button');
-    creditsButton.className = 'currency-button credits-button';
-    creditsButton.textContent = `${formatNumber(totalCredits)} Credits`;
-    creditsButton.disabled = userInfo.credits < totalCredits;
-    creditsButton.onclick = async () => {
-        // Fortschrittsanzeige erst nach Auswahl
-        const progressContainer = document.createElement('div');
-        progressContainer.style.position = 'fixed';
-        progressContainer.style.top = '50%';
-        progressContainer.style.left = '50%';
-        progressContainer.style.transform = 'translate(-50%, -50%)'; // Positionierung, falls nötig
-        progressContainer.style.zIndex = '10002';
-        progressContainer.style.background = isDarkMode ? '#333' : '#fff'; // kein transparentes Hintergrund
-        progressContainer.style.padding = '20px';
-        progressContainer.style.borderRadius = '8px';
-        progressContainer.style.textAlign = 'center';
-        progressContainer.innerHTML = 'Bitte warten...';
-
-        const progressBar = document.createElement('div');
-        progressBar.style.height = '10px';
-        progressBar.style.width = '100%';
-        progressBar.style.backgroundColor = '#e0e0e0'; // normale Hintergrundfarbe ohne Transparenz
-        progressContainer.appendChild(progressBar);
-
-        const progressFill = document.createElement('div');
-        progressFill.style.height = '100%';
-        progressFill.style.width = '0%';
-        progressFill.style.backgroundColor = '#76c7c0'; // grüner Farbton für Fortschritt
-        progressBar.appendChild(progressFill);
-
-        // Textanzeige für Fortschritt
-        const progressText = document.createElement('p');
-        progressText.innerHTML = '0 von 0 Erweiterungen gebaut'; // initiale Anzeige
-        progressContainer.appendChild(progressText);
-
-        document.body.appendChild(progressContainer);
-
-        const updateProgress = (completed, total) => {
-            progressFill.style.width = `${(completed / total) * 100}%`;
-            progressText.innerHTML = `${completed} von ${total} Erweiterungen gebaut`;
-        };
-
-        let completed = 0;
-        const totalItems = Object.keys(selectedExtensionsByBuilding).length;
+        let totalCredits = 0;
+        let totalCoins = 0;
 
         for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
             for (const extensionId of extensions) {
                 const row = document.querySelector(`.row-${buildingId}-${extensionId}`);
                 if (row) {
                     const extensionCost = parseInt(row.querySelector('.credit-button').innerText.replace(/\D/g, ''), 10);
-                    await buildExtension({ id: buildingId }, extensionId, 'credits', extensionCost, row);
-                    completed++;
-                    updateProgress(completed, totalItems);
+                    const extensionCoins = parseInt(row.querySelector('.coins-button').innerText.replace(/\D/g, ''), 10);
+                    totalCredits += extensionCost;
+                    totalCoins += extensionCoins;
                 }
             }
         }
 
-        document.body.removeChild(progressContainer); // Fortschrittsanzeige entfernen
-        document.body.removeChild(selectionDiv); // Auswahl-Dialog entfernen
-    };
+        const fehlendeCredits = Math.max(0, totalCredits - userInfo.credits);
+        const fehlendeCoins = Math.max(0, totalCoins - userInfo.coins);
 
-    const coinsButton = document.createElement('button');
-    coinsButton.className = 'currency-button coins-button';
-    coinsButton.textContent = `${formatNumber(totalCoins)} Coins`;
-    coinsButton.disabled = userInfo.coins < totalCoins;
-    coinsButton.onclick = async () => {
-        // Fortschrittsanzeige erst nach Auswahl
-        const progressContainer = document.createElement('div');
-        progressContainer.style.position = 'fixed';
-        progressContainer.style.top = '50%';
-        progressContainer.style.left = '50%';
-        progressContainer.style.transform = 'translate(-50%, -50%)'; // Positionierung, falls nötig
-        progressContainer.style.zIndex = '10002';
-        progressContainer.style.background = isDarkMode ? '#333' : '#fff'; // kein transparentes Hintergrund
-        progressContainer.style.padding = '20px';
-        progressContainer.style.borderRadius = '8px';
-        progressContainer.style.textAlign = 'center';
-        progressContainer.innerHTML = 'Bitte warten...';
+        // Falls beides nicht reicht, zeige eine Meldung
+        if (userInfo.credits < totalCredits && userInfo.coins < totalCoins) {
+            alert(`Du hast nicht genug Ressourcen!\n\n- Fehlende Credits: ${formatNumber(fehlendeCredits)}\n- Fehlende Coins: ${formatNumber(fehlendeCoins)}`);
+            return;
+        }
 
-        const progressBar = document.createElement('div');
-        progressBar.style.height = '10px';
-        progressBar.style.width = '100%';
-        progressBar.style.backgroundColor = '#e0e0e0'; // normale Hintergrundfarbe ohne Transparenz
-        progressContainer.appendChild(progressBar);
+        const selectionDiv = document.createElement('div');
+        selectionDiv.className = 'currency-selection';
+        selectionDiv.style.background = isDarkMode ? '#333' : '#fff';
+        selectionDiv.style.color = isDarkMode ? '#fff' : '#000';
+        selectionDiv.style.borderColor = isDarkMode ? '#444' : '#ccc';
 
-        const progressFill = document.createElement('div');
-        progressFill.style.height = '100%';
-        progressFill.style.width = '0%';
-        progressFill.style.backgroundColor = '#76c7c0'; // grüner Farbton für Fortschritt
-        progressBar.appendChild(progressFill);
+        const totalText = document.createElement('p');
+        totalText.innerHTML = `Wähle zwischen <b>Credits (grün)</b> oder <b>Coins (rot)</b><br><br>Info:<br>Sollte eine Währung <b>nicht</b> ausreichend vorhanden sein,<br>kannst Du diese nicht auswählen`;
+        selectionDiv.appendChild(totalText);
 
-        // Textanzeige für Fortschritt
-        const progressText = document.createElement('p');
-        progressText.innerHTML = '0 von 0 Erweiterungen gebaut'; // initiale Anzeige
-        progressContainer.appendChild(progressText);
+        const creditsButton = document.createElement('button');
+        creditsButton.className = 'currency-button credits-button';
+        creditsButton.textContent = `${formatNumber(totalCredits)} Credits`;
+        creditsButton.disabled = userInfo.credits < totalCredits;
+        creditsButton.onclick = async () => {
+            // Fortschrittsanzeige erst nach Auswahl
+            const progressContainer = document.createElement('div');
+            progressContainer.style.position = 'fixed';
+            progressContainer.style.top = '50%';
+            progressContainer.style.left = '50%';
+            progressContainer.style.transform = 'translate(-50%, -50%)'; // Positionierung, falls nötig
+            progressContainer.style.zIndex = '10002';
+            progressContainer.style.background = isDarkMode ? '#333' : '#fff'; // kein transparentes Hintergrund
+            progressContainer.style.padding = '20px';
+            progressContainer.style.borderRadius = '8px';
+            progressContainer.style.textAlign = 'center';
+            progressContainer.innerHTML = 'Bitte warten...';
 
-        document.body.appendChild(progressContainer);
+            const progressBar = document.createElement('div');
+            progressBar.style.height = '10px';
+            progressBar.style.width = '100%';
+            progressBar.style.backgroundColor = '#e0e0e0'; // normale Hintergrundfarbe ohne Transparenz
+            progressContainer.appendChild(progressBar);
 
-        const updateProgress = (completed, total) => {
-            progressFill.style.width = `${(completed / total) * 100}%`;
-            progressText.innerHTML = `${completed} von ${total} Erweiterungen gebaut`;
+            const progressFill = document.createElement('div');
+            progressFill.style.height = '100%';
+            progressFill.style.width = '0%';
+            progressFill.style.backgroundColor = '#76c7c0'; // grüner Farbton für Fortschritt
+            progressBar.appendChild(progressFill);
+
+            // Textanzeige für Fortschritt
+            const progressText = document.createElement('p');
+            progressText.innerHTML = '0 von 0 Erweiterungen gebaut'; // initiale Anzeige
+            progressContainer.appendChild(progressText);
+
+            document.body.appendChild(progressContainer);
+
+            const updateProgress = (completed, total) => {
+                progressFill.style.width = `${(completed / total) * 100}%`;
+                progressText.innerHTML = `${completed} von ${total} Erweiterungen gebaut`;
+            };
+
+            let completed = 0;
+            const totalItems = Object.keys(selectedExtensionsByBuilding).length;
+
+            for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
+                for (const extensionId of extensions) {
+                    const row = document.querySelector(`.row-${buildingId}-${extensionId}`);
+                    if (row) {
+                        const extensionCost = parseInt(row.querySelector('.credit-button').innerText.replace(/\D/g, ''), 10);
+                        await buildExtension({ id: buildingId }, extensionId, 'credits', extensionCost, row);
+                        completed++;
+                        updateProgress(completed, totalItems);
+                    }
+                }
+            }
+
+            document.body.removeChild(progressContainer); // Fortschrittsanzeige entfernen
+            document.body.removeChild(selectionDiv); // Auswahl-Dialog entfernen
         };
 
-        let completed = 0;
-        const totalItems = Object.keys(selectedExtensionsByBuilding).length;
+        const coinsButton = document.createElement('button');
+        coinsButton.className = 'currency-button coins-button';
+        coinsButton.textContent = `${formatNumber(totalCoins)} Coins`;
+        coinsButton.disabled = userInfo.coins < totalCoins;
+        coinsButton.onclick = async () => {
+            // Fortschrittsanzeige erst nach Auswahl
+            const progressContainer = document.createElement('div');
+            progressContainer.style.position = 'fixed';
+            progressContainer.style.top = '50%';
+            progressContainer.style.left = '50%';
+            progressContainer.style.transform = 'translate(-50%, -50%)'; // Positionierung, falls nötig
+            progressContainer.style.zIndex = '10002';
+            progressContainer.style.background = isDarkMode ? '#333' : '#fff'; // kein transparentes Hintergrund
+            progressContainer.style.padding = '20px';
+            progressContainer.style.borderRadius = '8px';
+            progressContainer.style.textAlign = 'center';
+            progressContainer.innerHTML = 'Bitte warten...';
 
-        for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
-            for (const extensionId of extensions) {
-                const row = document.querySelector(`.row-${buildingId}-${extensionId}`);
-                if (row) {
-                    const extensionCoins = parseInt(row.querySelector('.coins-button').innerText.replace(/\D/g, ''), 10);
-                    await buildExtension({ id: buildingId }, extensionId, 'coins', extensionCoins, row);
-                    completed++;
-                    updateProgress(completed, totalItems);
+            const progressBar = document.createElement('div');
+            progressBar.style.height = '10px';
+            progressBar.style.width = '100%';
+            progressBar.style.backgroundColor = '#e0e0e0'; // normale Hintergrundfarbe ohne Transparenz
+            progressContainer.appendChild(progressBar);
+
+            const progressFill = document.createElement('div');
+            progressFill.style.height = '100%';
+            progressFill.style.width = '0%';
+            progressFill.style.backgroundColor = '#76c7c0'; // grüner Farbton für Fortschritt
+            progressBar.appendChild(progressFill);
+
+            // Textanzeige für Fortschritt
+            const progressText = document.createElement('p');
+            progressText.innerHTML = '0 von 0 Erweiterungen gebaut'; // initiale Anzeige
+            progressContainer.appendChild(progressText);
+
+            document.body.appendChild(progressContainer);
+
+            const updateProgress = (completed, total) => {
+                progressFill.style.width = `${(completed / total) * 100}%`;
+                progressText.innerHTML = `${completed} von ${total} Erweiterungen gebaut`;
+            };
+
+            let completed = 0;
+            const totalItems = Object.keys(selectedExtensionsByBuilding).length;
+
+            for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
+                for (const extensionId of extensions) {
+                    const row = document.querySelector(`.row-${buildingId}-${extensionId}`);
+                    if (row) {
+                        const extensionCoins = parseInt(row.querySelector('.coins-button').innerText.replace(/\D/g, ''), 10);
+                        await buildExtension({ id: buildingId }, extensionId, 'coins', extensionCoins, row);
+                        completed++;
+                        updateProgress(completed, totalItems);
+                    }
                 }
             }
-        }
 
-        document.body.removeChild(progressContainer); // Fortschrittsanzeige entfernen
-        document.body.removeChild(selectionDiv); // Auswahl-Dialog entfernen
-    };
+            document.body.removeChild(progressContainer); // Fortschrittsanzeige entfernen
+            document.body.removeChild(selectionDiv); // Auswahl-Dialog entfernen
+        };
 
-    const cancelButton = document.createElement('button');
-    cancelButton.className = 'cancel-button';
-    cancelButton.textContent = 'Abbrechen';
-    cancelButton.onclick = () => {
-        document.body.removeChild(selectionDiv); // Auswahl-Dialog entfernen
-    };
+        const cancelButton = document.createElement('button');
+        cancelButton.className = 'cancel-button';
+        cancelButton.textContent = 'Abbrechen';
+        cancelButton.onclick = () => {
+            document.body.removeChild(selectionDiv); // Auswahl-Dialog entfernen
+        };
 
-    selectionDiv.appendChild(creditsButton);
-    selectionDiv.appendChild(coinsButton);
-    selectionDiv.appendChild(cancelButton);
+        selectionDiv.appendChild(creditsButton);
+        selectionDiv.appendChild(coinsButton);
+        selectionDiv.appendChild(cancelButton);
 
-    document.body.appendChild(selectionDiv);
-}
+        document.body.appendChild(selectionDiv);
+    }
 
     // Updatefunktion des Buttons
     function updateBuildSelectedButton() {
@@ -1519,76 +1520,76 @@
 
     // Funktion zur Auswahl der Währung und Prüfung der Credit/Coins vorhandenheit
     async function showCurrencySelectionForAll(groupKey) {
-    const userSettings = await getUserMode();
-    const isDarkMode = userSettings && (userSettings.design_mode === 1 || userSettings.design_mode === 4);
+        const userSettings = await getUserMode();
+        const isDarkMode = userSettings && (userSettings.design_mode === 1 || userSettings.design_mode === 4);
 
-    if (!buildingGroups[groupKey]) {
-        console.error(`Ungültiger Gruppen-Key: ${groupKey}`);
-        return;
-    }
+        if (!buildingGroups[groupKey]) {
+            console.error(`Ungültiger Gruppen-Key: ${groupKey}`);
+            return;
+        }
 
-    const group = buildingGroups[groupKey];
-    let totalCredits = 0;
-    let totalCoins = 0;
+        const group = buildingGroups[groupKey];
+        let totalCredits = 0;
+        let totalCoins = 0;
 
-    group.forEach(({ missingExtensions }) => {
-        missingExtensions.forEach(extension => {
-            totalCredits += extension.cost;
-            totalCoins += extension.coins;
+        group.forEach(({ missingExtensions }) => {
+            missingExtensions.forEach(extension => {
+                totalCredits += extension.cost;
+                totalCoins += extension.coins;
+            });
         });
-    });
 
-    const userInfo = await getUserCredits();
-    const fehlendeCredits = Math.max(0, totalCredits - userInfo.credits);
-    const fehlendeCoins = Math.max(0, totalCoins - userInfo.coins);
+        const userInfo = await getUserCredits();
+        const fehlendeCredits = Math.max(0, totalCredits - userInfo.credits);
+        const fehlendeCoins = Math.max(0, totalCoins - userInfo.coins);
 
-    // Falls beides nicht reicht, zeige eine Meldung
-    if (userInfo.credits < totalCredits && userInfo.coins < totalCoins) {
-        alert(`Du hast nicht genug Ressourcen!\n\n- Fehlende Credits: ${formatNumber(fehlendeCredits)}\n- Fehlende Coins: ${formatNumber(fehlendeCoins)}`);
-        return;
+        // Falls beides nicht reicht, zeige eine Meldung
+        if (userInfo.credits < totalCredits && userInfo.coins < totalCoins) {
+            alert(`Du hast nicht genug Ressourcen!\n\n- Fehlende Credits: ${formatNumber(fehlendeCredits)}\n- Fehlende Coins: ${formatNumber(fehlendeCoins)}`);
+            return;
+        }
+
+        const selectionDiv = document.createElement('div');
+        selectionDiv.className = 'currency-selection';
+        selectionDiv.style.background = isDarkMode ? '#333' : '#fff';
+        selectionDiv.style.color = isDarkMode ? '#fff' : '#000';
+        selectionDiv.style.borderColor = isDarkMode ? '#444' : '#ccc';
+
+        const totalText = document.createElement('p');
+        totalText.innerHTML = `Wähle zwischen <b>Credits (grün)</b> oder <b>Coins (rot)</b><br><br>Info:<br>Sollte eine Währung <b>nicht</b> ausreichend vorhanden sein,<br>kannst Du diese nicht auswählen`;
+        selectionDiv.appendChild(totalText);
+
+        const creditsButton = document.createElement('button');
+        creditsButton.className = 'currency-button credits-button';
+        creditsButton.textContent = `${formatNumber(totalCredits)} Credits`;
+        creditsButton.disabled = userInfo.credits < totalCredits;
+        creditsButton.onclick = async () => {
+            document.body.removeChild(selectionDiv);
+            await calculateAndBuildAllExtensions(groupKey, 'credits');
+        };
+
+        const coinsButton = document.createElement('button');
+        coinsButton.className = 'currency-button coins-button';
+        coinsButton.textContent = `${formatNumber(totalCoins)} Coins`;
+        coinsButton.disabled = userInfo.coins < totalCoins;
+        coinsButton.onclick = async () => {
+            document.body.removeChild(selectionDiv);
+            await calculateAndBuildAllExtensions(groupKey, 'coins');
+        };
+
+        const cancelButton = document.createElement('button');
+        cancelButton.className = 'cancel-button';
+        cancelButton.textContent = 'Abbrechen';
+        cancelButton.onclick = () => {
+            document.body.removeChild(selectionDiv);
+        };
+
+        selectionDiv.appendChild(creditsButton);
+        selectionDiv.appendChild(coinsButton);
+        selectionDiv.appendChild(cancelButton);
+
+        document.body.appendChild(selectionDiv);
     }
-
-    const selectionDiv = document.createElement('div');
-    selectionDiv.className = 'currency-selection';
-    selectionDiv.style.background = isDarkMode ? '#333' : '#fff';
-    selectionDiv.style.color = isDarkMode ? '#fff' : '#000';
-    selectionDiv.style.borderColor = isDarkMode ? '#444' : '#ccc';
-
-    const totalText = document.createElement('p');
-    totalText.innerHTML = `Wähle zwischen <b>Credits (grün)</b> oder <b>Coins (rot)</b><br><br>Info:<br>Sollte eine Währung <b>nicht</b> ausreichend vorhanden sein,<br>kannst Du diese nicht auswählen`;
-    selectionDiv.appendChild(totalText);
-
-    const creditsButton = document.createElement('button');
-    creditsButton.className = 'currency-button credits-button';
-    creditsButton.textContent = `${formatNumber(totalCredits)} Credits`;
-    creditsButton.disabled = userInfo.credits < totalCredits;
-    creditsButton.onclick = async () => {
-        document.body.removeChild(selectionDiv);
-        await calculateAndBuildAllExtensions(groupKey, 'credits');
-    };
-
-    const coinsButton = document.createElement('button');
-    coinsButton.className = 'currency-button coins-button';
-    coinsButton.textContent = `${formatNumber(totalCoins)} Coins`;
-    coinsButton.disabled = userInfo.coins < totalCoins;
-    coinsButton.onclick = async () => {
-        document.body.removeChild(selectionDiv);
-        await calculateAndBuildAllExtensions(groupKey, 'coins');
-    };
-
-    const cancelButton = document.createElement('button');
-    cancelButton.className = 'cancel-button';
-    cancelButton.textContent = 'Abbrechen';
-    cancelButton.onclick = () => {
-        document.body.removeChild(selectionDiv);
-    };
-
-    selectionDiv.appendChild(creditsButton);
-    selectionDiv.appendChild(coinsButton);
-    selectionDiv.appendChild(cancelButton);
-
-    document.body.appendChild(selectionDiv);
-}
 
     // Funktion um die Gesamtkosten zu errechnen
     async function calculateAndBuildAllExtensions(groupKey, currency) {
