@@ -779,12 +779,14 @@
 
             const buildingHeader = document.createElement('h4');
             buildingHeader.textContent = `${buildingType}`;
+            buildingHeader.classList.add('building-header');  // Eine Klasse hinzufügen, um den Header später anzusprechen
             list.appendChild(buildingHeader);
 
+            // Erstelle den Container für die Buttons
             const buttonContainer = document.createElement('div');
             buttonContainer.style.display = 'flex';
             buttonContainer.style.gap = '10px';
-            buttonContainer.style.justifyContent = 'center';  // Standard: mittig
+            buttonContainer.style.justifyContent = 'center';  // Standard: Mittig ausrichten
             buttonContainer.style.alignItems = 'center';     // Vertikale Zentrierung
 
             const spoilerButton = document.createElement('button');
@@ -800,31 +802,12 @@
             buttonContainer.appendChild(buildSelectedButton);
 
             const buildAllButton = document.createElement('button');
-            buildAllButton.textContent = 'Alle Erweiterungen bei allen Wachen bauen';
+            buildAllButton.textContent = 'Sämtliche Erweiterungen bei allen Wachen bauen';
             buildAllButton.classList.add('btn', 'build-all-button');
             buildAllButton.onclick = () => showCurrencySelectionForAll(groupKey);
             buttonContainer.appendChild(buildAllButton);
 
             document.body.appendChild(buttonContainer);  // Füge den Container zum Body hinzu
-
-            // Globale Funktion zum Ändern der Ausrichtung
-            function setButtonAlignment(position) {
-                if (position === 'left') {
-                    buttonContainer.style.justifyContent = 'flex-start';  // Links ausrichten
-                } else if (position === 'center') {
-                    buttonContainer.style.justifyContent = 'center';  // Zentrieren
-                } else if (position === 'right') {
-                    buttonContainer.style.justifyContent = 'flex-end';  // Rechts ausrichten
-                } else {
-                    console.warn('Ungültige Ausrichtungsoption:', position);
-                }
-            }
-
-            // Beispiel-Aufrufe, um die Ausrichtung zu ändern
-            //setButtonAlignment('left');  // Buttons nach links ausrichten
-            setButtonAlignment('center');  // Buttons zentrieren
-            //setButtonAlignment('right');  // Buttons nach rechts ausrichten
-
 
             list.appendChild(buttonContainer);
 
@@ -981,20 +964,20 @@
     addMenuButton();
 
     function filterTable(tbody, searchTerm) {
-    const rows = tbody.querySelectorAll("tr");
+        const rows = tbody.querySelectorAll("tr");
 
-    rows.forEach(row => {
-        const leitstelle = row.cells[1]?.textContent.toLowerCase() || "";
-        const wachenName = row.cells[2]?.textContent.toLowerCase() || "";
-        const erweiterung = row.cells[3]?.textContent.toLowerCase() || "";
+        rows.forEach(row => {
+            const leitstelle = row.cells[1]?.textContent.toLowerCase() || "";
+            const wachenName = row.cells[2]?.textContent.toLowerCase() || "";
+            const erweiterung = row.cells[3]?.textContent.toLowerCase() || "";
 
-        if (leitstelle.includes(searchTerm) || wachenName.includes(searchTerm) || erweiterung.includes(searchTerm)) {
-            row.style.display = "";
-        } else {
-            row.style.display = "none";
-        }
-    });
-}
+            if (leitstelle.includes(searchTerm) || wachenName.includes(searchTerm) || erweiterung.includes(searchTerm)) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    }
 
     // Funktion zur Unterscheidung der Erweiterungswarteschlange zwischen Premium und Nicht Premium User
     function isExtensionLimitReached(building, extensionId) {
