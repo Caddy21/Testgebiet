@@ -683,144 +683,144 @@
     }
 
     async function renderMissingExtensions(buildings) {
-    const userInfo = await getUserCredits();
-    const list = document.getElementById('extension-list');
-    list.innerHTML = ''; // Lösche den Inhalt der Lightbox
+        const userInfo = await getUserCredits();
+        const list = document.getElementById('extension-list');
+        list.innerHTML = ''; // Lösche den Inhalt der Lightbox
 
-    // Setze die globalen Variablen zurück
-    buildingGroups = {};
-    buildingsData = buildings;
+        // Setze die globalen Variablen zurück
+        buildingGroups = {};
+        buildingsData = buildings;
 
-    buildings.sort((a, b) => {
-        if (a.building_type === b.building_type) {
-            return a.caption.localeCompare(b.caption);
-        }
-        return a.building_type - b.building_type;
-    });
-
-    buildings.forEach(building => {
-        const buildingTypeKey = `${building.building_type}_${building.small_building ? 'small' : 'normal'}`;
-        const extensions = manualExtensions[buildingTypeKey];
-        if (!extensions) return;
-
-        const existingExtensions = new Set(building.extensions.map(e => e.type_id));
-
-        const allowedExtensions = extensions.filter(extension => {
-            if (isExtensionLimitReached(building, extension.id)) {
-                return false;
+        buildings.sort((a, b) => {
+            if (a.building_type === b.building_type) {
+                return a.caption.localeCompare(b.caption);
             }
-
-            // Spezifische Erweiterungen ausblenden, wenn bereits eine der relevanten Erweiterungen vorhanden ist
-            if (building.building_type === 6 && building.small_building) {  // Polizeiwache (Kleinwache)
-                const forbiddenExtensions = [10, 11, 12, 13];
-                if (forbiddenExtensions.some(id => existingExtensions.has(id))) {
-                    return !forbiddenExtensions.includes(extension.id);
-                }
-            }
-
-            if (building.building_type === 0 && building.small_building) {  // Feuerwache (Kleinwache)
-                const forbiddenExtensions = [0, 6, 8, 13, 14, 16, 18, 19, 25];
-                if (forbiddenExtensions.some(id => existingExtensions.has(id))) {
-                    return !forbiddenExtensions.includes(extension.id);
-                }
-            }
-
-            return !existingExtensions.has(extension.id);
+            return a.building_type - b.building_type;
         });
 
-        if (allowedExtensions.length > 0) {
-            if (!buildingGroups[buildingTypeKey]) {
-                buildingGroups[buildingTypeKey] = [];
-            }
-            buildingGroups[buildingTypeKey].push({ building, missingExtensions: allowedExtensions });
-        }
-    });
+        buildings.forEach(building => {
+            const buildingTypeKey = `${building.building_type}_${building.small_building ? 'small' : 'normal'}`;
+            const extensions = manualExtensions[buildingTypeKey];
+            if (!extensions) return;
 
-    const buildingTypeNames = {
-        '0_normal': 'Feuerwache (Normal)',
-        '0_small': 'Feuerwache (Kleinwache)',
-        '1_normal': 'Feuerwehrschule',
-        '2_normal': 'Rettungswache',
-        '3_normal': 'Rettungsschule',
-        '4_normal': 'Krankenhaus',
-        '5_normal': 'Rettungshubschrauber-Station',
-        '6_normal': 'Polizeiwache',
-        '6_small': 'Polizeiwache (Klein)',
-        '8_normal': 'Polizeischule',
-        '9_normal': 'Technisches Hilfswwerk',
-        '10_normal': 'Technisches Hilfswoche Bundesschule',
-        '11_normal': 'Bereitschaftspolizei',
-        '12_normal': 'Schnelleinsatzgruppe (SEG)',
-        '13_normal': 'Polizeihubschrauberstation',
-        '17_normal': 'Polizei-Sondereinheiten',
-        '24_normal': 'Reiterstaffel',
-        '25_normal': 'Bergrettungswache',
-        '27_normal': 'Schule für Seefahrt und Seenotrettung',
-    };
+            const existingExtensions = new Set(building.extensions.map(e => e.type_id));
 
-    Object.keys(buildingGroups).forEach(groupKey => {
-        const group = buildingGroups[groupKey];
-        const buildingType = buildingTypeNames[groupKey] || 'Unbekannt';
+            const allowedExtensions = extensions.filter(extension => {
+                if (isExtensionLimitReached(building, extension.id)) {
+                    return false;
+                }
 
-        const buildingHeader = document.createElement('h4');
-        buildingHeader.textContent = `${buildingType}`;
-        buildingHeader.classList.add('building-header');
-        list.appendChild(buildingHeader);
+                // Spezifische Erweiterungen ausblenden, wenn bereits eine der relevanten Erweiterungen vorhanden ist
+                if (building.building_type === 6 && building.small_building) {  // Polizeiwache (Kleinwache)
+                    const forbiddenExtensions = [10, 11, 12, 13];
+                    if (forbiddenExtensions.some(id => existingExtensions.has(id))) {
+                        return !forbiddenExtensions.includes(extension.id);
+                    }
+                }
 
-        const buttonContainer = document.createElement('div');
-        buttonContainer.style.display = 'flex';
-        buttonContainer.style.gap = '10px';
-        buttonContainer.style.justifyContent = 'center';
-        buttonContainer.style.alignItems = 'center';
+                if (building.building_type === 0 && building.small_building) {  // Feuerwache (Kleinwache)
+                    const forbiddenExtensions = [0, 6, 8, 13, 14, 16, 18, 19, 25];
+                    if (forbiddenExtensions.some(id => existingExtensions.has(id))) {
+                        return !forbiddenExtensions.includes(extension.id);
+                    }
+                }
 
-        const spoilerButton = document.createElement('button');
-        spoilerButton.textContent = 'Erweiterungen anzeigen';
-        spoilerButton.classList.add('btn', 'spoiler-button');
-        buttonContainer.appendChild(spoilerButton);
+                return !existingExtensions.has(extension.id);
+            });
 
-        const buildSelectedButton = document.createElement('button');
-        buildSelectedButton.textContent = 'Ausgewählte Erweiterungen bauen';
-        buildSelectedButton.classList.add('btn', 'build-selected-button');
-        buildSelectedButton.disabled = true; // Initial disabled
-        buildSelectedButton.onclick = () => buildSelectedExtensions();
-        buttonContainer.appendChild(buildSelectedButton);
-
-        const buildAllButton = document.createElement('button');
-        buildAllButton.textContent = 'Sämtliche Erweiterungen bei allen Wachen bauen';
-        buildAllButton.classList.add('btn', 'build-all-button');
-        buildAllButton.onclick = () => showCurrencySelectionForAll(groupKey);
-        buttonContainer.appendChild(buildAllButton);
-
-        document.body.appendChild(buttonContainer);
-
-        list.appendChild(buttonContainer);
-
-        const contentWrapper = document.createElement('div');
-        contentWrapper.className = 'spoiler-content';
-        contentWrapper.style.display = 'none';
-
-        const searchInput = document.createElement('input');
-        searchInput.type = "text";
-        searchInput.placeholder = "🔍 Hier könnt Ihr nach Leistellen, Wachen oder Erweiterungen suchen...";
-        searchInput.style.width = "100%";
-        searchInput.style.marginBottom = "10px";
-        searchInput.style.padding = "5px";
-        searchInput.style.fontSize = "14px";
-        searchInput.style.display = 'block';
-
-        spoilerButton.addEventListener('click', () => {
-            if (contentWrapper.style.display === 'none') {
-                contentWrapper.style.display = 'block';
-                spoilerButton.textContent = 'Erweiterungen ausblenden';
-            } else {
-                contentWrapper.style.display = 'none';
-                spoilerButton.textContent = 'Erweiterungen anzeigen';
+            if (allowedExtensions.length > 0) {
+                if (!buildingGroups[buildingTypeKey]) {
+                    buildingGroups[buildingTypeKey] = [];
+                }
+                buildingGroups[buildingTypeKey].push({ building, missingExtensions: allowedExtensions });
             }
         });
 
-        const table = document.createElement('table');
-        table.innerHTML = `
-        <thead style="background-color: #f2f2f2; font-weight: bold; border-bottom: 2px solid #ccc;">
+        const buildingTypeNames = {
+            '0_normal': 'Feuerwache (Normal)',
+            '0_small': 'Feuerwache (Kleinwache)',
+            '1_normal': 'Feuerwehrschule',
+            '2_normal': 'Rettungswache',
+            '3_normal': 'Rettungsschule',
+            '4_normal': 'Krankenhaus',
+            '5_normal': 'Rettungshubschrauber-Station',
+            '6_normal': 'Polizeiwache',
+            '6_small': 'Polizeiwache (Klein)',
+            '8_normal': 'Polizeischule',
+            '9_normal': 'Technisches Hilfswwerk',
+            '10_normal': 'Technisches Hilfswoche Bundesschule',
+            '11_normal': 'Bereitschaftspolizei',
+            '12_normal': 'Schnelleinsatzgruppe (SEG)',
+            '13_normal': 'Polizeihubschrauberstation',
+            '17_normal': 'Polizei-Sondereinheiten',
+            '24_normal': 'Reiterstaffel',
+            '25_normal': 'Bergrettungswache',
+            '27_normal': 'Schule für Seefahrt und Seenotrettung',
+        };
+
+        Object.keys(buildingGroups).forEach(groupKey => {
+            const group = buildingGroups[groupKey];
+            const buildingType = buildingTypeNames[groupKey] || 'Unbekannt';
+
+            const buildingHeader = document.createElement('h4');
+            buildingHeader.textContent = `${buildingType}`;
+            buildingHeader.classList.add('building-header');
+            list.appendChild(buildingHeader);
+
+            const buttonContainer = document.createElement('div');
+            buttonContainer.style.display = 'flex';
+            buttonContainer.style.gap = '10px';
+            buttonContainer.style.justifyContent = 'center';
+            buttonContainer.style.alignItems = 'center';
+
+            const spoilerButton = document.createElement('button');
+            spoilerButton.textContent = 'Erweiterungen anzeigen';
+            spoilerButton.classList.add('btn', 'spoiler-button');
+            buttonContainer.appendChild(spoilerButton);
+
+            const buildSelectedButton = document.createElement('button');
+            buildSelectedButton.textContent = 'Ausgewählte Erweiterungen bauen';
+            buildSelectedButton.classList.add('btn', 'build-selected-button');
+            buildSelectedButton.disabled = true; // Initial disabled
+            buildSelectedButton.onclick = () => buildSelectedExtensions();
+            buttonContainer.appendChild(buildSelectedButton);
+
+            const buildAllButton = document.createElement('button');
+            buildAllButton.textContent = 'Sämtliche Erweiterungen bei allen Wachen bauen';
+            buildAllButton.classList.add('btn', 'build-all-button');
+            buildAllButton.onclick = () => showCurrencySelectionForAll(groupKey);
+            buttonContainer.appendChild(buildAllButton);
+
+            document.body.appendChild(buttonContainer);
+
+            list.appendChild(buttonContainer);
+
+            const contentWrapper = document.createElement('div');
+            contentWrapper.className = 'spoiler-content';
+            contentWrapper.style.display = 'none';
+
+            const searchInput = document.createElement('input');
+            searchInput.type = "text";
+            searchInput.placeholder = "🔍 Hier könnt Ihr nach Leistellen, Wachen oder Erweiterungen suchen...";
+            searchInput.style.width = "100%";
+            searchInput.style.marginBottom = "10px";
+            searchInput.style.padding = "5px";
+            searchInput.style.fontSize = "14px";
+            searchInput.style.display = 'block';
+
+            spoilerButton.addEventListener('click', () => {
+                if (contentWrapper.style.display === 'none') {
+                    contentWrapper.style.display = 'block';
+                    spoilerButton.textContent = 'Erweiterungen ausblenden';
+                } else {
+                    contentWrapper.style.display = 'none';
+                    spoilerButton.textContent = 'Erweiterungen anzeigen';
+                }
+            });
+
+            const table = document.createElement('table');
+            table.innerHTML = `
+            <thead style="background-color: #f2f2f2; font-weight: bold; border-bottom: 2px solid #ccc;">
              <tr>
                <th style="padding: 10px; text-align: center; vertical-align: middle;">
                Alle An- / Abwählen <br>
@@ -836,101 +836,100 @@
       <tbody></tbody>
     `;
 
-        const tbody = table.querySelector('tbody');
-        const selectAllCheckbox = table.querySelector('.select-all-checkbox');
+            const tbody = table.querySelector('tbody');
+            const selectAllCheckbox = table.querySelector('.select-all-checkbox');
 
-        selectAllCheckbox.addEventListener('change', function() {
-            const groupCheckboxes = table.querySelectorAll('.extension-checkbox');
-            groupCheckboxes.forEach(checkbox => {
-                if (!checkbox.disabled && checkbox.offsetParent !== null) {
-                    checkbox.checked = selectAllCheckbox.checked;
-                }
+            selectAllCheckbox.addEventListener('change', function() {
+                const groupCheckboxes = table.querySelectorAll('.extension-checkbox');
+                groupCheckboxes.forEach(checkbox => {
+                    if (!checkbox.disabled && checkbox.offsetParent !== null) {
+                        checkbox.checked = selectAllCheckbox.checked;
+                    }
+                });
+
+                updateBuildSelectedButton();
             });
 
-            updateBuildSelectedButton();
-        });
+            group.forEach(({ building, missingExtensions }) => {
+                missingExtensions.forEach(extension => {
+                    if (isExtensionLimitReached(building, extension.id)) {
+                        return;
+                    }
 
-        group.forEach(({ building, missingExtensions }) => {
-            missingExtensions.forEach(extension => {
-                if (isExtensionLimitReached(building, extension.id)) {
-                    return;
-                }
+                    const row = document.createElement('tr');
+                    row.classList.add(`row-${building.id}-${extension.id}`);
 
-                const row = document.createElement('tr');
-                row.classList.add(`row-${building.id}-${extension.id}`);
+                    const checkboxCell = document.createElement('td');
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.className = 'extension-checkbox';
+                    checkbox.dataset.buildingId = building.id;
+                    checkbox.dataset.extensionId = extension.id;
+                    checkbox.disabled = userInfo.credits < extension.cost || userInfo.coins < extension.coins;
+                    checkbox.addEventListener('change', updateBuildSelectedButton);
+                    checkboxCell.style.textAlign = 'center';
+                    checkboxCell.style.verticalAlign = 'middle';
+                    checkboxCell.appendChild(checkbox);
+                    row.appendChild(checkboxCell);
 
-                const checkboxCell = document.createElement('td');
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.className = 'extension-checkbox';
-                checkbox.dataset.buildingId = building.id;
-                checkbox.dataset.extensionId = extension.id;
-                checkbox.disabled = userInfo.credits < extension.cost || userInfo.coins < extension.coins;
-                checkbox.addEventListener('change', updateBuildSelectedButton);
-                checkboxCell.style.textAlign = 'center';
-                checkboxCell.style.verticalAlign = 'middle';
-                checkboxCell.appendChild(checkbox);
-                row.appendChild(checkboxCell);
+                    const leitstelleCell = document.createElement('td');
+                    leitstelleCell.textContent = getLeitstelleName(building);
+                    leitstelleCell.style.textAlign = 'center';
+                    leitstelleCell.style.verticalAlign = 'middle';
+                    row.appendChild(leitstelleCell);
 
-                const leitstelleCell = document.createElement('td');
-                leitstelleCell.textContent = getLeitstelleName(building);
-                leitstelleCell.style.textAlign = 'center';
-                leitstelleCell.style.verticalAlign = 'middle';
-                row.appendChild(leitstelleCell);
+                    const nameCell = document.createElement('td');
+                    nameCell.textContent = building.caption;
+                    nameCell.style.textAlign = 'center';
+                    nameCell.style.verticalAlign = 'middle';
+                    row.appendChild(nameCell);
 
-                const nameCell = document.createElement('td');
-                nameCell.textContent = building.caption;
-                nameCell.style.textAlign = 'center';
-                nameCell.style.verticalAlign = 'middle';
-                row.appendChild(nameCell);
+                    const extensionCell = document.createElement('td');
+                    extensionCell.textContent = extension.name;
+                    extensionCell.style.textAlign = 'center';
+                    extensionCell.style.verticalAlign = 'middle';
+                    row.appendChild(extensionCell);
 
-                const extensionCell = document.createElement('td');
-                extensionCell.textContent = extension.name;
-                extensionCell.style.textAlign = 'center';
-                extensionCell.style.verticalAlign = 'middle';
-                row.appendChild(extensionCell);
+                    const creditCell = document.createElement('td');
+                    const creditButton = document.createElement('button');
+                    creditButton.textContent = `${formatNumber(extension.cost)} Credits`;
+                    creditButton.classList.add('btn', 'btn-xl', 'credit-button');
+                    creditButton.style.backgroundColor = '#28a745';
+                    creditButton.style.color = 'white';
+                    creditButton.disabled = userInfo.credits < extension.cost;
+                    creditButton.onclick = () => buildExtension(building, extension.id, 'credits', extension.cost, row);
+                    creditCell.style.textAlign = 'center';
+                    creditCell.style.verticalAlign = 'middle';
+                    creditCell.appendChild(creditButton);
+                    row.appendChild(creditCell);
 
-                const creditCell = document.createElement('td');
-                const creditButton = document.createElement('button');
-                creditButton.textContent = `${formatNumber(extension.cost)} Credits`;
-                creditButton.classList.add('btn', 'btn-xl', 'credit-button');
-                creditButton.style.backgroundColor = '#28a745';
-                creditButton.style.color = 'white';
-                creditButton.disabled = userInfo.credits < extension.cost;
-                creditButton.onclick = () => buildExtension(building, extension.id, 'credits', extension.cost, row);
-                creditCell.style.textAlign = 'center';
-                creditCell.style.verticalAlign = 'middle';
-                creditCell.appendChild(creditButton);
-                row.appendChild(creditCell);
+                    const coinsCell = document.createElement('td');
+                    const coinsButton = document.createElement('button');
+                    coinsButton.textContent = `${extension.coins} Coins`;
+                    coinsButton.classList.add('btn', 'btn-xl', 'coins-button');
+                    coinsButton.style.backgroundColor = '#dc3545';
+                    coinsButton.style.color = 'white';
+                    coinsButton.disabled = userInfo.coins < extension.coins;
+                    coinsButton.onclick = () => buildExtension(building, extension.id, 'coins', extension.coins, row);
+                    coinsCell.style.textAlign = 'center';
+                    coinsCell.style.verticalAlign = 'middle';
+                    coinsCell.appendChild(coinsButton);
+                    row.appendChild(coinsCell);
 
-                const coinsCell = document.createElement('td');
-                const coinsButton = document.createElement('button');
-                coinsButton.textContent = `${extension.coins} Coins`;
-                coinsButton.classList.add('btn', 'btn-xl', 'coins-button');
-                coinsButton.style.backgroundColor = '#dc3545';
-                coinsButton.style.color = 'white';
-                coinsButton.disabled = userInfo.coins < extension.coins;
-                coinsButton.onclick = () => buildExtension(building, extension.id, 'coins', extension.coins, row);
-                coinsCell.style.textAlign = 'center';
-                coinsCell.style.verticalAlign = 'middle';
-                coinsCell.appendChild(coinsButton);
-                row.appendChild(coinsCell);
+                    tbody.appendChild(row);
+                });
+            });
 
-                tbody.appendChild(row);
+            contentWrapper.appendChild(searchInput);
+            contentWrapper.appendChild(table);
+            list.appendChild(contentWrapper);
+
+            searchInput.addEventListener("input", function() {
+                const searchTerm = searchInput.value.toLowerCase();
+                filterTable(tbody, searchTerm);
             });
         });
-
-        contentWrapper.appendChild(searchInput);
-        contentWrapper.appendChild(table);
-        list.appendChild(contentWrapper);
-
-        searchInput.addEventListener("input", function() {
-            const searchTerm = searchInput.value.toLowerCase();
-            filterTable(tbody, searchTerm);
-        });
-    });
-}
-
+    }
 
     // Schließen-Button-Funktionalität
     document.getElementById('close-extension-helper').addEventListener('click', () => {
@@ -1267,7 +1266,9 @@
                     const invalidCombinationsFeuerwache = [0, 6, 8, 13, 14, 16, 18, 19, 25];
                     const selectedInvalidExtensionsFeuerwache = extensions.filter(extensionId => invalidCombinationsFeuerwache.includes(extensionId));
                     if (selectedInvalidExtensionsFeuerwache.length > 1) {
-                        showError("Fehler: Diese Erweiterungen für die Feuerwache (Kleinwache) können nicht zusammen gebaut werden.");
+                        showError("Information zu deinem Bauvorhaben:\n\nDiese Erweiterungen für die Feuerwache (Kleinwache) können nicht zusammen gebaut werden.\n\nBitte wähle nur eine der beiden aus.");
+                        updateBuildSelectedButton();
+
                         return;
                     }
                 }
@@ -1277,7 +1278,9 @@
                     const invalidCombinationsPolizei = [10, 11, 12, 13];
                     const selectedInvalidExtensionsPolizei = extensions.filter(extensionId => invalidCombinationsPolizei.includes(extensionId));
                     if (selectedInvalidExtensionsPolizei.length > 1) {
-                        showError("Fehler: Diese Erweiterungen für die Polizeiwache (Kleinwache) können nicht zusammen gebaut werden.");
+                        showError("Information zu deinem Bauvorhaben:\n\nDiese Erweiterungen für die Polizeiwache (Kleinwache) können nicht zusammen gebaut werden.\n\nBitte wähle nur eine der beiden aus.");
+                        updateBuildSelectedButton();
+
                         return;
                     }
                 }
@@ -1334,6 +1337,8 @@
             errorMessageDiv.style.display = 'block'; // Sichtbar machen
         } else {
             alert(message); // Falls das Element nicht existiert, nutze ein Alert
+            updateBuildSelectedButton();
+
         }
     }
 
