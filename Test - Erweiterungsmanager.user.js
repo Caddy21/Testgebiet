@@ -240,7 +240,6 @@
             overflow-y: auto;
             position: relative;
             text-align: center
-
         }
         #extension-lightbox #extension-lightbox-content.dark {
             background: #2c2f33;
@@ -291,7 +290,6 @@
             padding: 5px 10px;
             cursor: pointer;
             border-radius: 4px;
-            margin-top: 10px;
         }
         #extension-lightbox .extension-button:disabled {
             background-color: gray !important; /* Erzwingt die graue Hintergrundfarbe */
@@ -307,7 +305,6 @@
             padding: 5px 10px;
             cursor: pointer;
             border-radius: 4px;
-            margin-top: 10px;
         }
         #extension-lightbox .build-selected-button:disabled {
             background-color: gray;
@@ -323,7 +320,6 @@
             padding: 5px 10px;
             cursor: pointer;
             border-radius: 4px;
-            margin-top: 10px;
         }
         #extension-lightbox .extension-button:disabled {
             background-color: gray; /* Ändert die Hintergrundfarbe des deaktivierten Buttons zu grau */
@@ -339,7 +335,6 @@
             padding: 5px 10px;
             cursor: pointer;
             border-radius: 4px;
-            margin-top: 10px;
         }
         #extension-lightbox .spoiler-content {
             display: none;
@@ -401,44 +396,34 @@
     // Funktion zum Abrufen der Benutzereinstellungen vom API
     async function getUserMode() {
         try {
-//                console.log("Versuche, Benutzereinstellungen von der API abzurufen...");
             const response = await fetch('https://www.leitstellenspiel.de/api/settings');
             const data = await response.json();
-//                console.log("Benutzereinstellungen abgerufen:", data);
             return data; // Gibt die vollständige Antwort zurück
         } catch (error) {
-                console.error("Fehler beim Abrufen der Einstellungen: ", error);
+            console.error("Fehler beim Abrufen der Einstellungen: ", error);
             return null;
         }
     }
 
     // Funktion zum Anwenden des Dark- oder Light-Modus basierend auf der API-Antwort
     async function applyMode() {
-//            console.log("Wende Modus an...");
-
         const userSettings = await getUserMode();
         if (!userSettings) {
-//                console.log("Keine Benutzereinstellungen gefunden oder Fehler beim Abrufen.");
             return;
         }
 
         const mode = userSettings.design_mode; // Benutze jetzt "design_mode" anstelle von "mode"
-//            console.log("Aktueller Design-Modus:", mode);
-
         // Warten auf das Lightbox-Element
         const lightboxContent = document.getElementById('extension-lightbox-content');
         if (!lightboxContent) {
-//                 console.log("Lightbox-Inhalt nicht gefunden.");
             return;
         }
 
-//            console.log("Lightbox-Inhalt gefunden, entferne alte Modus-Klassen...");
         // Entferne alle möglichen Modus-Klassen
         lightboxContent.classList.remove('dark', 'light');
 
         // Modus anwenden
         if (mode === 1 || mode === 4) { // Dunkelmodus
-//                console.log("Dunkelmodus aktivieren...");
             lightboxContent.classList.add('dark');
 
             // Dark Mode für Tabelle
@@ -446,7 +431,6 @@
             document.documentElement.style.setProperty('--text-color', '#fff');
             document.documentElement.style.setProperty('--border-color', '#444');
         } else if (mode === 2 || mode === 3) { // Hellmodus
-//                console.log("Hellmodus aktivieren...");
             lightboxContent.classList.add('light');
 
             // Light Mode für Tabelle
@@ -454,7 +438,6 @@
             document.documentElement.style.setProperty('--text-color', '#000');
             document.documentElement.style.setProperty('--border-color', '#ccc');
         } else { // Standardmodus (wenn der Modus unbekannt ist)
-//                 console.log("Unbekannter Modus, standardmäßig Hellmodus aktivieren...");
             lightboxContent.classList.add('light'); // Standardmäßig hell
 
             // Standard Light Mode für Tabelle
@@ -466,20 +449,15 @@
 
     // Funktion zur Beobachtung der Lightbox auf Änderungen (für dynamisch geladene Elemente)
     function observeLightbox() {
-//             console.log("Beobachte die Lightbox auf Änderungen...");
-
         const lightboxContainer = document.getElementById('extension-lightbox');
         if (!lightboxContainer) {
-//            console.log("Lightbox-Container nicht gefunden.");
             return;
         }
 
         const observer = new MutationObserver(() => {
-//            console.log("MutationObserver ausgelöst - Überprüfe, ob das Content-Element da ist...");
             // Überprüfe, ob das Content-Element in der Lightbox existiert
             const lightboxContent = document.getElementById('extension-lightbox-content');
             if (lightboxContent) {
-//                console.log("Lightbox-Inhalt gefunden, wende Modus an...");
                 applyMode(); // Wenn das Lightbox-Inhalt gefunden wird, Modus anwenden
                 observer.disconnect(); // Beende die Beobachtung, wenn die Lightbox gefunden wurde
             }
@@ -491,7 +469,6 @@
 
     // Wende den Modus an, wenn das DOM bereit ist
     window.addEventListener('load', () => {
-//            console.log("DOM vollständig geladen. Wende Modus an...");
         applyMode();
         observeLightbox(); // Beobachtet dynamische Änderungen
     });
@@ -627,7 +604,7 @@
         }
 
         if (typeof user_premium !== 'undefined') {
-//            console.log("Die Variable 'user_premium' ist definiert."); // Debugging-Info
+            //            console.log("Die Variable 'user_premium' ist definiert."); // Debugging-Info
 
             if (!user_premium) {
                 console.warn("Der Nutzer hat keinen Premium-Account.");
@@ -637,7 +614,7 @@
                     fetchBuildingsAndRender(); // API-Daten abrufen, wenn das Script geöffnet wird
                 });
             } else {
-//                console.log("Der Nutzer hat einen Premium-Account.");
+                //                console.log("Der Nutzer hat einen Premium-Account.");
                 const lightbox = document.getElementById('extension-lightbox');
                 lightbox.style.display = 'flex';
                 fetchBuildingsAndRender(); // API-Daten abrufen, wenn das Script geöffnet wird
@@ -650,13 +627,13 @@
     // Funktion, um den Namen eines Gebäudes anhand der ID zu bekommen
     function getBuildingCaption(buildingId) {
 
-//             console.log('Übergebene buildingId:', buildingId);  // Überprüfen, welche ID übergeben wird
+        //             console.log('Übergebene buildingId:', buildingId);  // Überprüfen, welche ID übergeben wird
         const building = buildingsData.find(b => String(b.id) === String(buildingId));
         if (building) {
-//             console.log('Gefundenes Gebäude:', building);  // Protokolliere das gefundene Gebäude
+            //             console.log('Gefundenes Gebäude:', building);  // Protokolliere das gefundene Gebäude
             return building.caption; // Direkt den Gebäudennamen zurückgeben
         }
-//             console.log('Gebäude nicht gefunden. ID:', buildingId); // Wenn das Gebäude nicht gefunden wird
+        //             console.log('Gebäude nicht gefunden. ID:', buildingId); // Wenn das Gebäude nicht gefunden wird
         return 'Unbekanntes Gebäude';
     }
 
@@ -674,12 +651,12 @@
             return response.json();
         })
             .then(data => {
-//                console.log('Abgerufene Gebäudedaten:', data); // Protokolliere die abgerufenen Daten
+            //                console.log('Abgerufene Gebäudedaten:', data); // Protokolliere die abgerufenen Daten
             buildingsData = data; // Speichern der Gebäudedaten in einer globalen Variablen
             renderMissingExtensions(data); // Weiterverarbeiten der abgerufenen Daten
         })
             .catch(error => {
-//                 console.error('Es ist ein Fehler aufgetreten:', error);
+            //                 console.error('Es ist ein Fehler aufgetreten:', error);
             const list = document.getElementById('extension-list');
             list.innerHTML = 'Fehler beim Laden der Gebäudedaten.';
         });
@@ -701,14 +678,14 @@
                 throw new Error('Fehler beim Abrufen der Credits und Coins');
             }
             const data = await response.json();
-//                 console.log('Benutzer Credits und Coins abgerufen:', data);
+            //                 console.log('Benutzer Credits und Coins abgerufen:', data);
             return {
                 credits: data.credits_user_current,
                 coins: data.coins_user_current,
                 premium: data.premium // Fügen Sie diese Zeile hinzu, um den Premium-Status zurückzugeben
             };
         } catch (error) {
-                 console.error('Fehler beim Abrufen der Credits und Coins:', error);
+            console.error('Fehler beim Abrufen der Credits und Coins:', error);
             throw error;
         }
     }
@@ -1109,7 +1086,7 @@
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
                 onload: function(response) {
-//                        console.log(`Erweiterung in Gebäude ${building.id} gebaut. Response:`, response);
+                    //                        console.log(`Erweiterung in Gebäude ${building.id} gebaut. Response:`, response);
 
                     // Überprüfen, ob die Zeile existiert
                     if (row) {
@@ -1267,8 +1244,37 @@
         const userInfo = await getUserCredits();  // Holt die User-Daten
         const isPremium = userInfo?.premium ?? false;  // Stellt sicher, dass isPremium definiert ist
 
+        for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
+            const building = buildingsData.find(b => String(b.id) === String(buildingId));
+
+            if (!building) continue; // Falls das Gebäude nicht gefunden wird, einfach überspringen
+
+            // **Überprüfung nur für Kleinwachen**
+            if (building.small_building) {
+                // Feuerwehr Kleinwache - ungültige Kombinationen
+                if (building.building_type === 0) {
+                    const invalidCombinationsFeuerwache = [0, 6, 8, 13, 14, 16, 18, 19, 25];
+                    const selectedInvalidExtensionsFeuerwache = extensions.filter(extensionId => invalidCombinationsFeuerwache.includes(extensionId));
+                    if (selectedInvalidExtensionsFeuerwache.length > 1) {
+                        showError("Fehler: Diese Erweiterungen für die Feuerwache (Kleinwache) können nicht zusammen gebaut werden.");
+                        return;
+                    }
+                }
+
+                // Polizeiwache Kleinwache - ungültige Kombinationen
+                if (building.building_type === 6) {
+                    const invalidCombinationsPolizei = [10, 11, 12, 13];
+                    const selectedInvalidExtensionsPolizei = extensions.filter(extensionId => invalidCombinationsPolizei.includes(extensionId));
+                    if (selectedInvalidExtensionsPolizei.length > 1) {
+                        showError("Fehler: Diese Erweiterungen für die Polizeiwache (Kleinwache) können nicht zusammen gebaut werden.");
+                        return;
+                    }
+                }
+            }
+        }
+
         // **Nur für Nicht-Premium-Nutzer begrenzen!**
-        if (!user_premium) {
+        if (!isPremium) {
             for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
                 if (extensions.length > 2) {
                     alert(`Zu viele Erweiterungen für Gebäude ${getBuildingCaption(buildingId)} ausgewählt.\n\nDa du keinen Premium-Account hast, kannst du maximal 2 Ausbauten auswählen.`);
@@ -1280,6 +1286,7 @@
         let totalCredits = 0;
         let totalCoins = 0;
 
+        // Berechnung der Gesamtkosten
         for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
             extensions.forEach(extensionId => {
                 const row = document.querySelector(`.row-${buildingId}-${extensionId}`);
@@ -1288,8 +1295,10 @@
             });
         }
 
+        // Zeige Währungsauswahl, falls keine Fehler aufgetreten sind
         showCurrencySelection(selectedExtensionsByBuilding, userInfo);
 
+        // Alle "Select All"-Checkboxen abwählen
         document.querySelectorAll('.select-all-checkbox').forEach(checkbox => {
             checkbox.checked = false;
             checkbox.dispatchEvent(new Event('change')); // Event auslösen, falls nötig
@@ -1297,6 +1306,24 @@
 
         // Sicherstellen, dass der Button deaktiviert wird
         setTimeout(updateBuildSelectedButton, 100);
+    }
+
+    function showError(message) {
+        // Verstecke den Währungscontainer, falls er existiert
+        const currencyContainer = document.getElementById('currency-container');
+        if (currencyContainer) {
+            currencyContainer.style.display = 'none';
+        }
+
+        // Fehlercontainer abrufen
+        const errorMessageDiv = document.getElementById('error-message');
+
+        if (errorMessageDiv) {
+            errorMessageDiv.textContent = message;  // Fehlermeldung setzen
+            errorMessageDiv.style.display = 'block'; // Sichtbar machen
+        } else {
+            alert(message); // Falls das Element nicht existiert, nutze ein Alert
+        }
     }
 
     // Funktion zur Auswahl der Zahlmöglichkeit sowie Prüfung der ausgewählten Erweiterungen
