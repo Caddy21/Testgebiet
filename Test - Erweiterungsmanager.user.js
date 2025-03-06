@@ -604,17 +604,14 @@
         }
 
         if (typeof user_premium !== 'undefined') {
-            //            console.log("Die Variable 'user_premium' ist definiert."); // Debugging-Info
 
             if (!user_premium) {
-                console.warn("Der Nutzer hat keinen Premium-Account.");
                 createCustomAlert("Du kannst dieses Script nur mit Einschränkungen nutzen da du keinen Premium-Account hast.", isDarkMode, () => {
                     const lightbox = document.getElementById('extension-lightbox');
                     lightbox.style.display = 'flex';
                     fetchBuildingsAndRender(); // API-Daten abrufen, wenn das Script geöffnet wird
                 });
             } else {
-                //                console.log("Der Nutzer hat einen Premium-Account.");
                 const lightbox = document.getElementById('extension-lightbox');
                 lightbox.style.display = 'flex';
                 fetchBuildingsAndRender(); // API-Daten abrufen, wenn das Script geöffnet wird
@@ -626,14 +623,12 @@
 
     // Funktion, um den Namen eines Gebäudes anhand der ID zu bekommen
     function getBuildingCaption(buildingId) {
-
-        //             console.log('Übergebene buildingId:', buildingId);  // Überprüfen, welche ID übergeben wird
         const building = buildingsData.find(b => String(b.id) === String(buildingId));
         if (building) {
-            //             console.log('Gefundenes Gebäude:', building);  // Protokolliere das gefundene Gebäude
+
             return building.caption; // Direkt den Gebäudennamen zurückgeben
         }
-        //             console.log('Gebäude nicht gefunden. ID:', buildingId); // Wenn das Gebäude nicht gefunden wird
+
         return 'Unbekanntes Gebäude';
     }
 
@@ -651,12 +646,10 @@
             return response.json();
         })
             .then(data => {
-            //                console.log('Abgerufene Gebäudedaten:', data); // Protokolliere die abgerufenen Daten
             buildingsData = data; // Speichern der Gebäudedaten in einer globalen Variablen
             renderMissingExtensions(data); // Weiterverarbeiten der abgerufenen Daten
         })
             .catch(error => {
-            //                 console.error('Es ist ein Fehler aufgetreten:', error);
             const list = document.getElementById('extension-list');
             list.innerHTML = 'Fehler beim Laden der Gebäudedaten.';
         });
@@ -678,7 +671,6 @@
                 throw new Error('Fehler beim Abrufen der Credits und Coins');
             }
             const data = await response.json();
-            //                 console.log('Benutzer Credits und Coins abgerufen:', data);
             return {
                 credits: data.credits_user_current,
                 coins: data.coins_user_current,
@@ -947,8 +939,11 @@
             const leitstelle = row.cells[1]?.textContent.toLowerCase() || "";
             const wachenName = row.cells[2]?.textContent.toLowerCase() || "";
             const erweiterung = row.cells[3]?.textContent.toLowerCase() || "";
+            const isBuilt = row.classList.contains("built"); // Prüft, ob bereits gebaut
 
-            if (leitstelle.includes(searchTerm) || wachenName.includes(searchTerm) || erweiterung.includes(searchTerm)) {
+            if (isBuilt) {
+                row.style.display = "none";  // Gebaute Zeilen bleiben unsichtbar
+            } else if (leitstelle.includes(searchTerm) || wachenName.includes(searchTerm) || erweiterung.includes(searchTerm)) {
                 row.style.display = "";
             } else {
                 row.style.display = "none";
@@ -1086,8 +1081,6 @@
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
                 onload: function(response) {
-                    //                        console.log(`Erweiterung in Gebäude ${building.id} gebaut. Response:`, response);
-
                     // Überprüfen, ob die Zeile existiert
                     if (row) {
                         // Wenn es sich um eine Polizei-Kleinwache handelt und Erweiterungen 10, 11, 12 oder 13 betroffen sind
@@ -1125,6 +1118,11 @@
                                     otherRow.style.display = 'none'; // Alle anderen Zeilen ausblenden
                                 }
                             });
+                        }
+
+                        if (row) {
+                            row.classList.add("built");  // Markiert die Zeile als gebaut
+                            row.style.display = "none";  // Blendet sie weiterhin aus
                         }
 
                         row.style.display = 'none'; // Die ausgebaute Zeile wird ausgeblendet
