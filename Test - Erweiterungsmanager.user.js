@@ -1212,24 +1212,6 @@
         return true;
     }
 
-    // Funktion zum Überprüfen der maximalen Anzahl ausgewählter Erweiterungen
-    async function checkMaxSelectedExtensions(selectedExtensions) {
-        const userInfo = await getUserCredits();
-        const user_premium = userInfo.premium;
-
-        if (user_premium) {
-            return true; // Keine Begrenzung für Premium-Nutzer
-        }
-
-        const maxSelections = 2; // Begrenzung für Nicht-Premium-Nutzer
-        if (selectedExtensions.length > maxSelections) {
-            alert(`Da du keinen Premium-Account hast, kannst du maximal ${maxSelections} Erweiterungen gleichzeitig auswählen und in Bau geben.`);
-            return false;
-        }
-
-        return true;
-    }
-
     // Funktion zum Bau der ausgewählten Erweiterungen
     async function buildSelectedExtensions() {
         const selectedExtensions = document.querySelectorAll('.extension-checkbox:checked');
@@ -1267,9 +1249,14 @@
                     const selectedInvalidExtensionsFeuerwache = extensions.filter(extensionId => invalidCombinationsFeuerwache.includes(extensionId));
                     if (selectedInvalidExtensionsFeuerwache.length > 1) {
                         showError("Information zu deinem Bauvorhaben:\n\nDiese Erweiterungen für die Feuerwache (Kleinwache) können nicht zusammen gebaut werden.\n\nBitte wähle nur eine der beiden aus.");
-                        updateBuildSelectedButton();
 
+                        // Master-Checkbox entmarkieren & Button deaktivieren
+                        document.querySelector('.select-all-checkbox').checked = false;
+                        updateBuildSelectedButton();
                         return;
+
+
+
                     }
                 }
 
@@ -1278,20 +1265,26 @@
                     const invalidCombinationsPolizei = [10, 11, 12, 13];
                     const selectedInvalidExtensionsPolizei = extensions.filter(extensionId => invalidCombinationsPolizei.includes(extensionId));
                     if (selectedInvalidExtensionsPolizei.length > 1) {
-                        showError("Information zu deinem Bauvorhaben:\n\nDiese Erweiterungen für die Polizeiwache (Kleinwache) können nicht zusammen gebaut werden.\n\nBitte wähle nur eine der beiden aus.");
-                        updateBuildSelectedButton();
 
+                        // Master-Checkbox entmarkieren & Button deaktivieren
+                        document.querySelector('.select-all-checkbox').checked = false;
+                        updateBuildSelectedButton();
                         return;
+
                     }
                 }
             }
         }
 
-        // **Nur für Nicht-Premium-Nutzer begrenzen!**
         if (!isPremium) {
             for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
                 if (extensions.length > 2) {
                     alert(`Zu viele Erweiterungen für Gebäude ${getBuildingCaption(buildingId)} ausgewählt.\n\nDa du keinen Premium-Account hast, kannst du maximal 2 Ausbauten auswählen.`);
+
+                    // Master-Checkbox entmarkieren & Button deaktivieren
+                    document.querySelector('.select-all-checkbox').checked = false;
+                    updateBuildSelectedButton();
+
                     return;
                 }
             }
