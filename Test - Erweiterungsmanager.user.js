@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         [LSS] 02 - Erweiterungs-Manager (Betaversion)
+// @name         [LSS] 02 - Erweiterungs-Manager
 // @namespace    http://tampermonkey.net/
-// @version      0.5 (Beta)
-// @description  Listet Wachen auf, bei denen bestimmte Erweiterungen fehlen und ermöglicht das Hinzufügen dieser Erweiterungen.
+// @version      1.0
+// @description  Listet Wachen auf, bei denen Erweiterungen fehlen und ermöglicht das hinzufügen dieser Erweiterungen.
 // @author       Caddy21
 // @match        https://www.leitstellenspiel.de/
 // @grant        GM_xmlhttpRequest
@@ -11,6 +11,9 @@
 // @icon         https://github.com/Caddy21/-docs-assets-css/raw/main/yoshi_icon__by_josecapes_dgqbro3-fullview.png
 // @run-at       document-end
 // ==/UserScript==
+
+// To-Do
+// Lagererweiterungen einbauen
 
 (function() {
     'use strict';
@@ -558,6 +561,40 @@
     // Initial den Button hinzufügen
     addMenuButton();
 
+    // Globale Variable definieren
+    var user_premium = false;
+
+    // Funktion, um den Premium-Status zu überprüfen
+    function checkPremiumStatus() {
+        // Suchen Sie nach dem Skript-Tag, das die Variable user_premium setzt
+        var scripts = document.getElementsByTagName('script');
+        for (var i = 0; i < scripts.length; i++) {
+            var scriptContent = scripts[i].textContent;
+            var premiumMatch = scriptContent.match(/var user_premium\s*=\s*(true|false);/);
+            if (premiumMatch) {
+                user_premium = (premiumMatch[1] === 'true');
+                break;
+            }
+        }
+
+        // Fallback, falls die Variable nicht gefunden wird
+        if (typeof user_premium === 'undefined') {
+            console.error("Die Variable 'user_premium' ist nicht definiert. Bitte prüfen Sie die HTML-Struktur.");
+            user_premium = false; // Standardwert setzen
+        }
+    }
+
+    // Rufen Sie die Funktion auf, um den Status zu überprüfen
+    checkPremiumStatus();
+
+    // Beispiel zur Verwendung der Variable
+    if (user_premium) {
+        console.log("User hat einen Premiumaccount.");
+    } else {
+        console.log("User hat KEINEN Premiumaccount.");
+    }
+
+
     // Funktion zur Prüfung von Premium und Hinweis
     async function checkPremiumAndShowHint() {
         const userSettings = await getUserMode();
@@ -711,14 +748,14 @@
                 }
 
                 // Spezifische Erweiterungen ausblenden, wenn bereits eine der relevanten Erweiterungen vorhanden ist
-                if (building.building_type === 6 && building.small_building) {  // Polizeiwache (Kleinwache)
+                if (building.building_type === 6 && building.small_building) { // Polizeiwache (Kleinwache)
                     const forbiddenExtensions = [10, 11, 12, 13];
                     if (forbiddenExtensions.some(id => existingExtensions.has(id))) {
                         return !forbiddenExtensions.includes(extension.id);
                     }
                 }
 
-                if (building.building_type === 0 && building.small_building) {  // Feuerwache (Kleinwache)
+                if (building.building_type === 0 && building.small_building) { // Feuerwache (Kleinwache)
                     const forbiddenExtensions = [0, 6, 8, 13, 14, 16, 18, 19, 25];
                     if (forbiddenExtensions.some(id => existingExtensions.has(id))) {
                         return !forbiddenExtensions.includes(extension.id);
@@ -954,7 +991,7 @@
             const isBuilt = row.classList.contains("built"); // Prüft, ob bereits gebaut
 
             if (isBuilt) {
-                row.style.display = "none";  // Gebaute Zeilen bleiben unsichtbar
+                row.style.display = "none"; // Gebaute Zeilen bleiben unsichtbar
             } else if (leitstelle.includes(searchTerm) || wachenName.includes(searchTerm) || erweiterung.includes(searchTerm)) {
                 row.style.display = "";
             } else {
@@ -972,12 +1009,12 @@
         const policeStationSmallLimited = [10, 11, 12, 13];
 
         const thwAllExtensions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]; // Alle THW-Erweiterungen
-        const bpolAllExtensions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];            // Alle BPol-Erweiterungen
-        const polSonderEinheitAllExtensions = [0, 1, 2, 3, 4];                   // Alle PolSondereinheit-Erweiterungen
-        const KhAllExtensions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];                  // Alle Krankenhaus-Erweiterungen
+        const bpolAllExtensions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; // Alle BPol-Erweiterungen
+        const polSonderEinheitAllExtensions = [0, 1, 2, 3, 4]; // Alle PolSondereinheit-Erweiterungen
+        const KhAllExtensions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]; // Alle Krankenhaus-Erweiterungen
 
         // Falls Premium aktiv ist, gibt es keine Einschränkungen für THW, B-Pol, Schulen und Pol-Sondereinheit
-        if (typeof user_premium !== "undefined" && user_premium) {
+        if (typeof !user_premium !== "undefined" && user_premium) {
             return false; // Keine Einschränkungen für Premium-Nutzer
         }
 
@@ -1133,8 +1170,8 @@
                         }
 
                         if (row) {
-                            row.classList.add("built");  // Markiert die Zeile als gebaut
-                            row.style.display = "none";  // Blendet sie weiterhin aus
+                            row.classList.add("built"); // Markiert die Zeile als gebaut
+                            row.style.display = "none"; // Blendet sie weiterhin aus
                         }
 
                         row.style.display = 'none'; // Die ausgebaute Zeile wird ausgeblendet
@@ -1213,28 +1250,26 @@
     }
 
     // Funktion zum Bau der ausgewählten Erweiterungen
-    async function buildSelectedExtensions() {
-        const selectedExtensions = document.querySelectorAll('.extension-checkbox:checked');
+async function buildSelectedExtensions() {
+    const selectedExtensions = document.querySelectorAll('.extension-checkbox:checked');
 
-        // Checkboxen sofort entmarkieren
-        selectedExtensions.forEach(checkbox => {
-            checkbox.checked = false;
-        });
+    // Checkboxen sofort entmarkieren
+    selectedExtensions.forEach(checkbox => {
+        checkbox.checked = false;
+    });
 
-        const selectedExtensionsByBuilding = {};
+    const selectedExtensionsByBuilding = {};
 
-        selectedExtensions.forEach(checkbox => {
-            const buildingId = checkbox.dataset.buildingId;
-            const extensionId = checkbox.dataset.extensionId;
+    selectedExtensions.forEach(checkbox => {
+        const buildingId = checkbox.dataset.buildingId;
+        const extensionId = checkbox.dataset.extensionId;
 
-            if (!selectedExtensionsByBuilding[buildingId]) {
-                selectedExtensionsByBuilding[buildingId] = [];
-            }
-            selectedExtensionsByBuilding[buildingId].push(parseInt(extensionId, 10));
-        });
+        if (!selectedExtensionsByBuilding[buildingId]) {
+            selectedExtensionsByBuilding[buildingId] = [];
+        }
+        selectedExtensionsByBuilding[buildingId].push(parseInt(extensionId, 10));
+    });
 
-        const userInfo = await getUserCredits();  // Holt die User-Daten
-        const isPremium = userInfo?.premium ?? false;  // Stellt sicher, dass isPremium definiert ist
 
         for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
             const building = buildingsData.find(b => String(b.id) === String(buildingId));
@@ -1248,14 +1283,12 @@
                     const invalidCombinationsFeuerwache = [0, 6, 8, 13, 14, 16, 18, 19, 25];
                     const selectedInvalidExtensionsFeuerwache = extensions.filter(extensionId => invalidCombinationsFeuerwache.includes(extensionId));
                     if (selectedInvalidExtensionsFeuerwache.length > 1) {
-                        showError("Information zu deinem Bauvorhaben:\n\nDiese Erweiterungen für die Feuerwache (Kleinwache) können nicht zusammen gebaut werden.\n\nBitte wähle nur eine der beiden aus.");
+                        showError("Information zu deinem Bauvorhaben:\n\nDiese Erweiterungen für die Feuerwache (Kleinwache) können nicht zusammen gebaut werden.\n\nBitte wähle nur eine Erweiterung aus.");
 
                         // Master-Checkbox entmarkieren & Button deaktivieren
                         document.querySelector('.select-all-checkbox').checked = false;
                         updateBuildSelectedButton();
                         return;
-
-
 
                     }
                 }
@@ -1265,6 +1298,7 @@
                     const invalidCombinationsPolizei = [10, 11, 12, 13];
                     const selectedInvalidExtensionsPolizei = extensions.filter(extensionId => invalidCombinationsPolizei.includes(extensionId));
                     if (selectedInvalidExtensionsPolizei.length > 1) {
+                        showError("Information zu deinem Bauvorhaben:\n\nDiese Erweiterungen für die Polizeiwache (Kleinwache) können nicht zusammen gebaut werden.\n\nBitte wähle nur eine Erweiterung aus.");
 
                         // Master-Checkbox entmarkieren & Button deaktivieren
                         document.querySelector('.select-all-checkbox').checked = false;
@@ -1276,44 +1310,52 @@
             }
         }
 
-        if (!isPremium) {
-            for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
-                if (extensions.length > 2) {
-                    alert(`Zu viele Erweiterungen für Gebäude ${getBuildingCaption(buildingId)} ausgewählt.\n\nDa du keinen Premium-Account hast, kannst du maximal 2 Ausbauten auswählen.`);
+        const userInfo = await getUserCredits(); // Holt die User-Daten
+    const user_premium = userInfo?.premium ?? false; // Stellt sicher, dass user_premium definiert ist
 
-                    // Master-Checkbox entmarkieren & Button deaktivieren
-                    document.querySelector('.select-all-checkbox').checked = false;
-                    updateBuildSelectedButton();
+    // Beispiel zur Verwendung der Variable
+    if (user_premium) {
+        console.log("User is a premium member.");
+    } else {
+        console.log("User is not a premium member.");
+    }
 
-                    return;
-                }
+    // Fahren Sie mit der Verarbeitung fort, abhängig vom Premium-Status des Benutzers
+    if (!user_premium) {
+        for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
+            if (extensions.length > 2) {
+                alert(`Zu viele Erweiterungen für Gebäude ${getBuildingCaption(buildingId)} ausgewählt.\n\nDa du keinen Premium-Account hast, kannst du maximal 2 Ausbauten auswählen.`);
+                return;
             }
         }
-
-        let totalCredits = 0;
-        let totalCoins = 0;
-
-        // Berechnung der Gesamtkosten
-        for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
-            extensions.forEach(extensionId => {
-                const row = document.querySelector(`.row-${buildingId}-${extensionId}`);
-                totalCredits += parseInt(row.querySelector('.credit-button').innerText.replace(/\D/g, ''), 10);
-                totalCoins += parseInt(row.querySelector('.coins-button').innerText.replace(/\D/g, ''), 10);
-            });
-        }
-
-        // Zeige Währungsauswahl, falls keine Fehler aufgetreten sind
-        showCurrencySelection(selectedExtensionsByBuilding, userInfo);
-
-        // Alle "Select All"-Checkboxen abwählen
-        document.querySelectorAll('.select-all-checkbox').forEach(checkbox => {
-            checkbox.checked = false;
-            checkbox.dispatchEvent(new Event('change')); // Event auslösen, falls nötig
-        });
-
-        // Sicherstellen, dass der Button deaktiviert wird
-        setTimeout(updateBuildSelectedButton, 100);
     }
+
+    // Der Rest der Verarbeitung bleibt unverändert
+    let totalCredits = 0;
+    let totalCoins = 0;
+
+    // Berechnung der Gesamtkosten
+    for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
+        extensions.forEach(extensionId => {
+            const row = document.querySelector(`.row-${buildingId}-${extensionId}`);
+            totalCredits += parseInt(row.querySelector('.credit-button').innerText.replace(/\D/g, ''), 10);
+            totalCoins += parseInt(row.querySelector('.coins-button').innerText.replace(/\D/g, ''), 10);
+        });
+    }
+
+    // Zeige Währungsauswahl, falls keine Fehler aufgetreten sind
+    showCurrencySelection(selectedExtensionsByBuilding, userInfo);
+
+    // Alle "Select All"-Checkboxen abwählen
+    document.querySelectorAll('.select-all-checkbox').forEach(checkbox => {
+        checkbox.checked = false;
+        checkbox.dispatchEvent(new Event('change')); // Event auslösen, falls nötig
+    });
+
+    // Sicherstellen, dass der Button deaktiviert wird
+    setTimeout(updateBuildSelectedButton, 100);
+}
+
 
     function showError(message) {
         // Verstecke den Währungscontainer, falls er existiert
