@@ -182,126 +182,178 @@
         'seg': 'Zeigt alle Einsätze der Schnelleinsatzgruppe',
     };
 
-    // Funktion, um die Anzahl der Einsätze für eine Kategorie zu berechnen
-function getMissionCountByCategory(category) {
-    let count = 0;
-    const missionElements = document.querySelectorAll('.missionSideBarEntry');
-    missionElements.forEach(element => {
-        const missionId = element.getAttribute('mission_type_id');
-        if (missionCategoryMap.has(missionId)) {
-            const categories = missionCategoryMap.get(missionId);
-            if (categories.includes(category)) {
-                count++;
-            }
-        }
-    });
-    return count;
-}
+    // Funktion zur Aktualisierung der Zählung der Einsätze
+    function updateMissionCount() {
+        const categoryButtons = document.querySelectorAll('.category-button');
 
-// Funktion, um die Anzahl der Einsätze für eine Kategoriegruppe zu berechnen
-function getMissionCountByCategoryGroup(categoriesGroup) {
-    let count = 0;
-    const missionElements = document.querySelectorAll('.missionSideBarEntry');
-    missionElements.forEach(element => {
-        const missionId = element.getAttribute('mission_type_id');
-        if (missionCategoryMap.has(missionId)) {
-            const missionCategories = missionCategoryMap.get(missionId);
-            const match = categoriesGroup.some(category => missionCategories.includes(category));
-            if (match) {
-                count++;
+        categoryButtons.forEach(button => {
+            const category = button.getAttribute('data-category');
+            const missionCount = getMissionCountByCategory(category);
+            const countDisplay = button.querySelector('.mission-count');
+
+            if (countDisplay) {
+                countDisplay.textContent = missionCount; // Zähler aktualisieren
+            }
+        });
+
+        // Zählung der Einsätze ohne Kategorie (VGSL/ÜO)
+        const vgsloButton = document.querySelector('.category-button[data-category="VGSL/ÜO"]');
+        const noCategoryCount = getMissionCountByCategory('no-category');
+
+        if (vgsloButton) {
+            const countDisplay = vgsloButton.querySelector('.mission-count');
+            if (countDisplay) {
+                countDisplay.textContent = noCategoryCount;
             }
         }
-    });
-    return count;
-}
+    }
+
+    // Funktion zur Berechnung der Anzahl der Einsätze für eine bestimmte Kategorie
+    function getMissionCountByCategory(category) {
+        let count = 0;
+        const missionElements = document.querySelectorAll('.missionSideBarEntry');
+
+        missionElements.forEach(element => {
+            const missionId = element.getAttribute('mission_type_id');
+            const categories = missionCategoryMap.get(missionId);
+
+            if (categories) {
+                // Wenn die Mission eine Kategorie hat und diese der gesuchten entspricht
+                if (categories.includes(category) && element.style.display !== "none") {
+                    count++;
+                }
+            } else {
+                // Wenn keine Kategorie zugewiesen ist, zählen wir sie als "no-category"
+                if (category === 'no-category' && element.style.display !== "none") {
+                    count++;
+                }
+            }
+        });
+
+        return count;
+    }
+
+    // Funktion, um die Anzahl der Einsätze für eine Kategoriegruppe zu berechnen
+    function getMissionCountByCategoryGroup(categoriesGroup) {
+        let count = 0;
+        const missionElements = document.querySelectorAll('.missionSideBarEntry');
+        missionElements.forEach(element => {
+            const missionId = element.getAttribute('mission_type_id');
+            if (missionCategoryMap.has(missionId)) {
+                const missionCategories = missionCategoryMap.get(missionId);
+                const match = categoriesGroup.some(category => missionCategories.includes(category));
+                if (match) {
+                    count++;
+                }
+            }
+        });
+        return count;
+    }
+
+    // Alle 20 Sekunden die Zählung der Einsätze aktualisieren
+    setInterval(updateMissionCount, 10000); // 20000 Millisekunden = 20 Sekunden
 
     // Funktion, um die Filterbuttons mit der Anzahl der Einsätze zu erstellen
-function createCategoryButtons() {
-    const searchInput = document.getElementById('search_input_field_missions');
-    if (!searchInput) {
-        console.error("Suchfeld nicht gefunden!");
-        return;
-    }
-
-    const buttonContainer = document.createElement('div');
-    buttonContainer.style.display = 'flex';
-    buttonContainer.style.flexWrap = 'wrap';
-    buttonContainer.style.marginBottom = '10px';
-
-    const desiredOrder = [
-        'fire', 'police', 'ambulance', 'thw', 'riot_police', 'water_rescue',
-        'mountain', 'coastal', 'airport', 'factory_fire_brigade', 'criminal_investigation', 'seg', 'seg_medical_service'
-    ];
-
-    desiredOrder.forEach(category => {
-        if (categories.has(category) && !isCategoryInAnyGroup(category)) {
-            const button = document.createElement('button');
-            button.textContent = `${customCategoryLabels[category] || category} (${getMissionCountByCategory(category)})`;
-            button.classList.add('btn', 'btn-xs');
-            button.style.margin = '2px';
-            styleButtonForCurrentTheme(button);
-
-            button.title = customTooltips[category] || `Zeigt Einsätze der Kategorie ${customCategoryLabels[category] || category}`;
-
-            button.addEventListener('click', () => {
-                // Filtern der Einsätze und Setzen des aktiven Buttons
-                filterMissionListByCategory(category);
-                setActiveButton(button);
-            });
-            buttonContainer.appendChild(button);
+    function createCategoryButtons() {
+        const searchInput = document.getElementById('search_input_field_missions');
+        if (!searchInput) {
+            console.error("Suchfeld nicht gefunden!");
+            return;
         }
-    });
 
-    // Erstelle die Buttons für die Gruppen mit der Anzahl der Einsätze
-    for (const [groupName, groupCategories] of Object.entries(categoryGroups)) {
-        const groupButton = document.createElement('button');
-        groupButton.textContent = `${groupName} (${getMissionCountByCategoryGroup(groupCategories)})`;
-        groupButton.classList.add('btn', 'btn-xs');
-        groupButton.style.margin = '2px';
-        styleButtonForCurrentTheme(groupButton);
+        const buttonContainer = document.createElement('div');
+        buttonContainer.style.display = 'flex';
+        buttonContainer.style.flexWrap = 'wrap';
+        buttonContainer.style.marginBottom = '10px';
 
-        const groupTooltip = generateGroupTooltip(groupCategories);
-        groupButton.title = groupTooltip;
+        const desiredOrder = [
+            'fire', 'police', 'ambulance', 'thw', 'riot_police', 'water_rescue',
+            'mountain', 'coastal', 'airport', 'factory_fire_brigade', 'criminal_investigation', 'seg', 'seg_medical_service'
+        ];
 
-        groupButton.addEventListener('click', () => {
-            // Filtern der Einsätze und Setzen des aktiven Buttons
-            filterMissionListByCategoryGroup(groupCategories);
-            setActiveButton(groupButton);
+        desiredOrder.forEach(category => {
+            if (categories.has(category) && !isCategoryInAnyGroup(category)) {
+                const button = document.createElement('button');
+                button.textContent = `${customCategoryLabels[category] || category} (${getMissionCountByCategory(category)})`;
+                button.classList.add('btn', 'btn-xs');
+                button.style.margin = '2px';
+                styleButtonForCurrentTheme(button);
+
+                button.title = customTooltips[category] || `Zeigt Einsätze der Kategorie ${customCategoryLabels[category] || category}`;
+
+                button.addEventListener('click', () => {
+                    // Filtern der Einsätze und Setzen des aktiven Buttons
+                    filterMissionListByCategory(category);
+                    setActiveButton(button);
+                });
+                buttonContainer.appendChild(button);
+            }
         });
-        buttonContainer.appendChild(groupButton);
+
+        // Erstelle die Buttons für die Gruppen mit der Anzahl der Einsätze
+        for (const [groupName, groupCategories] of Object.entries(categoryGroups)) {
+            const groupButton = document.createElement('button');
+            groupButton.textContent = `${groupName} (${getMissionCountByCategoryGroup(groupCategories)})`;
+            groupButton.classList.add('btn', 'btn-xs');
+            groupButton.style.margin = '2px';
+            styleButtonForCurrentTheme(groupButton);
+
+            const groupTooltip = generateGroupTooltip(groupCategories);
+            groupButton.title = groupTooltip;
+
+            groupButton.addEventListener('click', () => {
+                // Filtern der Einsätze und Setzen des aktiven Buttons
+                filterMissionListByCategoryGroup(groupCategories);
+                setActiveButton(groupButton);
+            });
+            buttonContainer.appendChild(groupButton);
+        }
+
+        // Erstellen des Buttons für VGSL/ÜO (Einsätze ohne Kategorie)
+        const unoButton = document.createElement('button');
+        unoButton.textContent = 'VGSL/ÜO';
+        unoButton.classList.add('btn', 'btn-xs');
+        unoButton.style.margin = '2px';
+        styleButtonForCurrentTheme(unoButton);
+
+        unoButton.title = customTooltips['VGSL/ÜO'] || "Zeigt Verbandsgroßschadenslagen und Übergabeorte an";
+
+        // Event-Listener für den Button, um die Filterung und Zählung zu starten
+        unoButton.addEventListener('click', () => {
+            // Zeigt VGE's und Übergabeorte an
+            filterMissionListWithoutCategory();
+            setActiveButton(unoButton);
+            updateUnoButtonCount(); // Zähler aktualisieren, wenn der Button geklickt wird
+        });
+
+        // Füge den Button zum Button-Container hinzu
+        buttonContainer.appendChild(unoButton);
+
+        // Funktion zur Aktualisierung der Anzahl der Einsätze ohne Kategorie
+        function updateUnoButtonCount() {
+            const noCategoryCount = getMissionCountByCategory('no-category');
+            unoButton.textContent = `VGSL/ÜO (${noCategoryCount})`;  // Zähler aktualisieren
+        }
+
+        // Die Anzahl der Einsätze sofort beim Laden anzeigen
+        updateUnoButtonCount();
+
+        const resetButton = document.createElement('button');
+        resetButton.textContent = 'Alle anzeigen';
+        resetButton.classList.add('btn', 'btn-xs', 'btn-primary');
+        resetButton.style.margin = '2px';
+
+        resetButton.title = customTooltips['reset'] || "Alle Einsätze anzeigen";
+
+        resetButton.addEventListener('click', () => {
+            // Reset Filter und setze alle Einsätze zurück
+            resetMissionList();
+            resetActiveButton();
+        });
+
+        buttonContainer.appendChild(resetButton);
+        searchInput.parentNode.insertBefore(buttonContainer, searchInput);
     }
-
-    const unoButton = document.createElement('button');
-    unoButton.textContent = 'VGSL/ÜO';
-    unoButton.classList.add('btn', 'btn-xs');
-    unoButton.style.margin = '2px';
-    styleButtonForCurrentTheme(unoButton);
-
-    unoButton.title = customTooltips['VGSL/ÜO'] || "Zeigt Verbandsgroßschadenslagen und Übergabeorte an";
-
-    unoButton.addEventListener('click', () => {
-        // Zeigt VGE's und Übergabeorte an
-        filterMissionListWithoutCategory();
-        setActiveButton(unoButton);
-    });
-    buttonContainer.appendChild(unoButton);
-
-    const resetButton = document.createElement('button');
-    resetButton.textContent = 'Alle anzeigen';
-    resetButton.classList.add('btn', 'btn-xs', 'btn-primary');
-    resetButton.style.margin = '2px';
-
-    resetButton.title = customTooltips['reset'] || "Alle Einsätze anzeigen";
-
-    resetButton.addEventListener('click', () => {
-        // Reset Filter und setze alle Einsätze zurück
-        resetMissionList();
-        resetActiveButton();
-    });
-
-    buttonContainer.appendChild(resetButton);
-    searchInput.parentNode.insertBefore(buttonContainer, searchInput);
-}
 
     // Funktion für die Tooltips der Buttons
     function generateGroupTooltip(groupCategories) {
