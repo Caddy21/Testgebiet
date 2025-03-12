@@ -16,7 +16,7 @@
     'use strict';
 
     // Benutzerdefinierte Prioritäten (IDs in gewünschter Reihenfolge)
-    const PRIORITY_ORDER = [31, 28, 32]; // RTH, RTW, FuStW, dann alle anderen
+    const PRIORITY_ORDER = [31, 32, 149, 150, 28]; // RTH, FuStW, GW-Bergrettung, GW-Bergrettung (NEF), RTW, dann alle anderen
     // Fahrzeugdaten aus der API
     let vehicleData = {};
     // Flag für Button-Hinzufügung
@@ -185,67 +185,122 @@
         }
     }
 
-    // Funktion zum Sortieren der Sprechwünsche
-    function sortSprechwünsche() {
-        try {
-            console.info('Sortierfunktion wurde aufgerufen.');
-            const listContainer = document.querySelector('#radio_messages_important');
-            if (!listContainer) {
-                console.error('Sprechwunsch-Container (#radio_messages_important) nicht gefunden.');
-                return;
+    // Funktion zur Überwachung der Sprechwünsche auf Klicks
+    function observeSprechwunschClicks() {
+        const container = document.querySelector('#radio_messages_important');
+
+        if (!container) {
+            console.error("🔴 [ERROR] Container #radio_messages_important nicht gefunden.");
+            return;
+        }
+
+        container.addEventListener('click', (event) => {
+            let clickedElement = event.target.closest('[class^="radio_message_vehicle_"]'); // Findet das nächste Element mit einer Fahrzeug-ID
+
+            if (clickedElement) {
+                const classList = clickedElement.className;
+                const match = classList.match(/radio_message_vehicle_(\d+)/);
+
+                if (match) {
+                    const vehicleId = parseInt(match[1], 10);
+                    console.log(`🟠 [INFO] Sprechwunsch für Fahrzeug-ID ${vehicleId} wurde geöffnet.`);
+
+                    // Fahrzeug-ID aus der Liste entfernen
+                    removeVehicleFromSortedList(vehicleId);
+                }
             }
+        });
 
-            console.info('Sprechwunsch-Container gefunden:', listContainer);
+        console.log("🔵 [INFO] Beobachte Klicks auf #radio_messages_important.");
+    }
 
-            // Sprechwünsche sammeln
-            const items = Array.from(listContainer.children);
+    // Funktion zum Entfernen eines Fahrzeugs aus der Session-Liste
+    function removeVehicleFromSortedList(vehicleId) {
+        let sortedIds = getSortedSprechwünsche();
 
-            // Vorher die Reihenfolge in der Konsole ausgeben
-            console.log('Vor der Sortierung:');
-            console.log(items.map(item => getVehicleIdFromElement(item)));
-
-            // Sprechwünsche sortieren
-            items.sort((a, b) => {
-                const aVehicleId = getVehicleIdFromElement(a);
-                const bVehicleId = getVehicleIdFromElement(b);
-
-                // Priorität nach den IDs bestimmen
-                const aPriority = PRIORITY_ORDER.indexOf(vehicleData[aVehicleId] || -1);
-                const bPriority = PRIORITY_ORDER.indexOf(vehicleData[bVehicleId] || -1);
-
-                // Unbekannte Fahrzeuge ans Ende
-                return (aPriority === -1 ? Infinity : aPriority) - (bPriority === -1 ? Infinity : bPriority);
-            });
-
-            // Nach der Sortierung die Reihenfolge in der Konsole ausgeben
-            console.log('Nach der Sortierung:');
-            console.log(items.map(item => getVehicleIdFromElement(item)));
-
-            // Sortierte Elemente zurück in den Container einfügen
-            items.forEach(item => listContainer.appendChild(item));
-
-            console.info('Sprechwünsche wurden erfolgreich sortiert.');
-
-            // Die sortierte Reihenfolge im sessionStorage speichern
-            const sortedIds = items.map(item => getVehicleIdFromElement(item));
+        if (sortedIds.includes(vehicleId)) {
+            sortedIds = sortedIds.filter(id => id !== vehicleId); // Entfernt die ID aus der Liste
             sessionStorage.setItem('sortedSprechwünsche', JSON.stringify(sortedIds));
+            console.log(`🟢 [SUCCESS] Fahrzeug-ID ${vehicleId} aus der Liste entfernt.`);
 
-        } catch (error) {
-            console.error('Fehler in der Sortierfunktion:', error);
+            // Falls noch Fahrzeuge übrig sind, Button aktualisieren
+            updateNextVehicleButton();
         }
     }
 
-    // Funktion zum Abrufen der sortierten Liste aus dem sessionStorage
+    // Funktion zur Aktualisierung des "Next Vehicle"-Buttons
+    function updateNextVehicleButton() {
+        const sortedIds = getSortedSprechwünsche();
+
+        if (sortedIds.length > 0) {
+            const nextVehicleId = sortedIds[0]; // Neues oberstes Fahrzeug nehmen
+            console.log(`🟢 [SUCCESS] Setze neuen href für Next-Button: /vehicles/${nextVehicleId}`);
+
+            // Button im Haupt-DOM aktualisieren
+            const mainButton = document.querySelector('#next-vehicle-fms-5');
+            if (mainButton) {
+                mainButton.setAttribute('href', `/vehicles/${nextVehicleId}`);
+            }
+
+            // Button in iFrame aktualisieren
+            const iframeButton = debugAlertNextButtonInIframe();
+            if (iframeButton) {
+                iframeButton.setAttribute('href', `/vehicles/${nextVehicleId}`);
+            }
+        } else {
+            console.warn("⚠️ [WARNING] Keine Fahrzeuge mehr in der Liste.");
+        }
+    }
+
+    // Rufe die Funktion nach der Sortierung auf
+    function sortSprechwünsche() {
+        try {
+            console.info('🔵 [INFO] Sortierfunktion wurde aufgerufen.');
+            const listContainer = document.querySelector('#radio_messages_important');
+            if (!listContainer) {
+                console.error('🔴 [ERROR] Sprechwunsch-Container (#radio_messages_important) nicht gefunden.');
+                return;
+            }
+
+            console.log('🟢 [SUCCESS] Sprechwunsch-Container gefunden:', listContainer);
+            const items = Array.from(listContainer.children);
+            console.log('🔍 [DEBUG] Vor der Sortierung:', items.map(item => getVehicleIdFromElement(item)));
+
+            items.sort((a, b) => {
+                const aVehicleId = getVehicleIdFromElement(a);
+                const bVehicleId = getVehicleIdFromElement(b);
+                const aPriority = PRIORITY_ORDER.indexOf(vehicleData[aVehicleId] || -1);
+                const bPriority = PRIORITY_ORDER.indexOf(vehicleData[bVehicleId] || -1);
+                return (aPriority === -1 ? Infinity : aPriority) - (bPriority === -1 ? Infinity : bPriority);
+            });
+
+            console.log('🔍 [DEBUG] Nach der Sortierung:', items.map(item => getVehicleIdFromElement(item)));
+            items.forEach(item => listContainer.appendChild(item));
+
+            console.info('🟢 [SUCCESS] Sprechwünsche wurden erfolgreich sortiert.');
+            const sortedIds = items.map(item => getVehicleIdFromElement(item));
+            sessionStorage.setItem('sortedSprechwünsche', JSON.stringify(sortedIds));
+
+            // Button-Link aktualisieren
+            updateNextVehicleButton();
+        } catch (error) {
+            console.error('🔴 [ERROR] Fehler in der Sortierfunktion:', error);
+        }
+    }
+
+    // Funktion zum Abrufen der sortierten Sprechwunsch-Liste aus dem sessionStorage
     function getSortedSprechwünsche() {
         const sortedData = sessionStorage.getItem('sortedSprechwünsche');
         if (sortedData) {
-            return JSON.parse(sortedData); // Gibt die sortierte Reihenfolge der IDs zurück
+            return JSON.parse(sortedData);
         } else {
-            console.warn('Keine sortierten Sprechwünsche im sessionStorage gefunden.');
+            console.warn("⚠️ [WARNING] Keine sortierten Sprechwünsche im sessionStorage gefunden.");
             return [];
         }
     }
 
+    // **Beim Laden das Überwachen der Klicks starten**
+    observeSprechwunschClicks();
 
     // Funktion zum Überprüfen der iframes auf den Button
     function checkIframeForButton() {
@@ -286,31 +341,6 @@
         });
     }
 
-    // Funktion zum Überprüfen des Button in einem iframe
-    function debugAlertNextButtonInIframe() {
-        const iframes = document.querySelectorAll('iframe');
-        let foundButton = false;
-
-        iframes.forEach(iframe => {
-            try {
-                // Sicherstellen, dass der Inhalt des iframe zugänglich ist
-                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-                if (iframeDoc) {
-                    const button = iframeDoc.querySelector('#next-vehicle-fms-5');
-                    if (button) {
-                        console.info('Button #next-vehicle-fms-5 gefunden in einem iframe.');
-                        foundButton = true;
-                        // Hier könntest du die gewünschte Aktion auf dem Button ausführen (z.B. Klick)
-                    }
-                }
-            } catch (error) {
-                console.error('Fehler beim Überprüfen des iframe-Inhalts:', error);
-            }
-        });
-
-        return foundButton;
-    }
-
     // Funktion zum Beobachten des DOMs auf neue Lightbox-Elemente
     function observeForLightboxes() {
         const observer = new MutationObserver(mutations => {
@@ -322,10 +352,19 @@
 
                             // Wiederholt die Überprüfung alle 1 Sekunde, bis der Button gefunden wird
                             const intervalId = setInterval(() => {
-                                if (debugAlertNextButtonInIframe()) {
-                                    clearInterval(intervalId); // Stoppt die Schleife, wenn der Button gefunden wurde
+                                const button = debugAlertNextButtonInIframe();
+                                if (button) {
+                                    clearInterval(intervalId); // Stoppt die Schleife
+
+                                    // **Hier direkt den href aktualisieren!**
+                                    const sortedIds = getSortedSprechwünsche();
+                                    if (sortedIds.length > 0) {
+                                        const nextVehicleId = sortedIds[0];
+                                        console.log(`🟢 [SUCCESS] Setze neuen href für iFrame-Button: /vehicles/${nextVehicleId}`);
+                                        button.setAttribute('href', `/vehicles/${nextVehicleId}`); // Ohne /zuweisung
+                                    }
                                 }
-                            }, 1000); // 1 Sekunde
+                            }, 1000); // Prüft jede Sekunde
                         }
                     });
                 }
@@ -339,6 +378,29 @@
         });
 
         console.log('MutationObserver auf Lightbox-Elemente aktiviert.');
+    }
+
+    // 🛠️ Diese Funktion gibt nun den Button zurück, anstatt nur `true/false`
+    function debugAlertNextButtonInIframe() {
+        const iframes = document.querySelectorAll('iframe');
+        let foundButton = null;
+
+        iframes.forEach(iframe => {
+            try {
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                if (iframeDoc) {
+                    const button = iframeDoc.querySelector('#next-vehicle-fms-5');
+                    if (button) {
+                        console.info("🟢 [SUCCESS] Button #next-vehicle-fms-5 im iframe gefunden.");
+                        foundButton = button; // Speichert den Button zum Zurückgeben
+                    }
+                }
+            } catch (error) {
+                console.error("🔴 [ERROR] Fehler beim Überprüfen des iframe-Inhalts:", error);
+            }
+        });
+
+        return foundButton; // Gibt den Button zurück (oder `null`, falls nicht gefunden)
     }
 
 })();
