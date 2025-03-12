@@ -14,6 +14,7 @@
 
 // To-Do
 // Lagererweiterungen einbauen
+// Suche verbessern 
 
 (function() {
     'use strict';
