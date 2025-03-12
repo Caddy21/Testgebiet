@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         [LSS] 02 - Erweiterungs-Manager
+// @name         [LSS] Erweiterungs-Manager
 // @namespace    http://tampermonkey.net/
-// @version      1.1 (10.03.2025)
+// @version      1.2
 // @description  Listet Wachen auf, bei denen Erweiterungen fehlen und ermöglicht das hinzufügen dieser Erweiterungen.
 // @author       Caddy21
 // @match        https://www.leitstellenspiel.de/
@@ -22,31 +22,31 @@
     // Hier könnt Ihr auswählen welche Erweiterung in der Tabelle angezeigt werden soll, dafür die nicht benötigten einfach mit // ausklammern.
     const manualExtensions = {
         '0_normal': [ // Feuerwache (normal)
-            { id: 0, name: 'Rettungsdienst', cost: 100000, coins: 20 },
-            { id: 1, name: '1te AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 2, name: '2te AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 3, name: '3te AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 4, name: '4te AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 5, name: '5te AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 6, name: 'Wasserrettung', cost: 400000, coins: 25 },
-            { id: 7, name: '6te AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 8, name: 'Flughafenfeuerwehr', cost: 300000, coins: 25 },
-            { id: 9, name: 'Großwache', cost: 1000000, coins: 50 },
-            { id: 10, name: '7te AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 11, name: '8te AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 12, name: '9te AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 13, name: 'Werkfeuerwehr', cost: 100000, coins: 20 },
-            { id: 14, name: 'Netzersatzanlage 50', cost: 100000, coins: 20 },
-            { id: 15, name: 'Netzersatzanlage 200', cost: 100000, coins: 20 },
+//            { id: 0, name: 'Rettungsdienst', cost: 100000, coins: 20 },
+//            { id: 1, name: '1te AB-Stellplatz', cost: 100000, coins: 20 },
+//            { id: 2, name: '2te AB-Stellplatz', cost: 100000, coins: 20 },
+//            { id: 3, name: '3te AB-Stellplatz', cost: 100000, coins: 20 },
+//            { id: 4, name: '4te AB-Stellplatz', cost: 100000, coins: 20 },
+//            { id: 5, name: '5te AB-Stellplatz', cost: 100000, coins: 20 },
+//            { id: 6, name: 'Wasserrettung', cost: 400000, coins: 25 },
+//            { id: 7, name: '6te AB-Stellplatz', cost: 100000, coins: 20 },
+//            { id: 8, name: 'Flughafenfeuerwehr', cost: 300000, coins: 25 },
+//            { id: 9, name: 'Großwache', cost: 1000000, coins: 50 },
+//            { id: 10, name: '7te AB-Stellplatz', cost: 100000, coins: 20 },
+//            { id: 11, name: '8te AB-Stellplatz', cost: 100000, coins: 20 },
+//            { id: 12, name: '9te AB-Stellplatz', cost: 100000, coins: 20 },
+//            { id: 13, name: 'Werkfeuerwehr', cost: 100000, coins: 20 },
+//            { id: 14, name: 'Netzersatzanlage 50', cost: 100000, coins: 20 },
+//            { id: 15, name: 'Netzersatzanlage 200', cost: 100000, coins: 20 },
             { id: 16, name: 'Großlüfter', cost: 75000, coins: 15 },
-            { id: 17, name: '10te AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 18, name: 'Drohneneinheit', cost: 150000, coins: 25 },
-            { id: 19, name: 'Verpflegungsdienst', cost: 200000, coins: 25 },
-            { id: 20, name: '1te Anhänger Stellplatz', cost: 75000, coins: 15 },
-            { id: 21, name: '2te Anhänger Stellplatz', cost: 75000, coins: 15 },
-            { id: 22, name: '3te Anhänger Stellplatz', cost: 75000, coins: 15 },
-            { id: 23, name: '4te Anhänger Stellplatz', cost: 75000, coins: 15 },
-            { id: 24, name: '5te Anhänger Stellplatz', cost: 75000, coins: 15 },
+//            { id: 17, name: '10te AB-Stellplatz', cost: 100000, coins: 20 },
+//            { id: 18, name: 'Drohneneinheit', cost: 150000, coins: 25 },
+//            { id: 19, name: 'Verpflegungsdienst', cost: 200000, coins: 25 },
+//            { id: 20, name: '1te Anhänger Stellplatz', cost: 75000, coins: 15 },
+//            { id: 21, name: '2te Anhänger Stellplatz', cost: 75000, coins: 15 },
+//            { id: 22, name: '3te Anhänger Stellplatz', cost: 75000, coins: 15 },
+//            { id: 23, name: '4te Anhänger Stellplatz', cost: 75000, coins: 15 },
+//            { id: 24, name: '5te Anhänger Stellplatz', cost: 75000, coins: 15 },
             { id: 25, name: 'Bahnrettung', cost: 125000, coins: 25 },
         ],
 
@@ -57,7 +57,7 @@
         ],
 
         '2_normal': [ // Rettungswache
-            { id: 0, name: 'Großwache', cost: 1000000, coins: 50 },
+//            { id: 0, name: 'Großwache', cost: 1000000, coins: 50 },
         ],
 
         '3_normal': [ // Rettungsschule
@@ -76,11 +76,11 @@
             { id: 6, name: 'Neurochirugie', cost: 70000, coins: 15 },
             { id: 7, name: 'Kardiologie', cost: 70000, coins: 15 },
             { id: 8, name: 'Kardiochirugie', cost: 70000, coins: 15 },
-            { id: 9, name: 'Großkrankenhaus', cost: 200000, coins: 50 },
+//            { id: 9, name: 'Großkrankenhaus', cost: 200000, coins: 50 },
         ],
 
         '5_normal': [ // Rettungshubschrauber-Station
-            { id: 0, name: 'Windenrettung', cost: 200000, coins: 15 },
+//            { id: 0, name: 'Windenrettung', cost: 200000, coins: 15 },
         ],
 
         '6_normal': [ // Polizeiwache
@@ -89,17 +89,17 @@
             { id: 2, name: '3te Zelle', cost: 25000, coins: 5 },
             { id: 3, name: '4te Zelle', cost: 25000, coins: 5 },
             { id: 4, name: '5te Zelle', cost: 25000, coins: 5 },
-            { id: 5, name: '6te Zelle', cost: 25000, coins: 5 },
-            { id: 6, name: '7te Zelle', cost: 25000, coins: 5 },
-            { id: 7, name: '8te Zelle', cost: 25000, coins: 5 },
-            { id: 8, name: '9te Zelle', cost: 25000, coins: 5 },
-            { id: 9, name: '10te Zelle', cost: 25000, coins: 5 },
+//            { id: 5, name: '6te Zelle', cost: 25000, coins: 5 },
+//            { id: 6, name: '7te Zelle', cost: 25000, coins: 5 },
+//            { id: 7, name: '8te Zelle', cost: 25000, coins: 5 },
+//            { id: 8, name: '9te Zelle', cost: 25000, coins: 5 },
+//            { id: 9, name: '10te Zelle', cost: 25000, coins: 5 },
             { id: 10, name: 'Diensthundestaffel', cost: 100000, coins: 10 },
             { id: 11, name: 'Kriminalpolizei', cost: 100000, coins: 20 },
             { id: 12, name: 'Dienstgruppenleitung', cost: 200000, coins: 25 },
             { id: 13, name: 'Motorradstaffel', cost: 75000, coins: 15 },
-            { id: 14, name: 'Großwache', cost: 1000000, coins: 50 },
-            { id: 15, name: 'Großgewahrsam', cost: 200000, coins: 50 },
+//            { id: 14, name: 'Großwache', cost: 1000000, coins: 50 },
+//            { id: 15, name: 'Großgewahrsam', cost: 200000, coins: 50 },
         ],
 
         '8_normal': [ // Polizeischule
@@ -120,8 +120,8 @@
             { id: 8, name: 'Fachgruppe Wasserschaden/Pumpen', cost: 200000, coins: 25 },
             { id: 9, name: 'Fachruppe Schwere Bergung', cost: 200000, coins: 25 },
             { id: 10, name: 'Fachgruppe Elektroversorgung', cost: 200000, coins: 25 },
-            { id: 11, name: 'Ortsverband-Mannschaftstransportwagen', cost: 50000, coins: 15 },
-            { id: 12, name: 'Trupp Unbenannte Luftfahrtsysteme', cost: 50000, coins: 15 },
+//            { id: 11, name: 'Ortsverband-Mannschaftstransportwagen', cost: 50000, coins: 15 },
+//            { id: 12, name: 'Trupp Unbenannte Luftfahrtsysteme', cost: 50000, coins: 15 },
             { id: 13, name: 'Fachzug Führung und Kommunikation', cost: 300000, coins: 25 },
         ],
 
@@ -155,57 +155,57 @@
         ],
 
         '13_normal': [ // Polizeihubschrauberstation
-            { id: 0, name: 'Außenlastbehälter', cost: 200000, coins: 15 },
-            { id: 1, name: 'Windenrettung', cost: 200000, coins: 15 },
+//            { id: 0, name: 'Außenlastbehälter', cost: 200000, coins: 15 },
+//            { id: 1, name: 'Windenrettung', cost: 200000, coins: 15 },
         ],
 
         '17_normal': [ // Polizeisondereinheit
-            { id: 0, name: 'SEK: 1. Zug', cost: 100000, coins: 10 },
-            { id: 1, name: 'SEK: 2. Zug', cost: 100000, coins: 10 },
-            { id: 2, name: 'MEK: 1. Zug', cost: 100000, coins: 10 },
-            { id: 3, name: 'MEK: 2. Zug', cost: 100000, coins: 10 },
-            { id: 4, name: 'Diensthundestaffel', cost: 100000, coins: 10 },
+//            { id: 0, name: 'SEK: 1. Zug', cost: 100000, coins: 10 },
+//            { id: 1, name: 'SEK: 2. Zug', cost: 100000, coins: 10 },
+//            { id: 2, name: 'MEK: 1. Zug', cost: 100000, coins: 10 },
+//            { id: 3, name: 'MEK: 2. Zug', cost: 100000, coins: 10 },
+//            { id: 4, name: 'Diensthundestaffel', cost: 100000, coins: 10 },
 
         ],
         '0_small': [ // Feuerwehr (Kleinwache)
-            { id: 0, name: 'Rettungsdienst', cost: 100000, coins: 20 },
-            { id: 1, name: '1te AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 2, name: '2te AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 6, name: 'Wasserrettung', cost: 400000, coins: 25 },
-            { id: 8, name: 'Flughafenfeuerwehr', cost: 300000, coins: 25 },
-            { id: 13, name: 'Werkfeuerwehr', cost: 100000, coins: 20 },
-            { id: 14, name: 'Netzersatzanlage 50', cost: 100000, coins: 20 },
-            { id: 16, name: 'Großlüfter', cost: 75000, coins: 25 },
-            { id: 18, name: 'Drohneneinheit', cost: 150000, coins: 25 },
-            { id: 19, name: 'Verpflegungsdienst', cost: 200000, coins: 25 },
-            { id: 20, name: '1te Anhänger Stellplatz', cost: 75000, coins: 15 },
-            { id: 21, name: '2te Anhänger Stellplatz', cost: 75000, coins: 15 },
-            { id: 25, name: 'Bahnrettung', cost: 125000, coins: 25 },
+//            { id: 0, name: 'Rettungsdienst', cost: 100000, coins: 20 },
+//            { id: 1, name: '1te AB-Stellplatz', cost: 100000, coins: 20 },
+//            { id: 2, name: '2te AB-Stellplatz', cost: 100000, coins: 20 },
+//            { id: 6, name: 'Wasserrettung', cost: 400000, coins: 25 },
+//            { id: 8, name: 'Flughafenfeuerwehr', cost: 300000, coins: 25 },
+//            { id: 13, name: 'Werkfeuerwehr', cost: 100000, coins: 20 },
+//            { id: 14, name: 'Netzersatzanlage 50', cost: 100000, coins: 20 },
+//            { id: 16, name: 'Großlüfter', cost: 75000, coins: 25 },
+//            { id: 18, name: 'Drohneneinheit', cost: 150000, coins: 25 },
+//            { id: 19, name: 'Verpflegungsdienst', cost: 200000, coins: 25 },
+//            { id: 20, name: '1te Anhänger Stellplatz', cost: 75000, coins: 15 },
+//            { id: 21, name: '2te Anhänger Stellplatz', cost: 75000, coins: 15 },
+//            { id: 25, name: 'Bahnrettung', cost: 125000, coins: 25 },
         ],
 
         '6_small': [ // Polizei (Kleinwache)
             { id: 0, name: '1te Zelle', cost: 25000, coins: 5 },
             { id: 1, name: '2te Zelle', cost: 25000, coins: 5 },
-            { id: 10, name: 'Diensthundestaffel', cost: 100000, coins: 10 },
-            { id: 11, name: 'Kriminalpolizei', cost: 100000, coins: 20 },
-            { id: 12, name: 'Dienstgruppenleitung', cost: 200000, coins: 25 },
-            { id: 13, name: 'Motorradstaffel', cost: 75000, coins: 15 },
+//            { id: 10, name: 'Diensthundestaffel', cost: 100000, coins: 10 },
+//            { id: 11, name: 'Kriminalpolizei', cost: 100000, coins: 20 },
+//            { id: 12, name: 'Dienstgruppenleitung', cost: 200000, coins: 25 },
+//            { id: 13, name: 'Motorradstaffel', cost: 75000, coins: 15 },
         ],
 
         '24_normal': [ // Reiterstaffel
-            { id: 0, name: 'Reiterstaffel', cost: 300000, coins: 25 },
-            { id: 1, name: 'Reiterstaffel', cost: 300000, coins: 25 },
-            { id: 2, name: 'Reiterstaffel', cost: 300000, coins: 25 },
-            { id: 3, name: 'Reiterstaffel', cost: 300000, coins: 25 },
-            { id: 4, name: 'Reiterstaffel', cost: 300000, coins: 25 },
-            { id: 5, name: 'Reiterstaffel', cost: 300000, coins: 25 },
+//            { id: 0, name: 'Reiterstaffel', cost: 300000, coins: 25 },
+//            { id: 1, name: 'Reiterstaffel', cost: 300000, coins: 25 },
+//            { id: 2, name: 'Reiterstaffel', cost: 300000, coins: 25 },
+//            { id: 3, name: 'Reiterstaffel', cost: 300000, coins: 25 },
+//            { id: 4, name: 'Reiterstaffel', cost: 300000, coins: 25 },
+//            { id: 5, name: 'Reiterstaffel', cost: 300000, coins: 25 },
         ],
 
         '25_normal': [ // Bergrettungswache
             { id: 0, name: 'Höhenrettung', cost: 50000, coins: 25 },
-            { id: 1, name: 'Drohneneinheit', cost: 75000, coins: 25 },
+//            { id: 1, name: 'Drohneneinheit', cost: 75000, coins: 25 },
             { id: 2, name: 'Rettungshundestaffel', cost: 350000, coins: 25 },
-            { id: 3, name: 'Rettungsdienst', cost: 100000, coins: 20 },
+//            { id: 3, name: 'Rettungsdienst', cost: 100000, coins: 20 },
         ],
 
         '27_normal': [ // Schule für Seefahrt und Seenotrettung
@@ -242,17 +242,8 @@
             max-height: 90vh;
             overflow-y: auto;
             position: relative;
-            text-align: center
-        }
-        #extension-lightbox #extension-lightbox-content.dark {
-            background: #2c2f33;
-            color: #ffffff;
-            border-color: #23272a;
-        }
-        #extension-lightbox #extension-lightbox-content.light {
-            background: #ffffff;
-            color: #000000;
-            border-color: #dddddd;
+            text-align: center;
+            border-radius: 10px; /* Abgerundete Ecken */
         }
         #extension-lightbox #close-extension-helper {
             position: absolute;
@@ -261,13 +252,17 @@
             background: red;
             color: white;
             border: none;
-            padding: 5px;
+            padding: 5px 10px;
             cursor: pointer;
+            border-radius: 4px;
         }
         :root {
-            --background-color: #f2f2f2;  /* Standard Light Mode Hintergrund */
-            --text-color: #000;           /* Standard Light Mode Textfarbe */
-            --border-color: #ccc;         /* Standard Light Mode Randfarbe */
+            --background-color: #f2f2f2;
+            --text-color: #000;
+            --border-color: #ccc;
+            --button-background-color: #007bff;
+            --button-text-color: #ffffff;
+            --button-hover-background-color: #0056b3;
         }
         #extension-lightbox table {
             width: 100%;
@@ -275,72 +270,70 @@
             margin-top: 10px;
             font-size: 16px;
         }
-        #extension-lightbox table th,
+        #extension-lightbox th {
+            text-align: center;
+            vertical-align: middle;
+        }
         #extension-lightbox table td {
             background-color: var(--background-color);
             color: var(--text-color);
             border: 1px solid var(--border-color);
-            padding: 8px;
-            text-align: left;
+            padding: 10px;
+            text-align: center; /* Text in der Mitte */
+            vertical-align: middle;
         }
-        #extension-lightbox table th {
+        #extension-lightbox thead {
+            background-color: #f2f2f2;
             font-weight: bold;
+            border-bottom: 2px solid #ccc;
         }
-        #extension-lightbox .extension-button {
-            background-color: var(--button-background-color, #007bff);
-            color: var(--button-text-color, #ffffff);
+        #extension-lightbox .extension-button,
+        #extension-lightbox .build-selected-button,
+        #extension-lightbox .build-all-button,
+        #extension-lightbox .spoiler-button {
+            color: var(--button-text-color);
             border: none;
             padding: 5px 10px;
             cursor: pointer;
             border-radius: 4px;
+            font-size: 14px;
+            transition: background-color 0.2s ease-in-out;
         }
-        #extension-lightbox .extension-button:disabled {
-            background-color: gray !important; /* Erzwingt die graue Hintergrundfarbe */
-            cursor: not-allowed;
+        #extension-lightbox .extension-button {
+            background-color: var(--button-background-color);
         }
         #extension-lightbox .extension-button:hover:enabled {
-            background-color: var(--button-hover-background-color, #0056b3);
+            background-color: var(--button-hover-background-color);
         }
         #extension-lightbox .build-selected-button {
             background-color: blue;
-            color: var(--button-text-color, #ffffff);
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-        #extension-lightbox .build-selected-button:disabled {
-            background-color: gray;
-            cursor: not-allowed;
-        }
-        #extension-lightbox .build-selected-button:hover:enabled {
-            background-color: blue; /* Behalte die gleiche Farbe beim Hover */
         }
         #extension-lightbox .build-all-button {
-            background-color: red; /* Always red */
-            color: var(--button-text-color, #ffffff);
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 4px;
+            background-color: red;
         }
-        #extension-lightbox .extension-button:disabled {
-            background-color: gray; /* Ändert die Hintergrundfarbe des deaktivierten Buttons zu grau */
-            cursor: not-allowed;
-        }
+        #extension-lightbox .build-selected-button:hover:enabled,
         #extension-lightbox .build-all-button:hover:enabled {
-            background-color: red; /* Keep it red on hover */
+            filter: brightness(90%);
         }
         #extension-lightbox .spoiler-button {
             background-color: green;
-            color: #ffffff;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 4px;
+        }
+        #extension-lightbox .extension-button:disabled,
+        #extension-lightbox .build-selected-button:disabled,
+        #extension-lightbox .build-all-button:disabled {
+            background-color: gray !important;
+            cursor: not-allowed;
         }
         #extension-lightbox .spoiler-content {
             display: none;
+        }
+        #extension-lightbox .extension-search {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
         }
         .currency-selection {
             position: fixed;
@@ -354,6 +347,8 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
         }
         .currency-button {
             padding: 10px 20px;
@@ -377,24 +372,10 @@
             border-radius: 4px;
         }
         #open-extension-helper {
-            cursor: pointer; /* Set cursor to pointer */
+            cursor: pointer;
         }
-        th {
-           text-align: center; /* Zentriert den Text in der Überschriften-Zeile */
-           vertical-align: middle; /* Stellt sicher, dass der Text vertikal mittig bleibt */
-        }
-        thead {
-           background-color: #f2f2f2; /* Heller Hintergrund */
-           font-weight: bold; /* Fettschrift */
-           border-bottom: 2px solid #ccc; /* Trennlinie */
-       }
-       th {
-         padding: 10px;
-         text-align: center;
-         vertical-align: middle;
-       }
-
     `;
+
 
     // Funktion zum Abrufen der Benutzereinstellungen vom API
     async function getUserMode() {
