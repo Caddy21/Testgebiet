@@ -377,7 +377,6 @@
         }
     `;
 
-
     // Funktion zum Abrufen der Benutzereinstellungen vom API
     async function getUserMode() {
         try {
