@@ -16,7 +16,7 @@
     'use strict';
 
     // Benutzerdefinierte Prioritäten (IDs in gewünschter Reihenfolge)
-    const PRIORITY_ORDER = [31, 32, 149, 150, 28]; // RTH, FuStW, GW-Bergrettung, GW-Bergrettung (NEF), RTW, dann alle anderen
+    const PRIORITY_ORDER = [31, 28, 32]; // RTH, FuStW, GW-Bergrettung, GW-Bergrettung (NEF), RTW, dann alle anderen
     // Fahrzeugdaten aus der API
     let vehicleData = {};
     // Flag für Button-Hinzufügung
