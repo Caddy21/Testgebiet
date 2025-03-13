@@ -2,7 +2,7 @@
     'use strict';
 
     const API_URL = 'https://www.leitstellenspiel.de/einsaetze.json';
-    const REQUIRED_CONDITION = 'oneof_police_patrol_or_civil_patrol_or_motorcycle';
+    const REQUIRED_CONDITION = 'Hier beliebiges Fahrzeug einfügen';
 
     // Funktion zum Abrufen der API-Daten
     async function fetchEinsaetze() {
