@@ -1,0 +1,28 @@
+(async function() {
+    'use strict';
+
+    const API_URL = 'https://www.leitstellenspiel.de/einsaetze.json';
+    const REQUIRED_CONDITION = 'oneof_police_patrol_or_civil_patrol_or_motorcycle';
+
+    // Funktion zum Abrufen der API-Daten
+    async function fetchEinsaetze() {
+        try {
+            const response = await fetch(API_URL);
+            const data = await response.json();
+
+            // Filter die Einsätze nach der spezifischen Anforderung
+            const filteredEinsaetze = data.filter(einsatz => {
+                return einsatz.requirements && einsatz.requirements.hasOwnProperty(REQUIRED_CONDITION);
+            });
+
+            // Ausgabe der Namen der gefilterten Einsätze in der Konsole
+            const einsatzNamen = filteredEinsaetze.map(einsatz => einsatz.name);
+            console.log('Einsätze mit der Anforderung:', einsatzNamen);
+        } catch (error) {
+            console.error('Fehler beim Abrufen der Einsätze:', error);
+        }
+    }
+
+    // Skript ausführen
+    fetchEinsaetze();
+})();
