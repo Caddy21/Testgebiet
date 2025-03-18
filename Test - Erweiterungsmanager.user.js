@@ -401,80 +401,100 @@
         }
     }
 
-    // Funktion um die Einsätze zu filtern
-    function filterMissionListByCategory(category) {
-        console.clear();
-        console.log(`Filtern der Einsätze nach Kategorie: ${category}`);
+    // Funktion um die sichtbaren Einsätze in den Session Storage zu speichern
+function storeVisibleMissions() {
+    const visibleMissions = [];
+    document.querySelectorAll('.missionSideBarEntry').forEach(mission => {
+        if (mission.style.display !== 'none') {
+            const missionId = mission.id.split('_')[1];
+            visibleMissions.push(missionId);
+        }
+    });
+    // Lösche vorherige Speicherung im Session Storage
+    sessionStorage.removeItem('visibleMissions');
 
-        const specialMissionIds = [41, 43, 59, 75, 99, 207, 221, 222, 256, 350]; // Spezielle Einsatz-IDs
+    // Speichere neue sichtbare Einsätze
+    sessionStorage.setItem('visibleMissions', JSON.stringify(visibleMissions));
+    console.log("Sichtbare Einsätze gespeichert:", visibleMissions);
 
-        const missionElements = document.querySelectorAll('.missionSideBarEntry');
-        missionElements.forEach(element => {
-            const missionId = element.getAttribute('mission_type_id');
-            if (missionCategoryMap.has(missionId)) {
-                const categories = missionCategoryMap.get(missionId);
-                if (categories.includes(category) && !specialMissionIds.includes(parseInt(missionId))) {
-                    element.style.display = '';
-                    console.log(`Einsatz-ID ${missionId} bleibt sichtbar (Kategorie: ${category})`);
-                } else {
-                    element.style.display = 'none';
-                }
-            } else {
-                element.style.display = 'none';
-            }
-        });
-    }
+    // Ausgabe des gespeicherten Wertes aus dem Session Store
+    const storedMissions = sessionStorage.getItem('visibleMissions');
+    console.log("Gespeicherte Einsätze im Session Store:", JSON.parse(storedMissions));
+}
 
-    // Funktion um Einsätze nach der Gruppenkategorie zu filtern
-    function filterMissionListByCategoryGroup(categoriesGroup) {
-        console.clear();
-        console.log(`Filtern der Einsätze nach den Kategorien: ${categoriesGroup.join(", ")}`);
+// Funktion um die Einsätze zu filtern und im Session Storage zu speichern
+function filterMissionListByCategory(category) {
 
-        const specialMissionIds = [41, 43, 59, 75, 99, 207, 221, 222, 256, 350]; // Spezielle Einsatz-IDs
+    const specialMissionIds = [41, 43, 59, 75, 99, 207, 221, 222, 256, 350]; // Spezielle Einsatz-IDs
 
-        const missionElements = document.querySelectorAll('.missionSideBarEntry');
-        missionElements.forEach(element => {
-            const missionId = element.getAttribute('mission_type_id');
-            if (missionCategoryMap.has(missionId)) {
-                const missionCategories = missionCategoryMap.get(missionId);
-                const match = categoriesGroup.some(category => missionCategories.includes(category));
-
-                if (match && !specialMissionIds.includes(parseInt(missionId))) {
-                    element.style.display = '';
-                    console.log(`Einsatz-ID ${missionId} bleibt sichtbar (Kategorieguppe: ${categoriesGroup.join(", ")})`);
-                } else {
-                    element.style.display = 'none';
-                }
-            } else {
-                element.style.display = 'none';
-            }
-        });
-    }
-
-    // Funktion um Einsätze ohne Kategorie anzuzeigen
-    function filterMissionListWithoutCategory() {
-        console.clear();
-        console.log("Filtern der Einsätze ohne Kategorie");
-
-        const specialMissionIds = [41, 43, 59, 75, 99, 207, 221, 222, 256, 350]; // Spezielle Einsatz-IDs
-
-        const missionElements = document.querySelectorAll('.missionSideBarEntry');
-        missionElements.forEach(element => {
-            const missionId = element.getAttribute('mission_type_id');
-            if (missionCategoryMap.has(missionId)) {
-                const categories = missionCategoryMap.get(missionId);
-                if (categories.length === 0 || specialMissionIds.includes(parseInt(missionId))) {
-                    element.style.display = '';
-                    // console.log(`Einsatz-ID ${missionId} bleibt sichtbar (ohne Kategorie oder spezielle ID)`);
-                } else {
-                    element.style.display = 'none';
-                }
-            } else {
+    const missionElements = document.querySelectorAll('.missionSideBarEntry');
+    missionElements.forEach(element => {
+        const missionId = element.getAttribute('mission_type_id');
+        if (missionCategoryMap.has(missionId)) {
+            const categories = missionCategoryMap.get(missionId);
+            if (categories.includes(category) && !specialMissionIds.includes(parseInt(missionId))) {
                 element.style.display = '';
-                console.log(`Einsatz-ID ${missionId} bleibt sichtbar (keine Kategorien zugewiesen oder spezielle ID)`);
+            } else {
+                element.style.display = 'none';
             }
-        });
-    }
+        } else {
+            element.style.display = 'none';
+        }
+    });
+
+    // Speichere die sichtbaren Einsätze im Session Storage
+    storeVisibleMissions();
+}
+
+// Funktion um Einsätze nach der Gruppenkategorie zu filtern und im Session Storage zu speichern
+function filterMissionListByCategoryGroup(categoriesGroup) {
+
+    const specialMissionIds = [41, 43, 59, 75, 99, 207, 221, 222, 256, 350]; // Spezielle Einsatz-IDs
+
+    const missionElements = document.querySelectorAll('.missionSideBarEntry');
+    missionElements.forEach(element => {
+        const missionId = element.getAttribute('mission_type_id');
+        if (missionCategoryMap.has(missionId)) {
+            const missionCategories = missionCategoryMap.get(missionId);
+            const match = categoriesGroup.some(category => missionCategories.includes(category));
+
+            if (match && !specialMissionIds.includes(parseInt(missionId))) {
+                element.style.display = '';
+            } else {
+                element.style.display = 'none';
+            }
+        } else {
+            element.style.display = 'none';
+        }
+    });
+
+    // Speichere die sichtbaren Einsätze im Session Storage
+    storeVisibleMissions();
+}
+
+// Funktion um Einsätze ohne Kategorie anzuzeigen
+function filterMissionListWithoutCategory() {
+
+    const specialMissionIds = [41, 43, 59, 75, 99, 207, 221, 222, 256, 350]; // Spezielle Einsatz-IDs
+
+    const missionElements = document.querySelectorAll('.missionSideBarEntry');
+    missionElements.forEach(element => {
+        const missionId = element.getAttribute('mission_type_id');
+        if (missionCategoryMap.has(missionId)) {
+            const categories = missionCategoryMap.get(missionId);
+            if (categories.length === 0 || specialMissionIds.includes(parseInt(missionId))) {
+                element.style.display = '';
+            } else {
+                element.style.display = 'none';
+            }
+        } else {
+            element.style.display = '';
+        }
+    });
+
+    // Speichere die sichtbaren Einsätze im Session Storage
+    storeVisibleMissions();
+}
 
     // Funktion um neue Einsätze direkt zu filtern
     function updateMissionVisibility() {
@@ -496,8 +516,6 @@
 
     // Funktion um die neuen Einsätze direkte der Kategorie zuzuordnen
     function filterMissionListByCategory(category) {
-        console.clear();
-        console.log(`Filtern der Einsätze nach Kategorie: ${category}`);
 
         activeFilters = [category]; // Setzt den aktiven Filter
         updateMissionVisibility();
@@ -505,8 +523,6 @@
 
     // Funktion um die neuen Einsätze direkte der Gruppe zuzuordnen
     function filterMissionListByCategoryGroup(categoriesGroup) {
-        console.clear();
-        console.log(`Filtern der Einsätze nach den Kategorien: ${categoriesGroup.join(", ")}`);
 
         activeFilters = categoriesGroup; // Setzt die aktiven Filter für mehrere Kategorien
         updateMissionVisibility();
@@ -514,8 +530,6 @@
 
     // Funktion um alle Einsätze wieder anzuzeigen
     function resetMissionList() {
-        console.clear();
-        console.log("Alle Einsätze anzeigen");
 
         activeFilters = []; // Löscht die aktiven Filter
 
