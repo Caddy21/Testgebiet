@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         [LSS] 09 - Einsatzkategorienfilter
+// @name         [LSS] Einsatzkategorienfilter
 // @namespace    http://tampermonkey.net/
-// @version      1.4
+// @version      1.5
 // @description  Filtert die Einsatzliste nach Kategorien
 // @author       Caddy21
 // @match        https://www.leitstellenspiel.de/
@@ -67,7 +67,6 @@
         return Object.values(categoryGroups).some(group => group.includes(category));
     }
 
-    // Funktion zur Überwachung der Einsatzlisten
     function observeMissionLists() {
         const missionListIds = [
             "mission_list",
@@ -86,13 +85,29 @@
             }
 
             const observer = new MutationObserver(mutations => {
+                let updated = false;
+
                 mutations.forEach(mutation => {
+                    // Wenn neue Einsätze hinzugefügt werden
                     mutation.addedNodes.forEach(node => {
                         if (node.nodeType === 1 && node.classList.contains("missionSideBarEntry")) {
                             updateSingleMissionVisibility(node);
+                            updated = true; // Markiert eine Änderung
+                        }
+                    });
+
+                    // Wenn Einsätze entfernt werden
+                    mutation.removedNodes.forEach(node => {
+                        if (node.nodeType === 1 && node.classList.contains("missionSideBarEntry")) {
+                            updated = true; // Markiert eine Änderung
                         }
                     });
                 });
+
+                // Nur wenn sich etwas geändert hat, aktualisieren wir den Verdienst
+                if (updated) {
+                    updateAverageEarnings();
+                }
             });
 
             observer.observe(missionList, { childList: true });
@@ -142,21 +157,39 @@
             await GM.setValue(storageTimestampKey, now);
         }
 
-        // Mapping der Missionsdaten inklusive average_credits
-        missionData = {};
+        missionData = {}; // Leeres Objekt für die Missionen
+
+        // Durchlaufe alle Missionen und lade die Daten in missionData
         for (const mission of Object.values(missions)) {
-            missionData[mission.id] = mission.average_credits || 0; // Speichere die durchschnittlichen Credits
+            const baseMissionId = mission.base_mission_id;
+            const additiveOverlays = mission.additive_overlays;
+
+            // Falls die Mission eine Basis-Mission hat, speichere den Verdienst
+            if (baseMissionId) {
+                const baseCredits = mission.average_credits || 0;
+                if (!missionData[baseMissionId]) {
+                    missionData[baseMissionId] = {
+                        base_credits: baseCredits,
+                        overlays: {}
+                    };
+                }
+
+                // Wenn Additive Overlays vorhanden sind, speichere den Verdienst für jedes Overlay
+                if (additiveOverlays) {
+                    missionData[baseMissionId].overlays[additiveOverlays] = mission.average_credits || 0;
+                }
+            }
 
             if (mission.mission_categories && Array.isArray(mission.mission_categories)) {
                 mission.mission_categories.forEach(category => categories.add(category));
             }
+
             missionCategoryMap.set(mission.id, mission.mission_categories || []);
         }
 
         await loadSettings();
-        createCategoryButtons(); // Erst jetzt aufrufen, da die Daten geladen wurden
+        createCategoryButtons(); // Jetzt, wo die Daten geladen wurden, können die Buttons erstellt werden
     }
-
 
     // Funktion um den Modus (Dark/White) abzurufen
     async function loadSettings() {
@@ -261,8 +294,6 @@
         for (const [groupName, groupCategories] of Object.entries(categoryGroups)) {
             summary[groupName] = groupCategories.reduce((sum, category) => sum + (summary[category] || 0), 0);
         }
-
-        //        console.log(summary); // Ausgabe in der Konsole oder weitere Verarbeitung
         return summary;
     }
     // Alle 20 Sekunden die Zusammenfassung neu berechnen
@@ -394,25 +425,47 @@
         updateAverageEarnings();
     }
 
-    // Funktion zur Berechnung des Verdienstes
+    // Zwischenspeicher für aktive Einsätze
+    let activeMissions = new Set();
+
     function updateAverageEarnings() {
-        const missionElements = document.querySelectorAll('.missionSideBarEntry');
+        const missionElements = document.querySelectorAll('.missionSideBarEntry:not(.mission_deleted)'); // Filtere gelöschte Einsätze
         let totalCredits = 0;
-        let count = 0;
+        let currentMissions = new Set(); // Neue Liste aktiver Einsätze
 
         missionElements.forEach(element => {
             if (element.style.display !== 'none') { // Nur sichtbare Einsätze zählen
                 const missionId = element.getAttribute('mission_type_id');
-                if (missionId && missionData[missionId] !== undefined) {
-                    totalCredits += missionData[missionId];
-                    count++;
+                const additiveOverlay = element.getAttribute('data-additive-overlays');
+
+                if (missionId && missionData[missionId]) {
+                    let credits = missionData[missionId].base_credits;
+
+                    if (additiveOverlay && missionData[missionId].overlays[additiveOverlay]) {
+                        credits = missionData[missionId].overlays[additiveOverlay];
+                    }
+
+                    totalCredits += credits;
+                    currentMissions.add(missionId);
                 }
             }
         });
 
+        // Prüfen, welche Einsätze entfernt wurden und sie aus `activeMissions` entfernen
+        activeMissions.forEach(missionId => {
+            if (!currentMissions.has(missionId)) {
+                activeMissions.delete(missionId);
+            }
+        });
+
+        // Aktualisiere die gespeicherten aktiven Einsätze
+        activeMissions = currentMissions;
+
         // Berechneten Verdienst anzeigen
-        document.getElementById('average_earnings_display').textContent =
-            `Verdienst dieser Einsätze: ${totalCredits.toLocaleString()} Credits`;
+        const earningsContainer = document.getElementById('average_earnings_display');
+        if (earningsContainer) {
+            earningsContainer.textContent = `Aktueller Verdienst: ${totalCredits.toLocaleString()} Credits`;
+        }
     }
 
     // Funktion um die Kategoriebuttons zu aktuallisieren
@@ -566,6 +619,7 @@
 
         activeFilters = [category]; // Setzt den aktiven Filter
         updateMissionVisibility();
+
     }
 
     // Funktion um die neuen Einsätze direkte der Gruppe zuzuordnen
@@ -573,6 +627,7 @@
 
         activeFilters = categoriesGroup; // Setzt die aktiven Filter für mehrere Kategorien
         updateMissionVisibility();
+
     }
 
     // Funktion um alle Einsätze wieder anzuzeigen
