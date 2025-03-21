@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         [LSS] 09 - Einsatzkategorienfilter
+// @name         [LSS] 09 -Rettung EKF
 // @namespace    http://tampermonkey.net/
 // @version      1.4
 // @description  Filtert die Einsatzliste nach Kategorien
@@ -253,7 +253,7 @@
             summary[groupName] = groupCategories.reduce((sum, category) => sum + (summary[category] || 0), 0);
         }
 
-//        console.log(summary); // Ausgabe in der Konsole oder weitere Verarbeitung
+        //        console.log(summary); // Ausgabe in der Konsole oder weitere Verarbeitung
         return summary;
     }
     // Alle 20 Sekunden die Zusammenfassung neu berechnen
@@ -261,7 +261,6 @@
 
     let categoryButtonsMap = new Map(); // Speichert die Buttons zur späteren Aktualisierung
 
-    // Funktion um die Kategoriebuttons zu erstellen
     function createCategoryButtons() {
         const searchInput = document.getElementById('search_input_field_missions');
         if (!searchInput) {
@@ -292,7 +291,8 @@
                 button.title = customTooltips[category] || `Zeigt Einsätze der Kategorie ${customCategoryLabels[category] || category}`;
 
                 button.addEventListener('click', () => {
-                    filterMissionListByCategory(category);
+                    filterMissionListByCategory(category);  // Filterlogik aufrufen
+                    storeVisibleMissions();  // Sichtbare Einsätze speichern
                     setActiveButton(button);
                 });
 
@@ -304,7 +304,7 @@
         // Buttons für Gruppen erstellen
         for (const [groupName, groupCategories] of Object.entries(categoryGroups)) {
             const groupButton = document.createElement('button');
-            groupButton.textContent = `${groupName} (${summary[groupName] || 0})`; // Fix: Nutzt jetzt summary[groupName]
+            groupButton.textContent = `${groupName} (${summary[groupName] || 0})`;
             groupButton.classList.add('btn', 'btn-xs');
             groupButton.style.margin = '2px';
             styleButtonForCurrentTheme(groupButton);
@@ -312,7 +312,8 @@
             groupButton.title = generateGroupTooltip(groupCategories);
 
             groupButton.addEventListener('click', () => {
-                filterMissionListByCategoryGroup(groupCategories);
+                filterMissionListByCategoryGroup(groupCategories);  // Filterlogik aufrufen
+                storeVisibleMissions();  // Sichtbare Einsätze speichern
                 setActiveButton(groupButton);
             });
 
@@ -330,7 +331,8 @@
         unoButton.title = customTooltips['VGSL/ÜO'] || "Zeigt Verbandsgroßschadenslagen und Übergabeorte an";
 
         unoButton.addEventListener('click', () => {
-            filterMissionListWithoutCategory();
+            filterMissionListWithoutCategory();  // Filterlogik aufrufen
+            storeVisibleMissions();  // Sichtbare Einsätze speichern
             setActiveButton(unoButton);
         });
 
@@ -348,6 +350,7 @@
         resetButton.addEventListener('click', () => {
             resetMissionList();
             resetActiveButton();
+            storeVisibleMissions();  // Auch hier die gespeicherten Einsätze sichern
         });
 
         buttonContainer.appendChild(resetButton);
@@ -402,99 +405,85 @@
     }
 
     // Funktion um die sichtbaren Einsätze in den Session Storage zu speichern
-function storeVisibleMissions() {
-    const visibleMissions = [];
-    document.querySelectorAll('.missionSideBarEntry').forEach(mission => {
-        if (mission.style.display !== 'none') {
-            const missionId = mission.id.split('_')[1];
-            visibleMissions.push(missionId);
-        }
-    });
-    // Lösche vorherige Speicherung im Session Storage
-    sessionStorage.removeItem('visibleMissions');
-
-    // Speichere neue sichtbare Einsätze
-    sessionStorage.setItem('visibleMissions', JSON.stringify(visibleMissions));
-    console.log("Sichtbare Einsätze gespeichert:", visibleMissions);
-
-    // Ausgabe des gespeicherten Wertes aus dem Session Store
-    const storedMissions = sessionStorage.getItem('visibleMissions');
-    console.log("Gespeicherte Einsätze im Session Store:", JSON.parse(storedMissions));
-}
-
-// Funktion um die Einsätze zu filtern und im Session Storage zu speichern
-function filterMissionListByCategory(category) {
-
-    const specialMissionIds = [41, 43, 59, 75, 99, 207, 221, 222, 256, 350]; // Spezielle Einsatz-IDs
-
-    const missionElements = document.querySelectorAll('.missionSideBarEntry');
-    missionElements.forEach(element => {
-        const missionId = element.getAttribute('mission_type_id');
-        if (missionCategoryMap.has(missionId)) {
-            const categories = missionCategoryMap.get(missionId);
-            if (categories.includes(category) && !specialMissionIds.includes(parseInt(missionId))) {
-                element.style.display = '';
-            } else {
-                element.style.display = 'none';
+    function storeVisibleMissions() {
+        const visibleMissions = [];
+        document.querySelectorAll('.missionSideBarEntry').forEach(mission => {
+            if (mission.style.display !== 'none') {
+                const missionId = mission.id.split('_')[1];
+                visibleMissions.push(missionId);
             }
-        } else {
-            element.style.display = 'none';
-        }
-    });
+        });
+        // Lösche vorherige Speicherung im Session Storage
+        sessionStorage.removeItem('visibleMissions');
 
-    // Speichere die sichtbaren Einsätze im Session Storage
-    storeVisibleMissions();
-}
+        // Speichere neue sichtbare Einsätze
+        sessionStorage.setItem('visibleMissions', JSON.stringify(visibleMissions));
 
-// Funktion um Einsätze nach der Gruppenkategorie zu filtern und im Session Storage zu speichern
-function filterMissionListByCategoryGroup(categoriesGroup) {
+        // Ausgabe des gespeicherten Wertes aus dem Session Store
+        const storedMissions = sessionStorage.getItem('visibleMissions');
+        console.log("Gespeicherte Einsätze im Session Store:", JSON.parse(storedMissions));
+    }
 
-    const specialMissionIds = [41, 43, 59, 75, 99, 207, 221, 222, 256, 350]; // Spezielle Einsatz-IDs
+    // Funktion um die Einsätze zu filtern und im Session Storage zu speichern
+    function filterMissionListByCategory(category) {
 
-    const missionElements = document.querySelectorAll('.missionSideBarEntry');
-    missionElements.forEach(element => {
-        const missionId = element.getAttribute('mission_type_id');
-        if (missionCategoryMap.has(missionId)) {
-            const missionCategories = missionCategoryMap.get(missionId);
-            const match = categoriesGroup.some(category => missionCategories.includes(category));
+        const specialMissionIds = [41, 43, 59, 75, 99, 207, 221, 222, 256, 350]; // Spezielle Einsatz-IDs
 
-            if (match && !specialMissionIds.includes(parseInt(missionId))) {
-                element.style.display = '';
-            } else {
-                element.style.display = 'none';
+        const missionElements = document.querySelectorAll('.missionSideBarEntry');
+        missionElements.forEach(element => {
+            const missionId = element.getAttribute('mission_type_id');
+            if (missionCategoryMap.has(missionId)) {
+                const categories = missionCategoryMap.get(missionId);
+                if (categories.includes(category) && !specialMissionIds.includes(parseInt(missionId))) {
+                    element.style.display = '';
+                } else {
+                    element.style.display = 'none';
+                }
             }
-        } else {
-            element.style.display = 'none';
-        }
-    });
+        });
+    }
 
-    // Speichere die sichtbaren Einsätze im Session Storage
-    storeVisibleMissions();
-}
+    // Funktion um Einsätze nach der Gruppenkategorie zu filtern und im Session Storage zu speichern
+    function filterMissionListByCategoryGroup(categoriesGroup) {
 
-// Funktion um Einsätze ohne Kategorie anzuzeigen
-function filterMissionListWithoutCategory() {
+        const specialMissionIds = [41, 43, 59, 75, 99, 207, 221, 222, 256, 350]; // Spezielle Einsatz-IDs
 
-    const specialMissionIds = [41, 43, 59, 75, 99, 207, 221, 222, 256, 350]; // Spezielle Einsatz-IDs
+        const missionElements = document.querySelectorAll('.missionSideBarEntry');
+        missionElements.forEach(element => {
+            const missionId = element.getAttribute('mission_type_id');
+            if (missionCategoryMap.has(missionId)) {
+                const missionCategories = missionCategoryMap.get(missionId);
+                const match = categoriesGroup.some(category => missionCategories.includes(category));
 
-    const missionElements = document.querySelectorAll('.missionSideBarEntry');
-    missionElements.forEach(element => {
-        const missionId = element.getAttribute('mission_type_id');
-        if (missionCategoryMap.has(missionId)) {
-            const categories = missionCategoryMap.get(missionId);
-            if (categories.length === 0 || specialMissionIds.includes(parseInt(missionId))) {
-                element.style.display = '';
-            } else {
-                element.style.display = 'none';
+                if (match && !specialMissionIds.includes(parseInt(missionId))) {
+                    element.style.display = '';
+                } else {
+                    element.style.display = 'none';
+                }
             }
-        } else {
-            element.style.display = '';
-        }
-    });
+        });
+    }
 
-    // Speichere die sichtbaren Einsätze im Session Storage
-    storeVisibleMissions();
-}
+    // Funktion um Einsätze ohne Kategorie anzuzeigen
+    function filterMissionListWithoutCategory() {
+
+        const specialMissionIds = [41, 43, 59, 75, 99, 207, 221, 222, 256, 350]; // Spezielle Einsatz-IDs
+
+        const missionElements = document.querySelectorAll('.missionSideBarEntry');
+        missionElements.forEach(element => {
+            const missionId = element.getAttribute('mission_type_id');
+            if (missionCategoryMap.has(missionId)) {
+                const categories = missionCategoryMap.get(missionId);
+                if (categories.length === 0 || specialMissionIds.includes(parseInt(missionId))) {
+                    element.style.display = '';
+                } else {
+                    element.style.display = 'none';
+                }
+            } else {
+                element.style.display = '';
+            }
+        });
+    }
 
     // Funktion um neue Einsätze direkt zu filtern
     function updateMissionVisibility() {
@@ -558,66 +547,166 @@ function filterMissionListWithoutCategory() {
         activeCategoryButton = null;
     }
 
-    // Funktion zum Überprüfen des "Alarmieren und weiter"-Buttons in allen iFrames
-    function debugAlertNextButtonInIframe() {
-        // Suche alle iFrames, deren id mit "lightbox_iframe_" beginnt
-        const iframes = document.querySelectorAll('[id^="lightbox_iframe_"]');
+    // Funktion zum Entfernen einer bestimmten Mission-ID aus dem SessionStorage
+    function removeMissionFromSessionStorage(missionId) {
+        // Hole die gespeicherten sichtbaren Einsätze aus dem SessionStorage
+        let visibleMissions = JSON.parse(sessionStorage.getItem('visibleMissions'));
 
-        // Durchlaufe alle iFrames und suche nach dem Button
-        for (let iframe of iframes) {
-            const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+        // Prüfe, ob sichtbare Einsätze vorhanden sind
+        if (visibleMissions && Array.isArray(visibleMissions)) {
+            // Filtere die ID, die entfernt werden soll
+            visibleMissions = visibleMissions.filter(id => id !== missionId.toString());
 
-            if (!iframeDocument) {
-                console.log(`❌ Kein Zugriff auf das iFrame-Dokument von ${iframe.id}!`);
-                continue;
-            }
+            // Speichere das aktualisierte Array wieder im SessionStorage
+            sessionStorage.setItem('visibleMissions', JSON.stringify(visibleMissions));
+            console.log(`Mission ID ${missionId} wurde aus dem SessionStorage entfernt.`);
 
-            const alertNextButton = iframeDocument.querySelector('.alert_next');
-
-            if (alertNextButton) {
-                console.log(`✅ "Alarmieren und weiter"-Button im iFrame ${iframe.id} gefunden!`);
-                alertNextButton.addEventListener('click', function () {
-                    console.log(`🚨 "Alarmieren und weiter"-Button im iFrame ${iframe.id} wurde geklickt!`);
-                });
-                return true; // Button gefunden, Schleife beenden
-            } else {
-                console.log(`❌ "Alarmieren und weiter"-Button nicht im iFrame ${iframe.id} gefunden!`);
-            }
+            // Gib die neue Liste der sichtbaren Einsätze aus, um sicherzustellen, dass die ID entfernt wurde
+            console.log("Aktualisierte Liste der sichtbaren Einsätze:", visibleMissions);
         }
-
-        return false; // Button in keinem der iFrames gefunden
     }
 
-    // Beobachtet Änderungen im DOM (Lightbox-Öffnung)
-    const observer = new MutationObserver(mutations => {
-        mutations.forEach(mutation => {
-            if (mutation.addedNodes.length > 0) {
-                mutation.addedNodes.forEach(node => {
-                    if (node.nodeType === 1 && node.id.startsWith('lightbox_iframe_')) {
-                        console.log(`🟢 Neuer iFrame mit id ${node.id} erkannt! Überprüfe Buttons...`);
-                        // Wiederholt die Überprüfung alle 1 Sekunde, bis der Button gefunden wird
-                        const intervalId = setInterval(() => {
-                            if (debugAlertNextButtonInIframe()) {
-                                clearInterval(intervalId); // Stoppt die Schleife, wenn der Button gefunden wurde
-                            }
-                        }, 1000); // 1 Sekunde
-                    }
-                });
-            }
+    // Füge Event-Listener für die "Alarm"-Buttons hinzu
+    const alarmButtons = document.querySelectorAll('[id^="alarm_button_"]'); // Selektiert alle Buttons, deren ID mit "alarm_button_" beginnt
+
+    alarmButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Extrahiere die Mission-ID aus der Button-ID (z. B. alarm_button_3765332903 -> 3765332903)
+            const missionId = button.id.split('_')[2];  // Die Mission-ID befindet sich nach "alarm_button_"
+
+            // Entferne die ID aus dem SessionStorage
+            removeMissionFromSessionStorage(missionId);
         });
     });
 
-    // Starte den Observer
-    observer.observe(document.body, {
-        childList: true, // Beobachte das Hinzufügen von neuen Knoten
-        subtree: true // Beobachte auch alle Kindknoten des gesamten Dokuments
+    function debugAlertNextButtonInIframe() {
+    let alertNextButtonCount = 0;
+    let missionNextButtonCount = 0;
+    let alertNextAllianceButtonCount = 0;
+
+    const visibleMissions = JSON.parse(sessionStorage.getItem('visibleMissions')) || [];
+//    console.log(`📜 Sichtbare Einsätze aus dem SessionStorage:`, visibleMissions);
+
+    if (visibleMissions.length === 0) {
+//        console.log("❌ Keine Missions-IDs im SessionStorage gefunden!");
+        return false;
+    }
+
+    const nextMissionID = visibleMissions[0];
+//    console.log(`🔄 Nächste Mission ID: ${nextMissionID}`);
+
+    const iframes = document.querySelectorAll('[id^="lightbox_iframe_"]');
+
+    for (let iframe of iframes) {
+        const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+
+        if (!iframeDocument) {
+            console.log(`❌ Kein Zugriff auf das iFrame-Dokument von ${iframe.id}!`);
+            continue;
+        }
+
+        const buttons = [
+            { selector: '.alert_next', name: '"Alarmieren und weiter"-Button' },
+            { selector: '#mission_next_mission_btn', name: '"Mission Next"-Button' },
+            { selector: '.btn.btn-success.btn-sm.alert_next_alliance.hidden-xs', name: '"Alert Next Alliance"-Button' }
+        ];
+
+        for (let btn of buttons) {
+            let button = iframeDocument.querySelector(btn.selector);
+            if (button) {
+                // Prüfen, ob der Button bereits angepasst wurde
+                if (button.hasAttribute("data-href-updated")) {
+//                    console.log(`⏸️ ${btn.name} wurde bereits aktualisiert. Überspringe.`);
+                    continue;
+                }
+
+                console.log(`✅ ${btn.name} im iFrame ${iframe.id} gefunden!`);
+
+                let oldHref = button.getAttribute("href");
+//                console.log(`Vorheriger href von ${btn.name}: ${oldHref}`);
+
+                let newHref = `/missions/${nextMissionID}?ifp=st&sd=a&sk=cr`;
+                button.setAttribute("href", newHref);
+                button.setAttribute("data-href-updated", "true"); // Marker setzen
+
+                let updatedHref = button.getAttribute("href");
+//                console.log(`Nachheriger href von ${btn.name}: ${updatedHref}`);
+
+                if (oldHref === updatedHref) {
+//                    console.error(`❌ FEHLER: ${btn.name} href wurde nicht geändert!`);
+                }
+            }
+        }
+    }
+}
+
+
+const observer = new MutationObserver(mutations => {
+    mutations.forEach(mutation => {
+        if (mutation.addedNodes.length > 0) {
+            mutation.addedNodes.forEach(node => {
+                if (node.nodeType === 1 && node.id.startsWith('lightbox_iframe_')) {
+                    console.log(`🟢 Neuer iFrame mit id ${node.id} erkannt! Überprüfe Buttons...`);
+
+                    let attempts = 0; // Zählt die Versuche
+                    const maxAttempts = 5; // Begrenze die Anzahl der Versuche
+
+                    const intervalId = setInterval(() => {
+                        const success = debugAlertNextButtonInIframe();
+
+                        if (success || attempts >= maxAttempts) {
+                            clearInterval(intervalId); // Stoppe die Schleife
+                            if (success) {
+                                console.log(`✅ Button-Update im iFrame ${node.id} erfolgreich.`);
+                            } else {
+                                console.warn(`⚠️ Button-Update im iFrame ${node.id} nicht gefunden nach ${maxAttempts} Versuchen.`);
+                            }
+                        }
+                        attempts++;
+                    }, 1000); // Alle 1 Sekunde prüfen, max. 5x
+                }
+            });
+        }
     });
+});
+
+// Starte den Observer für Änderungen im gesamten Body
+observer.observe(document.body, {
+    childList: true,
+    subtree: true
+});
+
+console.log("🔍 Debugging-Observer für iFrame-Alarmmaske gestartet.");
 
 
-    // Starte den Observer für den Body (überwacht neue Elemente)
-    observer.observe(document.body, { childList: true, subtree: true });
 
-    console.log("🔍 Debugging-Observer für iFrame-Alarmmaske gestartet.");
+// Funktion zum Abrufen der nächsten Mission ID
+function getNextMissionID() {
+    let nextMissionID = sessionStorage.getItem('nextMissionID');
+
+    // Wenn keine Mission ID gespeichert ist, setze eine Standard-ID oder eine Logik zum Abrufen der nächsten ID
+    if (!nextMissionID) {
+        nextMissionID = "defaultMissionID"; // Beispielwert
+    }
+
+    return nextMissionID;
+}
+
+// Funktion zum Entfernen des aktuellen iFrames und Setzen der nächsten Mission
+function removeIframeAndSetNextMission() {
+    const iframes = document.querySelectorAll('[id^="lightbox_iframe_"]');
+    const lastIframe = iframes[iframes.length - 1]; // Nimm den zuletzt hinzugefügten iFrame
+
+    if (lastIframe) {
+        lastIframe.remove(); // Entferne den iFrame
+//        console.log(`🟢 iFrame mit id ${lastIframe.id} entfernt!`);
+
+        // Hole die nächste Mission ID
+        const nextMissionID = getNextMissionID();
+        sessionStorage.setItem('nextMissionID', nextMissionID); // Setze die nächste Mission ID im SessionStorage
+//        console.log(`🔄 Nächste Mission ID im SessionStorage gesetzt: ${nextMissionID}`);
+    }
+}
 
     //    console.log("Starte das Script...");
     loadMissionData();
