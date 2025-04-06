@@ -526,7 +526,7 @@
         // Berechneten Verdienst anzeigen
         const earningsContainer = document.getElementById('average_earnings_display');
         if (earningsContainer) {
-            earningsContainer.textContent = `Aktueller Verdienst: ${totalCredits.toLocaleString()} Credits`;
+            earningsContainer.textContent = `Gesamtverdienst: ${totalCredits.toLocaleString()} Credits`;
         }
     }
 
@@ -735,6 +735,9 @@
         }
         activeCategoryButton = null;
     }
+
+
+    // --------- Bereich für "Alamieren und Weiter" nach Filterung (Testversion) --------- \\
 
     // Funktion zum Entfernen einer bestimmten Mission-ID aus dem SessionStorage
     function removeMissionFromSessionStorage(missionId) {
