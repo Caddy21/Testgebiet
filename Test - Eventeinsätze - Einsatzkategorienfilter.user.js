@@ -26,6 +26,8 @@
     let activeCategoryButton = null; // Referenz auf den aktiven Button
     let activeFilters = []; // Globale Variable zur Speicherung der aktiven Filter
 
+    const specialMissionIds = [41, 43, 59, 75, 99, 207, 221, 222, 256, 350]; // Spezielle Einsatz-IDs
+
     // IDs der Eventeinsätze
     const eventMissionIds = [
 //        53, 428, 581, 665, 787, 789, 793, 794, 795, 831, 861, 862, // Winter
@@ -33,7 +35,7 @@
 //        710, 711, 712, 713, 714, 715, 716, 717, 718, 719, // Karneval / Fasching
 //        597, 598, 599, 600, 601, 602, 603, 604, 605, 790, 791, 792, 833, 834, 917, 918, 919, 920, // Valentin
         722, 723, 724, 725, 726, 727, 728, 729, 730, //Frühling
-//        284, 285, 286, 287, 288, 289, 290, 291, 442, 443, 444, 445, 446, 618, 732, 733, 734, 735, 736, 737, 739, // Ostern
+        284, 285, 286, 287, 288, 289, 290, 291, 442, 443, 444, 445, 446, 618, 732, 733, 734, 735, 736, 737, 739, // Ostern
 //        88, 626, 627, 628, 629, 630, 844, 845, 846, // Vatertag
 //        360, 742, 743, 744, 745, 746, 747, 748, 847, // Muttertag
 //        183, 184, 185, 461, 546, 547, 548, 646, 647, 648, 754, // Sommer
@@ -293,7 +295,7 @@
     function getMissionSummary() {
         let summary = {};
 
-        const missionElements = document.querySelectorAll('.missionSideBarEntry:not(.mission_deleted)');
+        const missionElements = document.querySelectorAll('.missionSideBarEntry:not(.mission_deleted):not(.hidden)');
 
         missionElements.forEach(element => {
             const missionId = element.getAttribute('mission_type_id');
@@ -478,58 +480,83 @@
 
     // Funktion zur Berechnung des Verdienstes
     function updateAverageEarnings() {
+    const missionElements = document.querySelectorAll('.missionSideBarEntry:not(.mission_deleted)');
+    let totalCredits = 0;
+    let actualCredits = 0;
+    let currentMissions = new Set();
+    let categoryCredits = {}; // Objekt für Kategorieberechnungen
 
-        const missionElements = document.querySelectorAll('.missionSideBarEntry:not(.mission_deleted)'); // Filtere gelöschte Einsätze
-        let totalCredits = 0;
-        let currentMissions = new Set(); // Neue Liste aktiver Einsätze
+    missionElements.forEach(element => {
+        // Sichtbarkeit prüfen: sowohl eigene Buttons (style.display) als auch Spiel-Buttons (.hidden)
+        if (element.style.display === 'none' || element.classList.contains('hidden')) return;
 
-        missionElements.forEach(element => {
-            if (element.style.display !== 'none') { // Nur sichtbare Einsätze zählen
-                const missionId = element.getAttribute('mission_type_id');
-                const additiveOverlay = element.getAttribute('data-additive-overlays');
+        const missionId = element.getAttribute('mission_type_id');
+        const additiveOverlay = element.getAttribute('data-additive-overlays');
+        const category = element.getAttribute('data-mission-category'); // Kategorisierungsattribut
 
-                if (missionId && missionData[missionId]) {
-                    let baseCredits = missionData[missionId].base_credits;
-                    let credits = 0; // Standardwert setzen
+        if (missionId && missionData[missionId]) {
+            let baseCredits = missionData[missionId].base_credits;
+            let credits = 0;
 
-                    // Falls base_credits existiert, setzen, sonst 0
-                    if (baseCredits !== null && baseCredits !== undefined) {
-                        credits = baseCredits;
-                    }
-
-                    // Falls ein Overlay existiert, verwende dessen Credits
-                    if (additiveOverlay && missionData[missionId].overlays[additiveOverlay]) {
-                        credits = missionData[missionId].overlays[additiveOverlay];
-                    }
-
-                    // Falls base_credits NULL ODER 0 ist, 250 Credits addieren
-                    if (baseCredits === null || baseCredits === 0) {
-                        credits += 250;
-                    }
-                    totalCredits += credits;
-                    currentMissions.add(missionId);
-                } else {
-                }
+            if (baseCredits !== null && baseCredits !== undefined) {
+                credits = baseCredits;
             }
-        });
 
-        // Prüfen, welche Einsätze entfernt wurden und sie aus `activeMissions` entfernen
-        activeMissions.forEach(missionId => {
-            if (!currentMissions.has(missionId)) {
-                activeMissions.delete(missionId);
+            if (additiveOverlay && missionData[missionId].overlays[additiveOverlay]) {
+                credits = missionData[missionId].overlays[additiveOverlay];
             }
-        });
 
-        // Aktualisiere die gespeicherten aktiven Einsätze
-        activeMissions = currentMissions;
+            if (baseCredits === null || baseCredits === 0) {
+                credits += 250;
+            }
 
-        // Berechneten Verdienst anzeigen
-        const earningsContainer = document.getElementById('average_earnings_display');
-        if (earningsContainer) {
-            earningsContainer.textContent = `Gesamtverdienst: ${totalCredits.toLocaleString()} Credits`;
+            // Gesamtverdienst: Alle sichtbaren Einsätze
+            totalCredits += credits;
+
+            // Tatsächlicher Verdienst (wenn der User den Einsatz aktiv angefahren hat)
+            const idNum = element.id.replace(/\D/g, ''); // extrahiere die ID-Zahl
+            const participantIcon = document.getElementById(`mission_participant_${idNum}`);
+            if (participantIcon && !participantIcon.classList.contains('hidden')) {
+                actualCredits += credits;
+            }
+
+            // Kategorieberechnung (nur angefahrene Einsätze zählen)
+            if (participantIcon && !participantIcon.classList.contains('hidden') && category) {
+                categoryCredits[category] = (categoryCredits[category] || 0) + credits;
+            }
+
+            currentMissions.add(missionId);
         }
-    }
+    });
 
+    // Nicht mehr vorhandene Einsätze aus activeMissions entfernen
+    activeMissions.forEach(missionId => {
+        if (!currentMissions.has(missionId)) {
+            activeMissions.delete(missionId);
+        }
+    });
+
+    // Aktuelle Einsätze speichern
+    activeMissions = currentMissions;
+
+    // Berechnung der Gesamtverdienste
+    let categoryTotalCredits = 0;
+    Object.values(categoryCredits).forEach(categorySum => {
+        categoryTotalCredits += categorySum;
+    });
+
+    // Anzeige der Verdienste mit Symbolen und Tooltips
+    const earningsContainer = document.getElementById('average_earnings_display');
+    if (earningsContainer) {
+        earningsContainer.innerHTML = `
+            <span title="${customTooltips['total_earnings'] || 'Gesamtverdienst'}">💰 ${totalCredits.toLocaleString()} Credits</span>
+            |
+            <span title="${customTooltips['actual_earnings'] || 'Tatsächlicher Verdienst aus aktiv angefahrenen Einsätzen'}">
+                <span class="glyphicon glyphicon-user" style="color: #8bc34a;" aria-hidden="true"></span> ${actualCredits.toLocaleString()} Credits
+            </span>
+        `;
+    }
+}
 
     // Funktion um die Kategoriebuttons zu aktuallisieren
     function updateCategoryButtons() {
@@ -600,9 +627,6 @@
 
     // Funktion um die Einsätze zu filtern und im Session Storage zu speichern
     function filterMissionListByCategory(category) {
-
-        const specialMissionIds = [41, 43, 59, 75, 99, 207, 221, 222, 256, 350]; // Spezielle Einsatz-IDs
-
         const missionElements = document.querySelectorAll('.missionSideBarEntry');
         missionElements.forEach(element => {
             const missionId = element.getAttribute('mission_type_id');
@@ -619,9 +643,6 @@
 
     // Funktion um Einsätze nach der Gruppenkategorie zu filtern und im Session Storage zu speichern
     function filterMissionListByCategoryGroup(categoriesGroup) {
-
-        const specialMissionIds = [41, 43, 59, 75, 99, 207, 221, 222, 256, 350]; // Spezielle Einsatz-IDs
-
         const missionElements = document.querySelectorAll('.missionSideBarEntry');
         missionElements.forEach(element => {
             const missionId = element.getAttribute('mission_type_id');
@@ -640,9 +661,6 @@
 
     // Funktion um Einsätze ohne Kategorie anzuzeigen
     function filterMissionListWithoutCategory() {
-
-        const specialMissionIds = [41, 43, 59, 75, 99, 207, 221, 222, 256, 350]; // Spezielle Einsatz-IDs
-
         const missionElements = document.querySelectorAll('.missionSideBarEntry');
         missionElements.forEach(element => {
             const missionId = element.getAttribute('mission_type_id');
