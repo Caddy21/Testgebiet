@@ -26,6 +26,7 @@
     let activeCategoryButton = null; // Referenz auf den aktiven Button
     let activeFilters = []; // Globale Variable zur Speicherung der aktiven Filter
 
+    // IDs der voreingestellten VGSL
     const specialMissionIds = [41, 43, 59, 75, 99, 207, 221, 222, 256, 350]; // Spezielle Einsatz-IDs
 
     // IDs der Eventeinsätze
@@ -35,7 +36,7 @@
         //        710, 711, 712, 713, 714, 715, 716, 717, 718, 719, // Karneval / Fasching
         //        597, 598, 599, 600, 601, 602, 603, 604, 605, 790, 791, 792, 833, 834, 917, 918, 919, 920, // Valentin
         722, 723, 724, 725, 726, 727, 728, 729, 730, //Frühling
-        284, 285, 286, 287, 288, 289, 290, 291, 442, 443, 444, 445, 446, 618, 732, 733, 734, 735, 736, 737, 739, // Ostern
+        284, 285, 286, 287, 288, 289, 290, 291, 442, 443, 444, 445, 446, 618, 732, 733, 734, 735, 736, 737, 739, 927, 928, 929 // Ostern
         //        88, 626, 627, 628, 629, 630, 844, 845, 846, // Vatertag
         //        360, 742, 743, 744, 745, 746, 747, 748, 847, // Muttertag
         //        183, 184, 185, 461, 546, 547, 548, 646, 647, 648, 754, // Sommer
@@ -91,6 +92,7 @@
         return Object.values(categoryGroups).some(group => group.includes(category));
     }
 
+    // Funktion zur Überwachung der Einsatzlisten
     function observeMissionLists() {
         const missionListIds = [
             "mission_list",
@@ -161,6 +163,7 @@
     // Globale Variable zur Speicherung der Missionsdaten inklusive der durchschnittlichen Credits
     let missionData = {};
 
+    // Funktion um die Missionen zu laden
     async function loadMissionData() {
         const now = Date.now();
         const storedTimestamp = await GM.getValue(storageTimestampKey, 0);
@@ -247,89 +250,25 @@
 
     };
 
-    // Funktion um die Button zu aktuallisieren
-    function updateMissionCount() {
-        const summary = getMissionSummary(); // Neue Zählung abrufen
-        const categoryButtons = document.querySelectorAll('.category-button');
+    // Funktion für die Tooltips der Buttons
+    function generateGroupTooltip(groupCategories) {
+        const categoryLabels = groupCategories.map(category => customCategoryLabels[category] || category);
+        const tooltipText = `Zeigt alle Einsätze der Kategorien: ${categoryLabels.join(', ')}`;
+        return tooltipText;
+    }
 
-        categoryButtons.forEach(button => {
-            const category = button.getAttribute('data-category');
-            const countDisplay = button.querySelector('.mission-count');
-
-            if (countDisplay) {
-                countDisplay.textContent = summary[category] || 0; // Falls keine Einsätze, dann 0 setzen
-            }
-        });
-
-        // Extra-Handling für VGSL/ÜO (falls nötig)
-        const vgsloButton = document.querySelector('.category-button[data-category="VGSL/ÜO"]');
-        if (vgsloButton) {
-            const countDisplay = vgsloButton.querySelector('.mission-count');
-            if (countDisplay) {
-                countDisplay.textContent = summary["VGSL/ÜO"] || 0;
-            }
+    // Funktion um die Buttonfarbe dem Dark- oder White-Modus anzupassen
+    function styleButtonForCurrentTheme(button) {
+        if (isDarkMode) {
+            button.style.backgroundColor = '#333';
+            button.style.color = '#fff';
+            button.style.border = '1px solid #555';
+        } else {
+            button.style.backgroundColor = '#fff';
+            button.style.color = '#333';
+            button.style.border = '1px solid #ccc';
         }
     }
-
-    // Jede Sekunden Zählung aktualisieren + Buttons updaten
-    setInterval(updateMissionCount, 1000);
-
-    // Funktion zur Berechnung der Anzahl der Einsätze für eine bestimmte Kategorie
-    function getMissionCountByCategory(category) {
-        const summary = getMissionSummary(); // Holt die bereits berechneten Werte
-        return summary[category] || 0; // Falls die Kategorie nicht existiert, wird 0 zurückgegeben
-    }
-
-    // Funktion zur Berechnung der Anzahl der Einsätze für eine Kategoriegruppe
-    function getMissionCountByCategoryGroup(categoriesGroup) {
-        const summary = getMissionSummary();
-        let count = 0;
-
-        categoriesGroup.forEach(category => {
-            count += summary[category] || 0; // Addiere die Werte aller Kategorien in der Gruppe
-        });
-
-        return count;
-    }
-
-    // Funktion um die Einsätze zu zählen
-    function getMissionSummary() {
-        let summary = {};
-
-        const missionElements = document.querySelectorAll('.missionSideBarEntry:not(.mission_deleted):not(.hidden)');
-
-        missionElements.forEach(element => {
-            const missionId = element.getAttribute('mission_type_id');
-            let categories = missionCategoryMap.get(missionId) || ['no-category']; // Standardwert "no-category"
-
-            // Überprüfen, ob die Mission-ID zu den speziellen IDs gehört, die der VGSL/ÜO zugeordnet werden sollen
-            const specialIds = [41, 43, 59, 75, 99, 207, 221, 222, 256, 350];
-            if (specialIds.includes(parseInt(missionId))) {
-                categories = ['no-category']; // Ersetze alle Kategorien mit VGSL/ÜO für diese speziellen IDs
-            }
-
-            categories.forEach(category => {
-                summary[category] = (summary[category] || 0) + 1;
-            });
-
-            // Überprüfen, ob die Mission-ID zu den Eventeinsatz-IDs gehört
-            if (eventMissionIds.includes(parseInt(missionId))) {
-                summary['event'] = (summary['event'] || 0) + 1;
-            }
-        });
-
-        // Berechnung für Gruppen
-        for (const [groupName, groupCategories] of Object.entries(categoryGroups)) {
-            summary[groupName] = groupCategories.reduce((sum, category) => sum + (summary[category] || 0), 0);
-        }
-
-        return summary;
-    }
-
-    // Jede Sekunden die Zusammenfassung neu berechnen
-    setInterval(getMissionSummary, 1000);
-
-    let categoryButtonsMap = new Map(); // Speichert die Buttons zur späteren Aktualisierung
 
     // Funktion um die Einsätze zu laden, aktuallisieren
     async function fetchMissionData() {
@@ -345,6 +284,8 @@
             return {};
         }
     }
+
+        let categoryButtonsMap = new Map(); // Speichert die Buttons zur späteren Aktualisierung
 
     // Funktion zur Erstellung der Buttons
     async function createCategoryButtons() {
@@ -493,6 +434,7 @@
     // Zwischenspeicher für aktive Einsätze
     let activeMissions = new Set();
 
+    // Funktion zur Berechnung des Verdienstes
     function updateAverageEarnings() {
         const missionElements = document.querySelectorAll('.missionSideBarEntry:not(.mission_deleted)');
         let totalCredits = 0;
@@ -503,6 +445,9 @@
         let categoryCredits = {};
 
         missionElements.forEach(element => {
+            // Sichtbarkeit prüfen: sowohl eigene Buttons (style.display) als auch Spiel-Buttons (.hidden)
+            if (element.style.display === 'none' || element.classList.contains('hidden')) return;
+
             const missionId = element.getAttribute('mission_type_id');
             const additiveOverlay = element.getAttribute('data-additive-overlays');
             const category = element.getAttribute('data-mission-category');
@@ -532,7 +477,8 @@
                     }
                 }
 
-                if (element.style.display !== 'none' && !element.classList.contains('hidden')) {
+                // Entfernen der 'hidden' Überprüfung
+                if (element.style.display !== 'none') {
                     totalCredits += credits;
                     if (isParticipating) {
                         actualCredits += credits;
@@ -551,19 +497,19 @@
         activeMissions = currentMissions;
 
         const standardHTML = `
-        <span title="${customTooltips['total_earnings'] || 'Verdienst der Kategorie oder Gruppe'}">💰 ${totalCredits.toLocaleString()} Credits</span>
-        |
-        <span title="${customTooltips['actual_earnings'] || 'Verdienst aus angefahrenen Einsätzen der Kategorie oder Gruppe'}">
-            <span class="glyphicon glyphicon-user" style="color: #8bc34a;" aria-hidden="true"></span> ${actualCredits.toLocaleString()} Credits
-        </span>
+    <span title="${customTooltips['total_earnings'] || 'Verdienst der Kategorie oder Gruppe'}">💰 ${totalCredits.toLocaleString()} Credits</span>
+    /
+    <span title="${customTooltips['actual_earnings'] || 'Verdienst aus angefahrenen Einsätzen der Kategorie oder Gruppe'}">
+        <span class="glyphicon glyphicon-user" style="color: #8bc34a;" aria-hidden="true"></span> ${actualCredits.toLocaleString()} Credits
+    </span>
     `;
 
         const fullHTML = `
-        <span title="Gesamtverdienst aller Einsätze (sichtbar & unsichtbar)">💲 ${allCredits.toLocaleString()} Credits</span>
-        |
-        <span title="Verdienst aus allen angefahrenen Einsätzen (sichtbar & unsichtbar)">
-            <span class="glyphicon glyphicon-user" style="color: #4caf50;" aria-hidden="true"></span>💲 ${allActualCredits.toLocaleString()} Credits
-        </span>
+    <span title="Gesamtverdienst aller Einsätze">💲${allCredits.toLocaleString()} Credits</span>
+    /
+    <span title="Verdienst aus allen angefahrenen Einsätzen">
+        <span class="glyphicon glyphicon-user" style="color: #4caf50;" aria-hidden="true"></span>💲${allActualCredits.toLocaleString()} Credits
+    </span>
     `;
 
         const standardContainer = document.getElementById('standard_earnings_display');
@@ -594,54 +540,87 @@
         }
     }
 
-    // Interval für die Updates (Jede Sekunde)
-    setInterval(() => {
-        updateMissionCount();
-        updateAverageEarnings();
-        updateCategoryButtons();
-    }, 1000);
+    // ----- Bereich für die Einsatzzählung ----- \\
 
-    // Funktion für die Tooltips der Buttons
-    function generateGroupTooltip(groupCategories) {
-        const categoryLabels = groupCategories.map(category => customCategoryLabels[category] || category);
-        const tooltipText = `Zeigt alle Einsätze der Kategorien: ${categoryLabels.join(', ')}`;
-        return tooltipText;
-    }
+    // Funktion um die Button zu aktuallisieren
+    function updateMissionCount() {
+        const summary = getMissionSummary(); // Neue Zählung abrufen
+        const categoryButtons = document.querySelectorAll('.category-button');
 
-    // Funktion um die Buttonfarbe dem Dark- oder White-Modus anzupassen
-    function styleButtonForCurrentTheme(button) {
-        if (isDarkMode) {
-            button.style.backgroundColor = '#333';
-            button.style.color = '#fff';
-            button.style.border = '1px solid #555';
-        } else {
-            button.style.backgroundColor = '#fff';
-            button.style.color = '#333';
-            button.style.border = '1px solid #ccc';
+        categoryButtons.forEach(button => {
+            const category = button.getAttribute('data-category');
+            const countDisplay = button.querySelector('.mission-count');
+
+            if (countDisplay) {
+                countDisplay.textContent = summary[category] || 0; // Falls keine Einsätze, dann 0 setzen
+            }
+        });
+
+        // Extra-Handling für VGSL/ÜO (falls nötig)
+        const vgsloButton = document.querySelector('.category-button[data-category="VGSL/ÜO"]');
+        if (vgsloButton) {
+            const countDisplay = vgsloButton.querySelector('.mission-count');
+            if (countDisplay) {
+                countDisplay.textContent = summary["VGSL/ÜO"] || 0;
+            }
         }
     }
 
-    // Funktion um die sichtbaren Einsätze in den Session Storage zu speichern
-    function storeVisibleMissions() {
-        const visibleMissions = [];
-        document.querySelectorAll('.missionSideBarEntry').forEach(mission => {
-            if (mission.style.display !== 'none') {
-                const missionId = mission.id.split('_')[1];
-                visibleMissions.push(missionId);
-            }
-        });
-        // Lösche vorherige Speicherung im Session Storage
-        sessionStorage.removeItem('visibleMissions');
-
-        // Speichere neue sichtbare Einsätze
-        sessionStorage.setItem('visibleMissions', JSON.stringify(visibleMissions));
-
-        // Ausgabe des gespeicherten Wertes aus dem Session Store
-        const storedMissions = sessionStorage.getItem('visibleMissions');
-        console.log("Gespeicherte Einsätze im Session Store:", JSON.parse(storedMissions));
+    // Funktion zur Berechnung der Anzahl der Einsätze für eine bestimmte Kategorie
+    function getMissionCountByCategory(category) {
+        const summary = getMissionSummary(); // Holt die bereits berechneten Werte
+        return summary[category] || 0; // Falls die Kategorie nicht existiert, wird 0 zurückgegeben
     }
 
-    // Funktion um die Einsätze zu filtern und im Session Storage zu speichern
+    // Funktion zur Berechnung der Anzahl der Einsätze für eine Kategoriegruppe
+    function getMissionCountByCategoryGroup(categoriesGroup) {
+        const summary = getMissionSummary();
+        let count = 0;
+
+        categoriesGroup.forEach(category => {
+            count += summary[category] || 0; // Addiere die Werte aller Kategorien in der Gruppe
+        });
+
+        return count;
+    }
+
+    // Funktion um die Einsätze zu zählen
+    function getMissionSummary() {
+        let summary = {};
+
+        const missionElements = document.querySelectorAll('.missionSideBarEntry:not(.mission_deleted):not(.hidden)');
+
+        missionElements.forEach(element => {
+            const missionId = element.getAttribute('mission_type_id');
+            let categories = missionCategoryMap.get(missionId) || ['no-category']; // Standardwert "no-category"
+
+            // Überprüfen, ob die Mission-ID zu den speziellen IDs gehört, die der VGSL/ÜO zugeordnet werden sollen
+            const specialIds = [41, 43, 59, 75, 99, 207, 221, 222, 256, 350];
+            if (specialIds.includes(parseInt(missionId))) {
+                categories = ['no-category']; // Ersetze alle Kategorien mit VGSL/ÜO für diese speziellen IDs
+            }
+
+            categories.forEach(category => {
+                summary[category] = (summary[category] || 0) + 1;
+            });
+
+            // Überprüfen, ob die Mission-ID zu den Eventeinsatz-IDs gehört
+            if (eventMissionIds.includes(parseInt(missionId))) {
+                summary['event'] = (summary['event'] || 0) + 1;
+            }
+        });
+
+        // Berechnung für Gruppen
+        for (const [groupName, groupCategories] of Object.entries(categoryGroups)) {
+            summary[groupName] = groupCategories.reduce((sum, category) => sum + (summary[category] || 0), 0);
+        }
+
+        return summary;
+    }
+
+    // ----- Bereich für die Filterung der Einsätze ----- \\
+
+    // Funktion um die Kategprieneinsätze zu filtern
     function filterMissionListByCategory(category) {
         const missionElements = document.querySelectorAll('.missionSideBarEntry');
         missionElements.forEach(element => {
@@ -657,7 +636,7 @@
         });
     }
 
-    // Funktion um Einsätze nach der Gruppenkategorie zu filtern und im Session Storage zu speichern
+    // Funktion um Einsätze nach der Gruppenkategorie zu filtern
     function filterMissionListByCategoryGroup(categoriesGroup) {
         const missionElements = document.querySelectorAll('.missionSideBarEntry');
         missionElements.forEach(element => {
@@ -724,7 +703,7 @@
         });
     }
 
-    // Funktion um die neuen Einsätze direkte der Kategorie zuzuordnen
+    // Funktion um die neuen Einsätze direkt der Kategorie zuzuordnen
     function filterMissionListByCategory(category) {
 
         activeFilters = [category]; // Setzt den aktiven Filter
@@ -770,6 +749,37 @@
         activeCategoryButton = null;
     }
 
+    // Interval für die Updates (Jede Sekunde)
+    setInterval(() => {
+        updateMissionCount();
+        updateAverageEarnings();
+        updateCategoryButtons();
+        getMissionSummary();
+    }, 1000);
+
+    // ----- Bereich für Alamieren und Weiter ----- \\
+
+    // Funktion um die sichtbaren Einsätze in den Session Storage zu speichern
+    function storeVisibleMissions() {
+        const visibleMissions = [];
+        document.querySelectorAll('.missionSideBarEntry').forEach(mission => {
+            if (mission.style.display !== 'none') {
+                const missionId = mission.id.split('_')[1];
+                visibleMissions.push(missionId);
+            }
+        });
+        // Lösche vorherige Speicherung im Session Storage
+        sessionStorage.removeItem('visibleMissions');
+
+        // Speichere neue sichtbare Einsätze
+        sessionStorage.setItem('visibleMissions', JSON.stringify(visibleMissions));
+
+        // Ausgabe des gespeicherten Wertes aus dem Session Store
+        const storedMissions = sessionStorage.getItem('visibleMissions');
+        console.log("Gespeicherte Einsätze im Session Store:", JSON.parse(storedMissions));
+    }
+
     //    console.log("Starte das Script...");
     loadMissionData();
+
 })();
