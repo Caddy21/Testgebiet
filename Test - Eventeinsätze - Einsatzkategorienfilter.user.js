@@ -30,23 +30,23 @@
 
     // IDs der Eventeinsätze
     const eventMissionIds = [
-//        53, 428, 581, 665, 787, 789, 793, 794, 795, 831, 861, 862, // Winter
-//        704, 705, 706, 707, 708, // Tag des Europüischen Notrufes
-//        710, 711, 712, 713, 714, 715, 716, 717, 718, 719, // Karneval / Fasching
-//        597, 598, 599, 600, 601, 602, 603, 604, 605, 790, 791, 792, 833, 834, 917, 918, 919, 920, // Valentin
+        //        53, 428, 581, 665, 787, 789, 793, 794, 795, 831, 861, 862, // Winter
+        //        704, 705, 706, 707, 708, // Tag des Europüischen Notrufes
+        //        710, 711, 712, 713, 714, 715, 716, 717, 718, 719, // Karneval / Fasching
+        //        597, 598, 599, 600, 601, 602, 603, 604, 605, 790, 791, 792, 833, 834, 917, 918, 919, 920, // Valentin
         722, 723, 724, 725, 726, 727, 728, 729, 730, //Frühling
         284, 285, 286, 287, 288, 289, 290, 291, 442, 443, 444, 445, 446, 618, 732, 733, 734, 735, 736, 737, 739, // Ostern
-//        88, 626, 627, 628, 629, 630, 844, 845, 846, // Vatertag
-//        360, 742, 743, 744, 745, 746, 747, 748, 847, // Muttertag
-//        183, 184, 185, 461, 546, 547, 548, 646, 647, 648, 754, // Sommer
-//        672, 673, 674, 675, 676, 677, 678, 679, 680, // Herbst
-//        111, 112, 113, 114, 115, 116, 117, 118, 119, // Halloween
-//        52, 54, 55, 56, 129, 130, 202, 203, 582, 583, 584, 585, 586, 587, 588, 589, 590, 783, 784, 785, 786, 901, // Weihnachten
-//        23, 26, 29, 35, 42, 51, 80, 86, 96, 186, 187, 214, 283, 320, 324, 327, 388, 389, 395, 398, 399, 400, 407, 408, 430, 462, 465, 470, 502, 515, 702, // Rauchmeldertag
-//        259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 326, 591, 695, // Silvester
-//        371, 372, 373, 374, 375, 376, 641, 642, 849, 850, 851, 852, // WM / EM
-//        756, 757, 758, 759, 760, 761, 762, 763, 764, 765, 766, 767, 768, 769, 770, 771, 772, // Jubiläum
-//        868, 869, 870, 871, 872, 873, 874, 875, 876, 877, 878, // Sportevent
+        //        88, 626, 627, 628, 629, 630, 844, 845, 846, // Vatertag
+        //        360, 742, 743, 744, 745, 746, 747, 748, 847, // Muttertag
+        //        183, 184, 185, 461, 546, 547, 548, 646, 647, 648, 754, // Sommer
+        //        672, 673, 674, 675, 676, 677, 678, 679, 680, // Herbst
+        //        111, 112, 113, 114, 115, 116, 117, 118, 119, // Halloween
+        //        52, 54, 55, 56, 129, 130, 202, 203, 582, 583, 584, 585, 586, 587, 588, 589, 590, 783, 784, 785, 786, 901, // Weihnachten
+        //        23, 26, 29, 35, 42, 51, 80, 86, 96, 186, 187, 214, 283, 320, 324, 327, 388, 389, 395, 398, 399, 400, 407, 408, 430, 462, 465, 470, 502, 515, 702, // Rauchmeldertag
+        //        259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 326, 591, 695, // Silvester
+        //        371, 372, 373, 374, 375, 376, 641, 642, 849, 850, 851, 852, // WM / EM
+        //        756, 757, 758, 759, 760, 761, 762, 763, 764, 765, 766, 767, 768, 769, 770, 771, 772, // Jubiläum
+        //        868, 869, 870, 871, 872, 873, 874, 875, 876, 877, 878, // Sportevent
 
     ];
 
@@ -140,6 +140,7 @@
 
     // Funktion um neue Einsätze Ihrer Kategorie zu zuordnen und ein- oder auszublenden
     function updateSingleMissionVisibility(missionElement) {
+        console.log("Update Sichtbarkeit für Einsatz", missionElement);
         if (activeFilters.length === 0) {
             missionElement.style.display = "";
             return;
@@ -270,8 +271,8 @@
         }
     }
 
-    // Alle 20 Sekunden Zählung aktualisieren + Buttons updaten
-    setInterval(updateMissionCount, 5000);
+    // Jede Sekunden Zählung aktualisieren + Buttons updaten
+    setInterval(updateMissionCount, 1000);
 
     // Funktion zur Berechnung der Anzahl der Einsätze für eine bestimmte Kategorie
     function getMissionCountByCategory(category) {
@@ -325,8 +326,8 @@
         return summary;
     }
 
-    // Alle 20 Sekunden die Zusammenfassung neu berechnen
-    setInterval(getMissionSummary, 5000);
+    // Jede Sekunden die Zusammenfassung neu berechnen
+    setInterval(getMissionSummary, 1000);
 
     let categoryButtonsMap = new Map(); // Speichert die Buttons zur späteren Aktualisierung
 
@@ -345,7 +346,7 @@
         }
     }
 
-    // Funktion um die Buttons zu erstellen
+    // Funktion zur Erstellung der Buttons
     async function createCategoryButtons() {
         const searchInput = document.getElementById('search_input_field_missions');
         if (!searchInput) {
@@ -354,19 +355,18 @@
         }
 
         const missionData = await fetchMissionData();
+        const summary = getMissionSummary();
 
         const buttonContainer = document.createElement('div');
         buttonContainer.style.display = 'flex';
         buttonContainer.style.flexWrap = 'wrap';
         buttonContainer.style.marginBottom = '10px';
 
-        const summary = getMissionSummary();
-
         const desiredOrder = [
-            'fire', 'police', 'ambulance', 'thw', 'riot_police', 'water_rescue',
-            'mountain', 'coastal', 'airport', 'factory_fire_brigade', 'criminal_investigation', 'seg', 'seg_medical_service'
+            'fire', 'police', 'ambulance', 'thw', 'riot_police', 'water_rescue', 'mountain', 'coastal', 'airport', 'factory_fire_brigade', 'criminal_investigation', 'seg', 'seg_medical_service'
         ];
 
+        // Erstelle die Buttons für jede Kategorie
         desiredOrder.forEach(category => {
             if (categories.has(category) && !isCategoryInAnyGroup(category)) {
                 const button = document.createElement('button');
@@ -374,13 +374,14 @@
                 button.classList.add('btn', 'btn-xs');
                 button.style.margin = '2px';
                 styleButtonForCurrentTheme(button);
-
                 button.title = customTooltips[category] || `Zeigt Einsätze der Kategorie ${customCategoryLabels[category] || category}`;
 
                 button.addEventListener('click', () => {
                     filterMissionListByCategory(category);
                     storeVisibleMissions();
                     setActiveButton(button);
+                    document.getElementById('standard_earnings_display').style.display = 'inline'; // Zeige Verdienste an
+                    document.getElementById('full_earnings_display').style.display = 'none'; // Verstecke den vollständigen Verdienstbereich
                     updateAverageEarnings();
                 });
 
@@ -389,20 +390,21 @@
             }
         });
 
-        // Gruppenbuttons hinzufügen
+        // Gruppenbuttons
         for (const [groupName, groupCategories] of Object.entries(categoryGroups)) {
             const groupButton = document.createElement('button');
             groupButton.textContent = `${groupName} (${summary[groupName] || 0})`;
             groupButton.classList.add('btn', 'btn-xs');
             groupButton.style.margin = '2px';
             styleButtonForCurrentTheme(groupButton);
-
             groupButton.title = generateGroupTooltip(groupCategories);
 
             groupButton.addEventListener('click', () => {
                 filterMissionListByCategoryGroup(groupCategories);
                 storeVisibleMissions();
                 setActiveButton(groupButton);
+                document.getElementById('standard_earnings_display').style.display = 'inline'; // Zeige Verdienste an
+                document.getElementById('full_earnings_display').style.display = 'none'; // Verstecke den vollständigen Verdienstbereich
                 updateAverageEarnings();
             });
 
@@ -410,38 +412,40 @@
             categoryButtonsMap.set(groupName, groupButton);
         }
 
-        // Button für VGSL/ÜO (Einsätze ohne Kategorie)
+        // VGSL/ÜO Button
         const unoButton = document.createElement('button');
         unoButton.textContent = `VGSL/ÜO (${summary['no-category'] || 0})`;
         unoButton.classList.add('btn', 'btn-xs');
         unoButton.style.margin = '2px';
         styleButtonForCurrentTheme(unoButton);
-
         unoButton.title = customTooltips['VGSL/ÜO'] || "Zeigt Verbandsgroßschadenslagen und Übergabeorte an";
 
         unoButton.addEventListener('click', () => {
             filterMissionListWithoutCategory();
             storeVisibleMissions();
             setActiveButton(unoButton);
+            document.getElementById('standard_earnings_display').style.display = 'inline'; // Zeige Verdienste an
+            document.getElementById('full_earnings_display').style.display = 'none'; // Verstecke den vollständigen Verdienstbereich
             updateAverageEarnings();
         });
 
         buttonContainer.appendChild(unoButton);
         categoryButtonsMap.set('VGSL/ÜO', unoButton);
 
-        // Button für Eventeinsätze
+        // Eventeinsätze Button
         const eventButton = document.createElement('button');
         eventButton.textContent = `Eventeinsätze (${summary['event'] || 0})`;
         eventButton.classList.add('btn', 'btn-xs');
         eventButton.style.margin = '2px';
         styleButtonForCurrentTheme(eventButton);
-
         eventButton.title = customTooltips['event'] || "Zeigt alle Eventeinsätze";
 
         eventButton.addEventListener('click', () => {
             filterMissionListByEvent();
             storeVisibleMissions();
             setActiveButton(eventButton);
+            document.getElementById('standard_earnings_display').style.display = 'inline'; // Zeige Verdienste an
+            document.getElementById('full_earnings_display').style.display = 'none'; // Verstecke den vollständigen Verdienstbereich
             updateAverageEarnings();
         });
 
@@ -453,23 +457,34 @@
         resetButton.textContent = 'Alle anzeigen';
         resetButton.classList.add('btn', 'btn-xs', 'btn-primary');
         resetButton.style.margin = '2px';
-
         resetButton.title = customTooltips['reset'] || "Alle Einsätze anzeigen";
 
         resetButton.addEventListener('click', () => {
             resetMissionList();
             resetActiveButton();
             storeVisibleMissions();
+            document.getElementById('standard_earnings_display').style.display = 'none'; // Verstecke Verdienste wieder
+            document.getElementById('full_earnings_display').style.display = 'inline'; // Verstecke den vollständigen Verdienstbereich
             updateAverageEarnings();
         });
 
         buttonContainer.appendChild(resetButton);
         searchInput.parentNode.insertBefore(buttonContainer, searchInput);
 
-        // Durchschnittsverdienst-Anzeige erstellen
+        // Verdienstanzeige-Bereich einfügen
         const earningsContainer = document.createElement('div');
         earningsContainer.id = 'average_earnings_display';
         earningsContainer.style.marginTop = '10px';
+
+        const standardDisplay = document.createElement('div');
+        standardDisplay.id = 'standard_earnings_display';
+        standardDisplay.style.display = 'none'; // Zuerst ausblenden
+
+        const fullDisplay = document.createElement('div');
+        fullDisplay.id = 'full_earnings_display';
+
+        earningsContainer.appendChild(standardDisplay);
+        earningsContainer.appendChild(fullDisplay);
         buttonContainer.appendChild(earningsContainer);
 
         updateAverageEarnings();
@@ -478,85 +493,85 @@
     // Zwischenspeicher für aktive Einsätze
     let activeMissions = new Set();
 
-    // Funktion zur Berechnung des Verdienstes
     function updateAverageEarnings() {
-    const missionElements = document.querySelectorAll('.missionSideBarEntry:not(.mission_deleted)');
-    let totalCredits = 0;
-    let actualCredits = 0;
-    let currentMissions = new Set();
-    let categoryCredits = {}; // Objekt für Kategorieberechnungen
+        const missionElements = document.querySelectorAll('.missionSideBarEntry:not(.mission_deleted)');
+        let totalCredits = 0;
+        let actualCredits = 0;
+        let allCredits = 0;
+        let allActualCredits = 0;
+        let currentMissions = new Set();
+        let categoryCredits = {};
 
-    missionElements.forEach(element => {
-        // Sichtbarkeit prüfen: sowohl eigene Buttons (style.display) als auch Spiel-Buttons (.hidden)
-        if (element.style.display === 'none' || element.classList.contains('hidden')) return;
+        missionElements.forEach(element => {
+            const missionId = element.getAttribute('mission_type_id');
+            const additiveOverlay = element.getAttribute('data-additive-overlays');
+            const category = element.getAttribute('data-mission-category');
 
-        const missionId = element.getAttribute('mission_type_id');
-        const additiveOverlay = element.getAttribute('data-additive-overlays');
-        const category = element.getAttribute('data-mission-category'); // Kategorisierungsattribut
+            if (missionId && missionData[missionId]) {
+                let baseCredits = missionData[missionId].base_credits;
+                let credits = baseCredits ?? 0;
 
-        if (missionId && missionData[missionId]) {
-            let baseCredits = missionData[missionId].base_credits;
-            let credits = 0;
+                if (additiveOverlay && missionData[missionId].overlays[additiveOverlay]) {
+                    credits = missionData[missionId].overlays[additiveOverlay];
+                }
 
-            if (baseCredits !== null && baseCredits !== undefined) {
-                credits = baseCredits;
+                if (!baseCredits) {
+                    credits += 250;
+                }
+
+                allCredits += credits;
+
+                const idNum = element.id.replace(/\D/g, '');
+                const participantIcon = document.getElementById(`mission_participant_${idNum}`);
+                const isParticipating = participantIcon && !participantIcon.classList.contains('hidden');
+
+                if (isParticipating) {
+                    allActualCredits += credits;
+                    if (category) {
+                        categoryCredits[category] = (categoryCredits[category] || 0) + credits;
+                    }
+                }
+
+                if (element.style.display !== 'none' && !element.classList.contains('hidden')) {
+                    totalCredits += credits;
+                    if (isParticipating) {
+                        actualCredits += credits;
+                    }
+                    currentMissions.add(missionId);
+                }
             }
+        });
 
-            if (additiveOverlay && missionData[missionId].overlays[additiveOverlay]) {
-                credits = missionData[missionId].overlays[additiveOverlay];
+        activeMissions.forEach(missionId => {
+            if (!currentMissions.has(missionId)) {
+                activeMissions.delete(missionId);
             }
+        });
 
-            if (baseCredits === null || baseCredits === 0) {
-                credits += 250;
-            }
+        activeMissions = currentMissions;
 
-            // Gesamtverdienst: Alle sichtbaren Einsätze
-            totalCredits += credits;
+        const standardHTML = `
+        <span title="${customTooltips['total_earnings'] || 'Verdienst der Kategorie oder Gruppe'}">💰 ${totalCredits.toLocaleString()} Credits</span>
+        |
+        <span title="${customTooltips['actual_earnings'] || 'Verdienst aus angefahrenen Einsätzen der Kategorie oder Gruppe'}">
+            <span class="glyphicon glyphicon-user" style="color: #8bc34a;" aria-hidden="true"></span> ${actualCredits.toLocaleString()} Credits
+        </span>
+    `;
 
-            // Tatsächlicher Verdienst (wenn der User den Einsatz aktiv angefahren hat)
-            const idNum = element.id.replace(/\D/g, ''); // extrahiere die ID-Zahl
-            const participantIcon = document.getElementById(`mission_participant_${idNum}`);
-            if (participantIcon && !participantIcon.classList.contains('hidden')) {
-                actualCredits += credits;
-            }
+        const fullHTML = `
+        <span title="Gesamtverdienst aller Einsätze (sichtbar & unsichtbar)">💲 ${allCredits.toLocaleString()} Credits</span>
+        |
+        <span title="Verdienst aus allen angefahrenen Einsätzen (sichtbar & unsichtbar)">
+            <span class="glyphicon glyphicon-user" style="color: #4caf50;" aria-hidden="true"></span>💲 ${allActualCredits.toLocaleString()} Credits
+        </span>
+    `;
 
-            // Kategorieberechnung (nur angefahrene Einsätze zählen)
-            if (participantIcon && !participantIcon.classList.contains('hidden') && category) {
-                categoryCredits[category] = (categoryCredits[category] || 0) + credits;
-            }
+        const standardContainer = document.getElementById('standard_earnings_display');
+        const fullContainer = document.getElementById('full_earnings_display');
 
-            currentMissions.add(missionId);
-        }
-    });
-
-    // Nicht mehr vorhandene Einsätze aus activeMissions entfernen
-    activeMissions.forEach(missionId => {
-        if (!currentMissions.has(missionId)) {
-            activeMissions.delete(missionId);
-        }
-    });
-
-    // Aktuelle Einsätze speichern
-    activeMissions = currentMissions;
-
-    // Berechnung der Gesamtverdienste
-    let categoryTotalCredits = 0;
-    Object.values(categoryCredits).forEach(categorySum => {
-        categoryTotalCredits += categorySum;
-    });
-
-    // Anzeige der Verdienste mit Symbolen und Tooltips
-    const earningsContainer = document.getElementById('average_earnings_display');
-    if (earningsContainer) {
-        earningsContainer.innerHTML = `
-            <span title="${customTooltips['total_earnings'] || 'Gesamtverdienst'}">💰 ${totalCredits.toLocaleString()} Credits</span>
-            |
-            <span title="${customTooltips['actual_earnings'] || 'Tatsächlicher Verdienst aus aktiv angefahrenen Einsätzen'}">
-                <span class="glyphicon glyphicon-user" style="color: #8bc34a;" aria-hidden="true"></span> ${actualCredits.toLocaleString()} Credits
-            </span>
-        `;
+        if (standardContainer) standardContainer.innerHTML = standardHTML;
+        if (fullContainer) fullContainer.innerHTML = fullHTML;
     }
-}
 
     // Funktion um die Kategoriebuttons zu aktuallisieren
     function updateCategoryButtons() {
@@ -579,11 +594,12 @@
         }
     }
 
-    // Interval für die Updates
+    // Interval für die Updates (Jede Sekunde)
     setInterval(() => {
         updateMissionCount();
+        updateAverageEarnings();
         updateCategoryButtons();
-    }, 5000);
+    }, 1000);
 
     // Funktion für die Tooltips der Buttons
     function generateGroupTooltip(groupCategories) {
@@ -752,163 +768,6 @@
             styleButtonForCurrentTheme(activeCategoryButton);
         }
         activeCategoryButton = null;
-    }
-
-
-    // --------- Bereich für "Alamieren und Weiter" nach Filterung (Testversion) --------- \\
-
-    // Funktion zum Entfernen einer bestimmten Mission-ID aus dem SessionStorage
-    function removeMissionFromSessionStorage(missionId) {
-        // Hole die gespeicherten sichtbaren Einsätze aus dem SessionStorage
-        let visibleMissions = JSON.parse(sessionStorage.getItem('visibleMissions'));
-
-        // Prüfe, ob sichtbare Einsätze vorhanden sind
-        if (visibleMissions && Array.isArray(visibleMissions)) {
-            // Filtere die ID, die entfernt werden soll
-            visibleMissions = visibleMissions.filter(id => id !== missionId.toString());
-
-            // Speichere das aktualisierte Array wieder im SessionStorage
-            sessionStorage.setItem('visibleMissions', JSON.stringify(visibleMissions));
-            console.log(`Mission ID ${missionId} wurde aus dem SessionStorage entfernt.`);
-
-            // Gib die neue Liste der sichtbaren Einsätze aus, um sicherzustellen, dass die ID entfernt wurde
-            console.log("Aktualisierte Liste der sichtbaren Einsätze:", visibleMissions);
-        }
-    }
-
-    // Füge Event-Listener für die "Alarm"-Buttons hinzu
-    const alarmButtons = document.querySelectorAll('[id^="alarm_button_"]'); // Selektiert alle Buttons, deren ID mit "alarm_button_" beginnt
-
-    alarmButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            // Extrahiere die Mission-ID aus der Button-ID (z. B. alarm_button_3765332903 -> 3765332903)
-            const missionId = button.id.split('_')[2];  // Die Mission-ID befindet sich nach "alarm_button_"
-
-            // Entferne die ID aus dem SessionStorage
-            removeMissionFromSessionStorage(missionId);
-        });
-    });
-
-    function debugAlertNextButtonInIframe() {
-        let alertNextButtonCount = 0;
-        let missionNextButtonCount = 0;
-        let alertNextAllianceButtonCount = 0;
-
-        const visibleMissions = JSON.parse(sessionStorage.getItem('visibleMissions')) || [];
-
-        if (visibleMissions.length === 0) {
-            return false;
-        }
-
-        const nextMissionID = visibleMissions[0];
-
-        const iframes = document.querySelectorAll('[id^="lightbox_iframe_"]');
-
-        for (let iframe of iframes) {
-            const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-
-            if (!iframeDocument) {
-                console.log(`❌ Kein Zugriff auf das iFrame-Dokument von ${iframe.id}!`);
-                continue;
-            }
-
-            const buttons = [
-
-                { selector: '.alert_next', name: '"Alarmieren und weiter"-Button' },
-                { selector: '#mission_next_mission_btn', name: '"Mission Next"-Button' },
-                { selector: '.btn.btn-success.btn-sm.alert_next_alliance.hidden-xs', name: '"Alert Next Alliance"-Button' },
-            ];
-
-            const dispatchButtons = iframeDocument.querySelector('#dispatch_buttons');
-            if (dispatchButtons) {
-                buttons.push({ selector: '#dispatch_buttons .alert_next', name: '"Alarmieren und weiter"-Button im Dispatch-Bereich' });
-            }
-
-            for (let btn of buttons) {
-                let buttonList = iframeDocument.querySelectorAll(btn.selector);
-                if (buttonList.length > 0) {
-                    buttonList.forEach(button => {
-                        if (button.hasAttribute("data-href-updated")) {
-                            return;
-                        }
-
-                        console.log(`✅ ${btn.name} im iFrame ${iframe.id} gefunden!`);
-
-                        let oldHref = button.getAttribute("href");
-                        let newHref = `/missions/${nextMissionID}?ifp=st&sd=a&sk=cr`;
-                        button.setAttribute("href", newHref);
-                        button.setAttribute("data-href-updated", "true");
-                        button.classList.remove("btn-success");
-                        button.classList.add("btn-primary"); // Ändert die Farbe auf Blau
-                    });
-                }
-            }
-        }
-    }
-
-    const observer = new MutationObserver(mutations => {
-        mutations.forEach(mutation => {
-            if (mutation.addedNodes.length > 0) {
-                mutation.addedNodes.forEach(node => {
-                    if (node.nodeType === 1 && node.id.startsWith('lightbox_iframe_')) {
-                        console.log(`🟢 Neuer iFrame mit id ${node.id} erkannt! Überprüfe Buttons...`);
-
-                        let attempts = 0;
-                        const maxAttempts = 5;
-
-                        const intervalId = setInterval(() => {
-                            const success = debugAlertNextButtonInIframe();
-
-                            if (success || attempts >= maxAttempts) {
-                                clearInterval(intervalId);
-                                if (success) {
-                                    console.log(`✅ Button-Update im iFrame ${node.id} erfolgreich.`);
-                                } else {
-                                    console.warn(`⚠️ Button-Update im iFrame ${node.id} nicht gefunden nach ${maxAttempts} Versuchen.`);
-                                }
-                            }
-                            attempts++;
-                        }, 1000);
-                    }
-                });
-            }
-        });
-    });
-
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
-
-    console.log("🔍 Debugging-Observer für iFrame-Alarmmaske gestartet.");
-
-
-    // Funktion zum Abrufen der nächsten Mission ID
-    function getNextMissionID() {
-        let nextMissionID = sessionStorage.getItem('nextMissionID');
-
-        // Wenn keine Mission ID gespeichert ist, setze eine Standard-ID oder eine Logik zum Abrufen der nächsten ID
-        if (!nextMissionID) {
-            nextMissionID = "defaultMissionID"; // Beispielwert
-        }
-
-        return nextMissionID;
-    }
-
-    // Funktion zum Entfernen des aktuellen iFrames und Setzen der nächsten Mission
-    function removeIframeAndSetNextMission() {
-        const iframes = document.querySelectorAll('[id^="lightbox_iframe_"]');
-        const lastIframe = iframes[iframes.length - 1]; // Nimm den zuletzt hinzugefügten iFrame
-
-        if (lastIframe) {
-            lastIframe.remove(); // Entferne den iFrame
-            //        console.log(`🟢 iFrame mit id ${lastIframe.id} entfernt!`);
-
-            // Hole die nächste Mission ID
-            const nextMissionID = getNextMissionID();
-            sessionStorage.setItem('nextMissionID', nextMissionID); // Setze die nächste Mission ID im SessionStorage
-            //        console.log(`🔄 Nächste Mission ID im SessionStorage gesetzt: ${nextMissionID}`);
-        }
     }
 
     //    console.log("Starte das Script...");
