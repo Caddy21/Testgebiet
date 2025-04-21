@@ -140,24 +140,25 @@
         });
     }
 
-    // Funktion um neue Einsätze Ihrer Kategorie zu zuordnen und ein- oder auszublenden
     function updateSingleMissionVisibility(missionElement) {
-        console.log("Update Sichtbarkeit für Einsatz", missionElement);
         if (activeFilters.length === 0) {
             missionElement.style.display = "";
             return;
         }
 
         const missionId = missionElement.getAttribute("mission_type_id");
-        if (!missionId || !missionCategoryMap.has(missionId)) {
-            missionElement.style.display = "none";
-            return;
-        }
+        const missionType = missionElement.getAttribute("data-mission-type-filter");
+        const missionState = missionElement.getAttribute("data-mission-state-filter");
+        const missionParticipation = missionElement.getAttribute("data-mission-participation-filter");
 
-        const missionCategories = missionCategoryMap.get(missionId);
-        const match = activeFilters.some(category => missionCategories.includes(category)) || (activeFilters.includes('event') && eventMissionIds.includes(parseInt(missionId)));
+        const categories = missionCategoryMap.get(missionId) || [];
 
-        missionElement.style.display = match ? "" : "none";
+        const isVisible = activeFilters.includes(missionType) ||
+              activeFilters.includes(missionState) ||
+              activeFilters.includes(missionParticipation) ||
+              categories.some(category => activeFilters.includes(category));
+
+        missionElement.style.display = isVisible ? "" : "none";
     }
 
     // Globale Variable zur Speicherung der Missionsdaten inklusive der durchschnittlichen Credits
@@ -285,7 +286,7 @@
         }
     }
 
-        let categoryButtonsMap = new Map(); // Speichert die Buttons zur späteren Aktualisierung
+    let categoryButtonsMap = new Map(); // Speichert die Buttons zur späteren Aktualisierung
 
     // Funktion zur Erstellung der Buttons
     async function createCategoryButtons() {
@@ -431,93 +432,156 @@
         updateAverageEarnings();
     }
 
+    // ----- Bereich für die Verdienstberechnung ----- \\
+
     // Zwischenspeicher für aktive Einsätze
     let activeMissions = new Set();
 
-    // Funktion zur Berechnung des Verdienstes
+    // Funktion zur Verdienstberechnung
     function updateAverageEarnings() {
-        const missionElements = document.querySelectorAll('.missionSideBarEntry:not(.mission_deleted)');
-        let totalCredits = 0;
-        let actualCredits = 0;
-        let allCredits = 0;
-        let allActualCredits = 0;
-        let currentMissions = new Set();
-        let categoryCredits = {};
+    const missionElements = document.querySelectorAll('.missionSideBarEntry');
+    let totalCredits = 0;
+    let actualCredits = 0;
+    let allCredits = 0;
+    let allActualCredits = 0;
+    let currentMissions = new Set();
+    let categoryCredits = {};
 
-        missionElements.forEach(element => {
-            // Sichtbarkeit prüfen: sowohl eigene Buttons (style.display) als auch Spiel-Buttons (.hidden)
-            if (element.style.display === 'none' || element.classList.contains('hidden')) return;
+    const now = Date.now();
+    const startOfWeek = now - (new Date().getDay() || 7) * 24 * 60 * 60 * 1000;
+    const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).getTime();
+    const startOfYear = new Date(new Date().getFullYear(), 0, 1).getTime();
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+    const startOfDayTimestamp = startOfDay.getTime();
 
-            const missionId = element.getAttribute('mission_type_id');
-            const additiveOverlay = element.getAttribute('data-additive-overlays');
-            const category = element.getAttribute('data-mission-category');
+    let earningsByTime = { day: 0, week: 0, month: 0, year: 0 };
+    let actualEarningsByTime = { day: 0, week: 0, month: 0, year: 0 };
 
-            if (missionId && missionData[missionId]) {
-                let baseCredits = missionData[missionId].base_credits;
-                let credits = baseCredits ?? 0;
+    missionElements.forEach(element => {
+        if (element.style.display === 'none' || element.classList.contains('hidden')) return;
 
-                if (additiveOverlay && missionData[missionId].overlays[additiveOverlay]) {
-                    credits = missionData[missionId].overlays[additiveOverlay];
-                }
+        const countdown = element.querySelector('.mission_overview_countdown');
+        const isDeleted = element.classList.contains('mission_deleted');
+        const isCountdownFinished = countdown && countdown.getAttribute('timeleft') === "0" && countdown.textContent.trim() === "00:00";
 
-                if (!baseCredits) {
-                    credits += 250;
-                }
+        // Nur berücksichtigen, wenn:
+        // - Einsatz aktiv UND nicht gelöscht → Zählen nur für "aktuelle" Anzeige
+        // - Einsatz gelöscht UND abgelaufen → Zählen für Zeiträume (Tag/Woche/etc.)
+        const includeInStats = isDeleted ? isCountdownFinished : true;
+        const includeInTimeStats = isDeleted && isCountdownFinished;
 
-                allCredits += credits;
+        if (!includeInStats) return;
 
-                const idNum = element.id.replace(/\D/g, '');
-                const participantIcon = document.getElementById(`mission_participant_${idNum}`);
-                const isParticipating = participantIcon && !participantIcon.classList.contains('hidden');
+        const missionId = element.getAttribute('mission_type_id');
+        const additiveOverlay = element.getAttribute('data-additive-overlays');
+        const category = element.getAttribute('data-mission-category');
 
-                if (isParticipating) {
-                    allActualCredits += credits;
+        let timestamp = 0;
+        try {
+            const sortableData = JSON.parse(element.getAttribute('data-sortable-by').replace(/&quot;/g, '"'));
+            if (sortableData.created_at) {
+                timestamp = parseInt(sortableData.created_at) * 1000;
+            }
+        } catch (e) {
+            console.warn("Fehler beim Parsen von data-sortable-by:", e);
+        }
+
+        if (missionId && missionData[missionId]) {
+            let baseCredits = missionData[missionId].base_credits;
+            let credits = baseCredits ?? 0;
+
+            if (additiveOverlay && missionData[missionId].overlays[additiveOverlay]) {
+                credits = missionData[missionId].overlays[additiveOverlay];
+            }
+
+            if (!baseCredits) {
+                credits += 250;
+            }
+
+            allCredits += credits;
+
+            const idNum = element.id.replace(/\D/g, '');
+            const participantIcon = document.getElementById(`mission_participant_${idNum}`);
+            const isParticipating = participantIcon && !participantIcon.classList.contains('hidden');
+
+            if (isParticipating) {
+                allActualCredits += credits;
+
+                if (includeInTimeStats) {
+                    if (timestamp >= startOfDayTimestamp) actualEarningsByTime.day += credits;
+                    if (timestamp >= startOfYear) actualEarningsByTime.year += credits;
+                    if (timestamp >= startOfMonth) actualEarningsByTime.month += credits;
+                    if (timestamp >= startOfWeek) actualEarningsByTime.week += credits;
+
                     if (category) {
                         categoryCredits[category] = (categoryCredits[category] || 0) + credits;
                     }
                 }
-
-                // Entfernen der 'hidden' Überprüfung
-                if (element.style.display !== 'none') {
-                    totalCredits += credits;
-                    if (isParticipating) {
-                        actualCredits += credits;
-                    }
-                    currentMissions.add(missionId);
-                }
             }
-        });
 
-        activeMissions.forEach(missionId => {
-            if (!currentMissions.has(missionId)) {
-                activeMissions.delete(missionId);
+            if (includeInTimeStats) {
+                if (timestamp >= startOfDayTimestamp) earningsByTime.day += credits;
+                if (timestamp >= startOfYear) earningsByTime.year += credits;
+                if (timestamp >= startOfMonth) earningsByTime.month += credits;
+                if (timestamp >= startOfWeek) earningsByTime.week += credits;
             }
-        });
 
-        activeMissions = currentMissions;
+            if (element.style.display !== 'none') {
+                totalCredits += credits;
+                if (isParticipating) actualCredits += credits;
+                currentMissions.add(missionId);
+            }
+        }
+    });
 
-        const standardHTML = `
-    <span title="${customTooltips['total_earnings'] || 'Verdienst der Kategorie oder Gruppe'}">💰 ${totalCredits.toLocaleString()} Credits</span>
-    /
-    <span title="${customTooltips['actual_earnings'] || 'Verdienst aus angefahrenen Einsätzen der Kategorie oder Gruppe'}">
-        <span class="glyphicon glyphicon-user" style="color: #8bc34a;" aria-hidden="true"></span> ${actualCredits.toLocaleString()} Credits
-    </span>
+    activeMissions.forEach(missionId => {
+        if (!currentMissions.has(missionId)) {
+            activeMissions.delete(missionId);
+        }
+    });
+
+    activeMissions = currentMissions;
+
+    const standardHTML = `
+        <span title="${customTooltips['total_earnings'] || 'Verdienst der Kategorie oder Gruppe'}">💰 ${totalCredits.toLocaleString()} Credits</span>
+        /
+        <span title="${customTooltips['actual_earnings'] || 'Verdienst aus angefahrenen Einsätzen der Kategorie oder Gruppe'}">
+            <span class="glyphicon glyphicon-user" style="color: #8bc34a;" aria-hidden="true"></span> ${actualCredits.toLocaleString()} Credits
+        </span>
     `;
 
-        const fullHTML = `
-    <span title="Gesamtverdienst aller Einsätze">💲${allCredits.toLocaleString()} Credits</span>
-    /
-    <span title="Verdienst aus allen angefahrenen Einsätzen">
-        <span class="glyphicon glyphicon-user" style="color: #4caf50;" aria-hidden="true"></span>💲${allActualCredits.toLocaleString()} Credits
-    </span>
+    const fullHTML = `
+        <span title="Gesamtverdienst aller sichtbaren Einsätze">💲${allCredits.toLocaleString()} Credits</span>
+        /
+        <span title="Gesamtverdienst aus allen angefahrenen Einsätzen">
+            <span class="glyphicon glyphicon-user" style="color: #4caf50;" aria-hidden="true"></span>💲${allActualCredits.toLocaleString()} Credits
+        </span>
+        <br><br>
+        <span title="Verdienst aus angefahrenen Einsätzen heute">
+            <span class="glyphicon glyphicon-screenshot" style="color: #009688;" aria-hidden="true"></span> Heute: ${actualEarningsByTime.day.toLocaleString()} Credits
+        </span>
+        /
+        <span title="Verdienst aus angefahrenen Einsätzen dieser Woche">
+            <span class="glyphicon glyphicon-time" style="color: #2196f3;" aria-hidden="true"></span> Woche: ${actualEarningsByTime.week.toLocaleString()} Credits
+        </span>
+        /
+        <span title="Verdienst aus angefahrenen Einsätzen dieses Monats">
+            <span class="glyphicon glyphicon-calendar" style="color: #3f51b5;" aria-hidden="true"></span> Monat: ${actualEarningsByTime.month.toLocaleString()} Credits
+        </span>
+        /
+        <span title="Verdienst aus angefahrenen Einsätzen dieses Jahres">
+            <span class="glyphicon glyphicon-stats" style="color: #673ab7;" aria-hidden="true"></span> Jahr: ${actualEarningsByTime.year.toLocaleString()} Credits
+        </span>
     `;
 
-        const standardContainer = document.getElementById('standard_earnings_display');
-        const fullContainer = document.getElementById('full_earnings_display');
+    const standardContainer = document.getElementById('standard_earnings_display');
+    const fullContainer = document.getElementById('full_earnings_display');
 
-        if (standardContainer) standardContainer.innerHTML = standardHTML;
-        if (fullContainer) fullContainer.innerHTML = fullHTML;
-    }
+    if (standardContainer) standardContainer.innerHTML = standardHTML;
+    if (fullContainer) fullContainer.innerHTML = fullHTML;
+}
+
 
     // Funktion um die Kategoriebuttons zu aktuallisieren
     function updateCategoryButtons() {
