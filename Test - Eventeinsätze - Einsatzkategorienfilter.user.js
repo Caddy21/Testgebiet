@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         [LSS] 09 - Einsatzkategorienfilter
+// @name         [LSS] Einsatzkategorienfilter
 // @namespace    http://tampermonkey.net/
-// @version      1.6
-// @description  Filtert die Einsatzliste nach Kategorien
+// @version      1.7
+// @description  Filtert die Einsatzliste nach Einsatzkaategorien
 // @author       Caddy21
 // @match        https://www.leitstellenspiel.de/
 // @grant        GM.setValue
@@ -12,6 +12,44 @@
 
 (function () {
     'use strict';
+
+    // Beschriftung und Zusammenstellung der Gruppen -> Hier könnt Ihr euch die Button beschriften und die Gruppen zuordnen
+    const categoryGroups = {
+        "FF": ['fire'],
+        "POL": ['police'],
+        "RD": ['ambulance'],
+        "THW": ['thw'],
+        "Be-Pol": ['criminal_investigation', 'riot_police'],
+        "WR": ['water_rescue'],
+        "BR": ['mountain'],
+        "SNR": ['coastal'],
+        "FHF": ['airport', 'airport_specialization'],
+        "WF": ['factory_fire_brigade'],
+        "SEG": ['seg', 'seg_medical_service'],
+        "Stromausfälle": ['energy_supply', 'energy_supply_2'],
+    };
+
+    // IDs der Eventeinsätze -> Hier könnt Ihr die Eventeinsätze anzeigen oder ausblenden.
+    const eventMissionIds = [
+        //        53, 428, 581, 665, 787, 789, 793, 794, 795, 831, 861, 862, // Winter
+        //        704, 705, 706, 707, 708, // Tag des Europüischen Notrufes
+        //        710, 711, 712, 713, 714, 715, 716, 717, 718, 719, // Karneval / Fasching
+        //        597, 598, 599, 600, 601, 602, 603, 604, 605, 790, 791, 792, 833, 834, 917, 918, 919, 920, // Valentin
+        722, 723, 724, 725, 726, 727, 728, 729, 730, //Frühling
+        //        284, 285, 286, 287, 288, 289, 290, 291, 442, 443, 444, 445, 446, 618, 732, 733, 734, 735, 736, 737, 739, 927, 928, 929 // Ostern
+        //        88, 626, 627, 628, 629, 630, 844, 845, 846, // Vatertag
+        //        360, 742, 743, 744, 745, 746, 747, 748, 847, // Muttertag
+        //        183, 184, 185, 461, 546, 547, 548, 646, 647, 648, 754, // Sommer
+        //        672, 673, 674, 675, 676, 677, 678, 679, 680, // Herbst
+        //        111, 112, 113, 114, 115, 116, 117, 118, 119, // Halloween
+        //        52, 54, 55, 56, 129, 130, 202, 203, 582, 583, 584, 585, 586, 587, 588, 589, 590, 783, 784, 785, 786, 901, // Weihnachten
+        //        23, 26, 29, 35, 42, 51, 80, 86, 96, 186, 187, 214, 283, 320, 324, 327, 388, 389, 395, 398, 399, 400, 407, 408, 430, 462, 465, 470, 502, 515, 702, // Rauchmeldertag
+        //        259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 326, 591, 695, // Silvester
+        //        371, 372, 373, 374, 375, 376, 641, 642, 849, 850, 851, 852, // WM / EM
+        //        756, 757, 758, 759, 760, 761, 762, 763, 764, 765, 766, 767, 768, 769, 770, 771, 772, // Jubiläum
+        //        868, 869, 870, 871, 872, 873, 874, 875, 876, 877, 878, // Sportevent
+
+    ];
 
     const apiUrl = "https://v3.lss-manager.de/modules/lss-missionHelper/missions/de_DE.json";
     const settingsApiUrl = "https://www.leitstellenspiel.de/api/settings"; // API zum Abrufen der Einstellungen
@@ -31,28 +69,6 @@
 
     // Spezielle Einsatz-IDs (VGSL)
     const specialMissionIds = [41, 43, 59, 75, 99, 207, 221, 222, 256, 350];
-
-    // IDs der Eventeinsätze
-    const eventMissionIds = [
-        //        53, 428, 581, 665, 787, 789, 793, 794, 795, 831, 861, 862, // Winter
-        //        704, 705, 706, 707, 708, // Tag des Europüischen Notrufes
-        //        710, 711, 712, 713, 714, 715, 716, 717, 718, 719, // Karneval / Fasching
-        //        597, 598, 599, 600, 601, 602, 603, 604, 605, 790, 791, 792, 833, 834, 917, 918, 919, 920, // Valentin
-        722, 723, 724, 725, 726, 727, 728, 729, 730, //Frühling
-        284, 285, 286, 287, 288, 289, 290, 291, 442, 443, 444, 445, 446, 618, 732, 733, 734, 735, 736, 737, 739, 927, 928, 929 // Ostern
-        //        88, 626, 627, 628, 629, 630, 844, 845, 846, // Vatertag
-        //        360, 742, 743, 744, 745, 746, 747, 748, 847, // Muttertag
-        //        183, 184, 185, 461, 546, 547, 548, 646, 647, 648, 754, // Sommer
-        //        672, 673, 674, 675, 676, 677, 678, 679, 680, // Herbst
-        //        111, 112, 113, 114, 115, 116, 117, 118, 119, // Halloween
-        //        52, 54, 55, 56, 129, 130, 202, 203, 582, 583, 584, 585, 586, 587, 588, 589, 590, 783, 784, 785, 786, 901, // Weihnachten
-        //        23, 26, 29, 35, 42, 51, 80, 86, 96, 186, 187, 214, 283, 320, 324, 327, 388, 389, 395, 398, 399, 400, 407, 408, 430, 462, 465, 470, 502, 515, 702, // Rauchmeldertag
-        //        259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 326, 591, 695, // Silvester
-        //        371, 372, 373, 374, 375, 376, 641, 642, 849, 850, 851, 852, // WM / EM
-        //        756, 757, 758, 759, 760, 761, 762, 763, 764, 765, 766, 767, 768, 769, 770, 771, 772, // Jubiläum
-        //        868, 869, 870, 871, 872, 873, 874, 875, 876, 877, 878, // Sportevent
-
-    ];
 
     // Mapping der Kategorien zu den benutzerdefinierten Beschriftungen
     const customCategoryLabels = {
@@ -75,22 +91,6 @@
         'event': 'Eventeinsätze',
     };
 
-    // Beschriftung und Zusammenstellung der Gruppen
-    const categoryGroups = {
-        "FF": ['fire'],
-        "POL": ['police'],
-        "RD": ['ambulance'],
-        "THW": ['thw'],
-        "Be-Pol": ['criminal_investigation', 'riot_police'],
-        "WR": ['water_rescue'],
-        "BR": ['mountain'],
-        "SNR": ['coastal'],
-        "FHF": ['airport', 'airport_specialization'],
-        "WF": ['factory_fire_brigade'],
-        "SEG": ['seg', 'seg_medical_service'],
-        "Stromausfälle": ['energy_supply', 'energy_supply_2'],
-    };
-
     // Tooltipps der Kategoriebutton
     const customTooltips = {
         'fire': 'Zeigt alle Einsätze der Feuerwehr',
@@ -109,77 +109,19 @@
 
     };
 
+    // Globale Variable für die Einsatzlisten
+    const missionListIds = [
+        "mission_list",
+        "mission_list_krankentransporte",
+        "mission_list_alliance",
+        "mission_list_sicherheitswache_alliance",
+        "mission_list_alliance_event",
+        "mission_list_sicherheitswache"
+    ];
+
     // Funktion zum Überprüfen, ob eine Kategorie in einer der Gruppen enthalten ist
     function isCategoryInAnyGroup(category) {
         return Object.values(categoryGroups).some(group => group.includes(category));
-    }
-
-    // Funktion zur Überwachung der Einsatzlisten
-    function observeMissionLists() {
-        const missionListIds = [
-            "mission_list",
-            "mission_list_krankentransporte",
-            "mission_list_alliance",
-            "mission_list_sicherheitswache_alliance",
-            "mission_list_alliance_event",
-            "mission_list_sicherheitswache"
-        ];
-
-        missionListIds.forEach(id => {
-            const missionList = document.getElementById(id);
-            if (!missionList) {
-                console.error(`Einsatzliste ${id} nicht gefunden!`);
-                return;
-            }
-
-            const observer = new MutationObserver(mutations => {
-                let updated = false;
-
-                mutations.forEach(mutation => {
-                    // Wenn neue Einsätze hinzugefügt werden
-                    mutation.addedNodes.forEach(node => {
-                        if (node.nodeType === 1 && node.classList.contains("missionSideBarEntry")) {
-                            updateSingleMissionVisibility(node);
-                            updated = true; // Markiert eine Änderung
-                        }
-                    });
-
-                    // Wenn Einsätze entfernt werden
-                    mutation.removedNodes.forEach(node => {
-                        if (node.nodeType === 1 && node.classList.contains("missionSideBarEntry")) {
-                            updated = true; // Markiert eine Änderung
-                        }
-                    });
-                });
-
-                // Nur wenn sich etwas geändert hat, aktualisieren wir den Verdienst
-                if (updated) {
-                    updateAverageEarnings();
-                }
-            });
-
-            observer.observe(missionList, { childList: true });
-        });
-    }
-
-    // Funktion um neue Einsätze Ihrer Kategorie zu zuordnen und ein- oder auszublenden
-    function updateSingleMissionVisibility(missionElement) {
-        console.log("Update Sichtbarkeit für Einsatz", missionElement);
-        if (activeFilters.length === 0) {
-            missionElement.style.display = "";
-            return;
-        }
-
-        const missionId = missionElement.getAttribute("mission_type_id");
-        if (!missionId || !missionCategoryMap.has(missionId)) {
-            missionElement.style.display = "none";
-            return;
-        }
-
-        const missionCategories = missionCategoryMap.get(missionId);
-        const match = activeFilters.some(category => missionCategories.includes(category)) || (activeFilters.includes('event') && eventMissionIds.includes(parseInt(missionId)));
-
-        missionElement.style.display = match ? "" : "none";
     }
 
     // Funktion um die Missionen zu laden
@@ -252,6 +194,21 @@
         }
     }
 
+    // Funktion um die Einsätze zu laden, aktuallisieren
+    async function fetchMissionData() {
+        try {
+            const response = await fetch("https://v3.lss-manager.de/modules/lss-missionHelper/missions/de_DE.json");
+            const missions = await response.json();
+            return missions.reduce((acc, mission) => {
+                acc[mission.id] = mission.average_credits || 0;
+                return acc;
+            }, {});
+        } catch (error) {
+            console.error("Fehler beim Abrufen der Missionen:", error);
+            return {};
+        }
+    }
+
     // Funktion für die Tooltips der Buttons
     function generateGroupTooltip(groupCategories) {
         const categoryLabels = groupCategories.map(category => customCategoryLabels[category] || category);
@@ -269,21 +226,6 @@
             button.style.backgroundColor = '#fff';
             button.style.color = '#333';
             button.style.border = '1px solid #ccc';
-        }
-    }
-
-    // Funktion um die Einsätze zu laden, aktuallisieren
-    async function fetchMissionData() {
-        try {
-            const response = await fetch("https://v3.lss-manager.de/modules/lss-missionHelper/missions/de_DE.json");
-            const missions = await response.json();
-            return missions.reduce((acc, mission) => {
-                acc[mission.id] = mission.average_credits || 0;
-                return acc;
-            }, {});
-        } catch (error) {
-            console.error("Fehler beim Abrufen der Missionen:", error);
-            return {};
         }
     }
 
@@ -430,6 +372,8 @@
 
         updateAverageEarnings();
     }
+
+    // ----- Bereich für die Verdienstberechnung ----- \\
 
     // Funktion zur Berechnung des Verdienstes
     function updateAverageEarnings() {
@@ -617,136 +561,117 @@
 
     // ----- Bereich für die Filterung der Einsätze ----- \\
 
-    // Funktion um die Kategprieneinsätze zu filtern
-    function filterMissionListByCategory(category) {
-        const missionElements = document.querySelectorAll('.missionSideBarEntry');
-        missionElements.forEach(element => {
-            const missionId = element.getAttribute('mission_type_id');
-            if (missionCategoryMap.has(missionId)) {
-                const categories = missionCategoryMap.get(missionId);
-                if (categories.includes(category) && !specialMissionIds.includes(parseInt(missionId))) {
-                    element.style.display = '';
-                } else {
-                    element.style.display = 'none';
-                }
+    // Beobachtet alle Einsatzlisten auf neue Einsätze
+    function observeMissionLists() {
+        missionListIds.forEach(id => {
+            const missionList = document.getElementById(id);
+            if (!missionList) {
+                console.error(`Einsatzliste ${id} nicht gefunden!`);
+                return;
             }
+
+            const observer = new MutationObserver(mutations => {
+                mutations.forEach(mutation => {
+                    mutation.addedNodes.forEach(node => {
+                        if (node.nodeType === 1 && node.classList.contains("missionSideBarEntry")) {
+                            updateSingleMissionVisibility(node);
+                        }
+                    });
+                });
+            });
+
+            observer.observe(missionList, { childList: true });
         });
     }
 
-    // Funktion um Einsätze nach der Gruppenkategorie zu filtern
-    function filterMissionListByCategoryGroup(categoriesGroup) {
-        const missionElements = document.querySelectorAll('.missionSideBarEntry');
-        missionElements.forEach(element => {
-            const missionId = element.getAttribute('mission_type_id');
-            if (missionCategoryMap.has(missionId)) {
-                const missionCategories = missionCategoryMap.get(missionId);
-                const match = categoriesGroup.some(category => missionCategories.includes(category));
+    // Bestimmt, ob ein neuer Einsatz sichtbar sein soll
+    function updateSingleMissionVisibility(missionElement) {
+        if (activeFilters.length === 0) {
+            missionElement.style.display = "";
+            return;
+        }
 
-                if (match && !specialMissionIds.includes(parseInt(missionId))) {
-                    element.style.display = '';
-                } else {
-                    element.style.display = 'none';
-                }
-            }
-        });
+        const missionId = missionElement.getAttribute('mission_type_id');
+        const missionType = missionElement.getAttribute('data-mission-type-filter');
+        const missionState = missionElement.getAttribute('data-mission-state-filter');
+        const missionParticipation = missionElement.getAttribute('data-mission-participation-filter');
+        const categories = missionCategoryMap.get(missionId) || [];
+
+        const isVisible = activeFilters.includes(missionType) ||
+              activeFilters.includes(missionState) ||
+              activeFilters.includes(missionParticipation) ||
+              categories.some(category => activeFilters.includes(category));
+
+        missionElement.style.display = isVisible ? "" : "none";
     }
 
-    // Funktion um Einsätze ohne Kategorie anzuzeigen
-    function filterMissionListWithoutCategory() {
-        const missionElements = document.querySelectorAll('.missionSideBarEntry');
-        missionElements.forEach(element => {
-            const missionId = element.getAttribute('mission_type_id');
-            if (missionCategoryMap.has(missionId)) {
-                const categories = missionCategoryMap.get(missionId);
-                if (categories.length === 0 || specialMissionIds.includes(parseInt(missionId))) {
-                    element.style.display = '';
-                } else {
-                    element.style.display = 'none';
-                }
-            } else {
-                element.style.display = '';
-            }
-        });
-    }
-
-    // Funktion um die Eventeinsätze zu filtern
-    function filterMissionListByEvent() {
-        const missionElements = document.querySelectorAll('.missionSideBarEntry');
-        missionElements.forEach(element => {
-            const missionId = element.getAttribute('mission_type_id');
-            if (eventMissionIds.includes(parseInt(missionId))) {
-                element.style.display = '';
-            } else {
-                element.style.display = 'none';
-            }
-        });
-    }
-
-    // Funktion um neue Einsätze direkt zu filtern
+    // Aktualisiert die Sichtbarkeit aller bestehenden Einsätze
     function updateMissionVisibility() {
-        document.querySelectorAll('.missionSideBarEntry').forEach(mission => {
-            let missionId = mission.getAttribute('mission_type_id');
-            let missionType = mission.getAttribute('data-mission-type-filter');
-            let missionState = mission.getAttribute('data-mission-state-filter');
-            let missionParticipation = mission.getAttribute('data-mission-participation-filter');
-
-            let categories = missionCategoryMap.get(missionId) || [];
-            let isVisible = activeFilters.includes(missionType) ||
-                activeFilters.includes(missionState) ||
-                activeFilters.includes(missionParticipation) ||
-                categories.some(category => activeFilters.includes(category));
-
-            mission.style.display = isVisible ? "" : "none";
-        });
+        document.querySelectorAll('.missionSideBarEntry').forEach(updateSingleMissionVisibility);
     }
 
-    // Funktion um die neuen Einsätze direkt der Kategorie zuzuordnen
+    // Filter: Nur eine bestimmte Kategorie
     function filterMissionListByCategory(category) {
-
-        activeFilters = [category]; // Setzt den aktiven Filter
+        activeFilters = [category];
         updateMissionVisibility();
-
     }
 
-    // Funktion um die neuen Einsätze direkte der Gruppe zuzuordnen
+    // Filter: Gruppe von Kategorien
     function filterMissionListByCategoryGroup(categoriesGroup) {
-
-        activeFilters = categoriesGroup; // Setzt die aktiven Filter für mehrere Kategorien
+        activeFilters = categoriesGroup;
         updateMissionVisibility();
-
     }
 
-    // Funktion um alle Einsätze wieder anzuzeigen
-    function resetMissionList() {
+    // Filter: Einsätze ohne Kategorie
+    function filterMissionListWithoutCategory() {
+        activeFilters = ['without-category'];
 
-        activeFilters = []; // Löscht die aktiven Filter
-
-        // Zeigt alle Einsätze an
         document.querySelectorAll('.missionSideBarEntry').forEach(mission => {
-            mission.style.display = ""; // Setzt `display` auf Standard zurück
+            const missionId = mission.getAttribute('mission_type_id');
+            const categories = missionCategoryMap.get(missionId) || [];
+            const isWithoutCategory = categories.length === 0 || specialMissionIds.includes(parseInt(missionId));
+            mission.style.display = isWithoutCategory ? "" : "none";
         });
     }
 
-    // Funktion um den aktiven Button visuell hervorzuheben
+    // Filter: Nur Eventeinsätze
+    function filterMissionListByEvent() {
+        activeFilters = ['event'];
+
+        document.querySelectorAll('.missionSideBarEntry').forEach(mission => {
+            const missionId = mission.getAttribute('mission_type_id');
+            const isEvent = eventMissionIds.includes(parseInt(missionId));
+            mission.style.display = isEvent ? "" : "none";
+        });
+    }
+
+    // Alle Einsätze wieder sichtbar machen
+    function resetMissionList() {
+        activeFilters = [];
+        document.querySelectorAll('.missionSideBarEntry').forEach(mission => {
+            mission.style.display = "";
+        });
+    }
+
+    // Visuelle Hervorhebung des aktiven Buttons
     function setActiveButton(button) {
         if (activeCategoryButton) {
             styleButtonForCurrentTheme(activeCategoryButton);
         }
-
         button.style.backgroundColor = '#28a745';
         button.style.color = '#fff';
         activeCategoryButton = button;
     }
 
-    // Funktion um die visuelle Makierung zu entfernen
+    // Entfernt die Hervorhebung des aktiven Buttons
     function resetActiveButton() {
         if (activeCategoryButton) {
             styleButtonForCurrentTheme(activeCategoryButton);
+            activeCategoryButton = null;
         }
-        activeCategoryButton = null;
     }
 
-    // Interval für die Updates (Jede Sekunde)
+    // Regelmäßige Updates für Statistiken oder Anzeigen
     setInterval(() => {
         updateMissionCount();
         updateAverageEarnings();
@@ -754,7 +679,10 @@
         getMissionSummary();
     }, 1000);
 
-    // ----- Bereich für Alamieren und Weiter ----- \\
+    // Startet die Überwachung
+    observeMissionLists();
+
+    // ----- Bereich für Alamieren und Weiter (noch in Arbeit) ----- \\
 
     // Funktion um die sichtbaren Einsätze in den Session Storage zu speichern
     function storeVisibleMissions() {
@@ -775,6 +703,34 @@
         const storedMissions = sessionStorage.getItem('visibleMissions');
         console.log("Gespeicherte Einsätze im Session Store:", JSON.parse(storedMissions));
     }
+
+    // Funktion um die nächste Mission zu laden
+    let currentMissionIndex = 0;
+
+    function loadNextMission() {
+        const storedMissions = JSON.parse(sessionStorage.getItem('visibleMissions'));
+
+        if (storedMissions && storedMissions.length > 0) {
+            if (currentMissionIndex < storedMissions.length) {
+                const missionId = storedMissions[currentMissionIndex];
+                const url = `https://www.leitstellenspiel.de/missions/${missionId}?sd=a&sk=cr&ift=kt_al_ae_sw&ifs=&ifp=`;
+                window.location.href = url; // Navigiert zur URL der nächsten Mission
+                currentMissionIndex++;
+            } else {
+                console.log('Alle Missionen wurden abgearbeitet.');
+                currentMissionIndex = 0; // Zurücksetzen, falls alle Missionen abgearbeitet wurden
+            }
+        } else {
+            console.log('Keine Missionen gespeichert.');
+        }
+    }
+
+    // Event Listener für den Hotkey "S"
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 's' || event.key === 'S') {
+            loadNextMission();
+        }
+    });
 
     //    console.log("Starte das Script...");
     loadMissionData();
