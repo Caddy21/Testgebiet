@@ -251,7 +251,7 @@
             existingContainer.remove();
         }
 
-        // Ab hier dein Code zum Erstellen eines neuen Containers ...
+        // Neuen Container erstellen
         const buttonContainer = document.createElement('div');
         buttonContainer.id = 'categoryButtonContainer';
         buttonContainer.style.display = 'flex';
@@ -262,7 +262,7 @@
             'fire', 'police', 'ambulance', 'thw', 'riot_police', 'water_rescue', 'mountain', 'coastal', 'airport', 'factory_fire_brigade', 'criminal_investigation', 'seg', 'seg_medical_service', 'event'
         ];
 
-        // Erstelle die Buttons für jede Kategorie
+        // Kategorie-Buttons erzeugen
         desiredOrder.forEach(category => {
             if (categories.has(category) && !isCategoryInAnyGroup(category)) {
                 const button = document.createElement('button');
@@ -276,8 +276,8 @@
                     filterMissionListByCategory(category);
                     storeVisibleMissions();
                     setActiveButton(button);
-                    document.getElementById('standard_earnings_display').style.display = 'inline'; // Zeige Verdienste an
-                    document.getElementById('full_earnings_display').style.display = 'none'; // Verstecke den vollständigen Verdienstbereich
+                    document.getElementById('standard_earnings_display').style.display = 'inline';
+                    document.getElementById('full_earnings_display').style.display = 'none';
                     updateAverageEarnings();
                 });
 
@@ -299,8 +299,8 @@
                 filterMissionListByCategoryGroup(groupCategories);
                 storeVisibleMissions();
                 setActiveButton(groupButton);
-                document.getElementById('standard_earnings_display').style.display = 'inline'; // Zeige Verdienste an
-                document.getElementById('full_earnings_display').style.display = 'none'; // Verstecke den vollständigen Verdienstbereich
+                document.getElementById('standard_earnings_display').style.display = 'inline';
+                document.getElementById('full_earnings_display').style.display = 'none';
                 updateAverageEarnings();
             });
 
@@ -320,8 +320,8 @@
             filterMissionListWithoutCategory();
             storeVisibleMissions();
             setActiveButton(unoButton);
-            document.getElementById('standard_earnings_display').style.display = 'inline'; // Zeige Verdienste an
-            document.getElementById('full_earnings_display').style.display = 'none'; // Verstecke den vollständigen Verdienstbereich
+            document.getElementById('standard_earnings_display').style.display = 'inline';
+            document.getElementById('full_earnings_display').style.display = 'none';
             updateAverageEarnings();
         });
 
@@ -340,8 +340,8 @@
             filterMissionListByEvent();
             storeVisibleMissions();
             setActiveButton(eventButton);
-            document.getElementById('standard_earnings_display').style.display = 'inline'; // Zeige Verdienste an
-            document.getElementById('full_earnings_display').style.display = 'none'; // Verstecke den vollständigen Verdienstbereich
+            document.getElementById('standard_earnings_display').style.display = 'inline';
+            document.getElementById('full_earnings_display').style.display = 'none';
             updateAverageEarnings();
         });
 
@@ -358,27 +358,43 @@
         resetButton.addEventListener('click', () => {
             resetMissionList();
             resetActiveButton();
-            sessionStorage.removeItem('visibleMissions'); // SessionStore löschen
-            document.getElementById('standard_earnings_display').style.display = 'none'; // Verstecke Verdienste wieder
-            document.getElementById('full_earnings_display').style.display = 'inline'; // Verstecke den vollständigen Verdienstbereich
+            sessionStorage.removeItem('visibleMissions');
+            document.getElementById('standard_earnings_display').style.display = 'none';
+            document.getElementById('full_earnings_display').style.display = 'inline';
             updateAverageEarnings();
         });
 
         buttonContainer.appendChild(resetButton);
+
+        // Button-Container einfügen
         searchInput.parentNode.insertBefore(buttonContainer, searchInput);
 
-        // Zahnrad-Einstellungen-Button (hinter "Alle anzeigen")
-        const settingsButton = createSettingsButton();
-        buttonContainer.appendChild(settingsButton);
+        // --- Signal für Statistik-Script: Flag und Event (falls Buttons auch mal "manuell" neu gebaut werden) ---
+        window.categoryButtonReady = true;
+        document.dispatchEvent(new Event('categoryButtonReady'));
 
-        // Verdienstanzeige-Bereich einfügen
+        // --- Statistik direkt unter die Buttons schieben ---
+        const stats = document.getElementById('average_earnings_display');
+        if (stats) {
+            if (buttonContainer.nextSibling !== stats) {
+                buttonContainer.parentNode.insertBefore(stats, buttonContainer.nextSibling);
+            }
+        }
+
+        // Zahnrad-Einstellungen-Button (hinter "Alle anzeigen"), falls du das hast!
+        if (typeof createSettingsButton === "function") {
+            const settingsButton = createSettingsButton();
+            buttonContainer.appendChild(settingsButton);
+        }
+
+        // Verdienstanzeige-Bereich einfügen (optional, wenn du das noch brauchst)
         const earningsContainer = document.createElement('div');
         earningsContainer.id = 'average_earnings_display';
         earningsContainer.style.marginTop = '10px';
 
         const standardDisplay = document.createElement('div');
         standardDisplay.id = 'standard_earnings_display';
-        standardDisplay.style.display = 'none'; // Zuerst ausblenden
+        standardDisplay.style.display = 'none';
 
         const fullDisplay = document.createElement('div');
         fullDisplay.id = 'full_earnings_display';
@@ -431,7 +447,7 @@
             }
         });
 
-        // Filter nochmal: Kategorien, die genutzt werden (redundant, aber okay)
+        // Kategorien filtern
         for (const [group, cats] of Object.entries(newGroups)) {
             newGroups[group] = cats.filter(cat => usedCategories.has(cat));
         }
@@ -443,6 +459,22 @@
         const container = document.getElementById('categorySettingsContainer');
         if (container) {
             populateGroupSettings(container, categoryGroups, allCategories, customCategoryLabels);
+        }
+
+        // Buttons neu aufbauen:
+        createCategoryButtons();
+
+        // --- Signal für Statistik-Script, dass Buttons wieder da sind! ---
+        window.categoryButtonReady = true;
+        document.dispatchEvent(new Event('categoryButtonReady'));
+
+        // --- Statistik direkt unter die neuen Buttons schieben! ---
+        const buttonContainer = document.getElementById('categoryButtonContainer');
+        const stats = document.getElementById('average_earnings_display');
+        if (buttonContainer && stats) {
+            if (buttonContainer.nextSibling !== stats) {
+                buttonContainer.parentNode.insertBefore(stats, buttonContainer.nextSibling);
+            }
         }
     }
 
