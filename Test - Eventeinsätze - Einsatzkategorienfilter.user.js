@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name         [LSS] Einsatzkategorienfilter
 // @namespace    http://tampermonkey.net/
-// @version      1.6
+// @version      1.7
 // @description  Filtert die Einsatzliste nach Kategorien
 // @author       Caddy21
 // @match        https://www.leitstellenspiel.de/
@@ -408,12 +408,11 @@
 
         if (storedGroups) categoryGroups = storedGroups;
 
-        if (Array.isArray(storedEvents) && storedEvents.length > 0) {
+        if (Array.isArray(storedEvents)) {
             eventMissionIds = storedEvents.map(id => parseInt(id)).filter(id => !isNaN(id));
-            console.log("Geladene Eventmissionen:", eventMissionIds);
         } else {
             eventMissionIds = [...defaultEventMissionIds];
-            console.log("Default-Eventmissionen verwendet:", eventMissionIds);
+            //console.log("Default-Eventmissionen verwendet:", eventMissionIds);
         }
     }
 
@@ -432,19 +431,13 @@
             }
         });
 
-        const newEvents = document.getElementById('eventMissionIdsInput')?.value.trim().split(',')
-        .map(id => parseInt(id)).filter(id => !isNaN(id)) || [];
-
         // Filter nochmal: Kategorien, die genutzt werden (redundant, aber okay)
         for (const [group, cats] of Object.entries(newGroups)) {
             newGroups[group] = cats.filter(cat => usedCategories.has(cat));
         }
 
         categoryGroups = newGroups;
-        eventMissionIds = newEvents;
-
         localStorage.setItem('customCategoryGroups', JSON.stringify(categoryGroups));
-        localStorage.setItem('customEventMissionIds', JSON.stringify(eventMissionIds));
 
         // Gruppen in UI neu darstellen:
         const container = document.getElementById('categorySettingsContainer');
@@ -659,8 +652,8 @@
 
         <div class="modal-action">
             <button class="btn btn-success" id="saveSettingsBtn">Speichern</button>
-            <button class="btn btn-danger" id="closeSettingsBtn">Schließen</button>
-            <button class="btn btn-primary" id="resetSettingsBtn">Zurücksetzen</button>
+            <button class="btn btn-primary" id="closeSettingsBtn">Schließen</button>
+            <button class="btn btn-danger" id="resetSettingsBtn">Zurücksetzen</button>
         </div>
     `;
 
@@ -990,21 +983,20 @@
         missionElements.forEach(element => {
             const missionId = element.getAttribute('mission_type_id');
             let categories = missionCategoryMap.get(missionId) || ['no-category']; // Standardwert "no-category"
+            const idNum = parseInt(missionId);
 
-            // Überprüfen, ob die Mission-ID zu den speziellen IDs gehört, die der VGSL/ÜO zugeordnet werden sollen
-            const specialIds = [41, 43, 59, 75, 99, 207, 221, 222, 256, 350];
-            if (specialIds.includes(parseInt(missionId))) {
-                categories = ['no-category']; // Ersetze alle Kategorien mit VGSL/ÜO für diese speziellen IDs
+            // Eventlogik: ZÄHLE NUR, wenn eventMissionIds NICHT LEER ist und die Mission in der Liste ist
+            if (eventMissionIds.length > 0 && eventMissionIds.includes(idNum)) {
+                categories = ['event'];
+            } else if (defaultEventMissionIds.includes(idNum)) {
+                // NICHT als Event, sondern wie normale Kategorie behandeln
+            } else if (specialMissionIds.includes(idNum)) {
+                categories = ['no-category'];
             }
 
             categories.forEach(category => {
                 summary[category] = (summary[category] || 0) + 1;
             });
-
-            // Überprüfen, ob die Mission-ID zu den Eventeinsatz-IDs gehört
-            if (eventMissionIds.includes(parseInt(missionId))) {
-                summary['event'] = (summary['event'] || 0) + 1;
-            }
         });
 
         // Berechnung für Gruppen
@@ -1090,16 +1082,19 @@
         });
     }
 
+    // Filter: Eventeinsätze
     function filterMissionListByEvent() {
         activeFilters = ['event'];
 
+        // Wenn keine Eventmissionen ausgewählt sind, ALLES ausblenden!
         if (!Array.isArray(eventMissionIds) || eventMissionIds.length === 0) {
-            console.warn("Keine gültigen Eventmissionen gefunden – Anzeige wird nicht gefiltert.");
+            document.querySelectorAll('.missionSideBarEntry').forEach(mission => {
+                mission.style.display = "none";
+            });
             return;
         }
 
-        console.log("Eventmissionen zum Filtern:", eventMissionIds);
-
+        // Sonst nur die gewählten Eventeinsätze anzeigen
         document.querySelectorAll('.missionSideBarEntry').forEach(mission => {
             const missionIdRaw = mission.getAttribute('mission_type_id') || mission.dataset.missionTypeId;
             const missionId = parseInt(missionIdRaw);
@@ -1158,7 +1153,7 @@
 
         // Ausgabe des gespeicherten Wertes aus dem Session Store
         const storedMissions = sessionStorage.getItem('visibleMissions');
-        console.log("Gespeicherte Einsätze im Session Store:", JSON.parse(storedMissions));
+        //console.log("Gespeicherte Einsätze im Session Store:", JSON.parse(storedMissions));
     }
 
     // Funktion zur Bereinigung der aktuellen Mission im SessionStorage
@@ -1171,7 +1166,7 @@
         if (missions.includes(missionId)) {
             missions = missions.filter(id => id !== missionId);
             sessionStorage.setItem('visibleMissions', JSON.stringify(missions));
-            console.log(`[SessionStore] Einsatz ${missionId} entfernt. Verbleibend:`, missions);
+            //console.log(`[SessionStore] Einsatz ${missionId} entfernt. Verbleibend:`, missions);
         }
     }
 
