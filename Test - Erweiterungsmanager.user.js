@@ -246,6 +246,28 @@
     };
     // Ab hier nichts mehr ändern! (Es sei denn Ihr wisst was Ihr tut)
 
+    const buildingTypeNames = {
+            '0_normal': 'Feuerwache (Normal)',
+            '0_small': 'Feuerwache (Kleinwache)',
+            '1_normal': 'Feuerwehrschule',
+            '2_normal': 'Rettungswache',
+            '3_normal': 'Rettungsschule',
+            '4_normal': 'Krankenhaus',
+            '5_normal': 'Rettungshubschrauber-Station',
+            '6_normal': 'Polizeiwache (Normal)',
+            '6_small': 'Polizeiwache (Kleinwache)',
+            '8_normal': 'Polizeischule',
+            '9_normal': 'Technisches Hilfswerk',
+            '10_normal': 'Technisches Hilfswerk - Bundesschule',
+            '11_normal': 'Bereitschaftspolizei',
+            '12_normal': 'Schnelleinsatzgruppe (SEG)',
+            '13_normal': 'Polizeihubschrauber-Station',
+            '17_normal': 'Polizei-Sondereinheiten',
+            '24_normal': 'Reiterstaffel',
+            '25_normal': 'Bergrettungswache',
+            '27_normal': 'Schule für Seefahrt und Seenotrettung',
+        };
+
     const inProgressStorageUpgrades = new Map(); // Map<buildingId, Set<storageKey>
 
     // Funktion um die Lightbox und Stile zu erstellen
@@ -404,6 +426,59 @@
         #open-extension-helper {
             cursor: pointer;
         }
+
+        #extension-settings-btn {
+    background: var(--background-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    margin: 10px;
+    padding: 6px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+#extension-settings-btn:hover {
+    background: var(--border-color);
+}
+#extension-settings-lightbox .settings-content {
+    background: var(--background-color);
+    color: var(--text-color);
+    border-radius: 8px;
+    padding: 32px;
+    max-height: 80vh;
+    overflow-y: auto;
+    min-width: 350px;
+    border: 1px solid var(--border-color);
+}
+#extension-settings-lightbox .tab-ext-btn {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 5px;
+    margin-right: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+#extension-settings-lightbox .tab-ext-btn:hover,
+#extension-settings-lightbox .tab-ext-btn.active {
+    background-color: #218838;
+}
+#extension-settings-lightbox .tab-lager-btn {
+    background-color: #ffc107;
+    color: #333;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+#extension-settings-lightbox .tab-lager-btn:hover,
+#extension-settings-lightbox .tab-lager-btn.active {
+    background-color: #e0a800;
+}
     `;
 
     // Funktion zum Abrufen der Benutzereinstellungen vom API
@@ -516,18 +591,15 @@
 
     const lightboxContent = lightbox.querySelector('#extension-lightbox-content');
 
+    // Einstellungen-Button erstellen und ins Lightbox einfügen
     const settingsButton = document.createElement('button');
     settingsButton.id = 'extension-settings-btn';
     settingsButton.textContent = 'Einstellungen';
-    settingsButton.style.margin = '10px';
-    settingsButton.style.padding = '6px 16px';
-    settingsButton.style.border = 'none';
-    settingsButton.style.borderRadius = '5px';
-    settingsButton.style.cursor = 'pointer';
-    // Noch keine background/color!
     lightboxContent.insertBefore(settingsButton, lightboxContent.children[1]);
 
+    // Funktion für das Einstellungs-Dialog
     function openSettingsDialog() {
+        // Falls bereits geöffnet, altes schließen
         let settingsBox = document.getElementById('extension-settings-lightbox');
         if (settingsBox) settingsBox.remove();
 
@@ -538,13 +610,11 @@
     `;
 
         const content = document.createElement('div');
-        content.style = `
-        background:white; color:black; border-radius:8px; padding:32px; max-height:80vh; overflow-y:auto; min-width:350px;
-    `;
+        content.className = 'settings-content';
         content.innerHTML = `
         <h3>Einstellungen – Erweiterungen & Lagerräume</h3>
-        <button id="tab-ext-btn" style="margin-right:10px;">Erweiterungen</button>
-        <button id="tab-lager-btn">Lagerräume</button>
+        <button id="tab-ext-btn" class="tab-ext-btn active">Erweiterungen</button>
+        <button id="tab-lager-btn" class="tab-lager-btn">Lagerräume</button>
         <div id="settings-tab-content" style="margin:20px 0;"></div>
         <button id="settings-save-btn" style="background:#007bff;color:white;padding:8px 20px;border:none;border-radius:5px;">Speichern & Schließen</button>
     `;
@@ -552,70 +622,46 @@
         settingsBox.appendChild(content);
         document.body.appendChild(settingsBox);
 
-        async function applySettingsButtonTheme() {
-            let isDarkMode = false;
-            if (typeof getUserMode === "function") {
-                try {
-                    const userSettings = await getUserMode();
-                    isDarkMode = userSettings && (userSettings.design_mode === 1 || userSettings.design_mode === 4);
-                } catch (e) {}
-            } else if (window.matchMedia) {
-                isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            }
-
-            settingsButton.style.background = isDarkMode ? "#444" : "#f2f2f2";
-            settingsButton.style.color = isDarkMode ? "#fff" : "#000";
-
-            // Hover Effekt
-            settingsButton.onmouseover = () => {
-                settingsButton.style.background = isDarkMode ? "#555" : "#e0e0e0";
-            };
-            settingsButton.onmouseout = () => {
-                settingsButton.style.background = isDarkMode ? "#444" : "#f2f2f2";
-            };
-        }
-        applySettingsButtonTheme();
-
-        if (window.matchMedia) {
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applySettingsButtonTheme);
-        }
-
-        // Tabs
+        // Tab-Logik (optisch und inhaltlich)
+        const extBtn = content.querySelector('#tab-ext-btn');
+        const lagerBtn = content.querySelector('#tab-lager-btn');
         const tabContent = content.querySelector('#settings-tab-content');
-        function showTab(type) {
-            tabContent.innerHTML = '';
-            if (type === 'ext') {
-                Object.entries(manualExtensions).forEach(([key, arr]) => {
-                    tabContent.innerHTML += `<b>${key}</b><br>`;
-                    arr.forEach(ext => {
-                        const lsKey = `ext_${key}_${ext.id}`;
-                        const checked = localStorage.getItem(lsKey) !== '0' ? 'checked' : '';
-                        tabContent.innerHTML += `<label>
-                        <input type="checkbox" data-key="${key}" data-id="${ext.id}" class="setting-ext" ${checked}> ${ext.name}
-                    </label><br>`;
-                    });
-                    tabContent.innerHTML += '<hr>';
-                });
-            } else {
-                Object.entries(manualStorageRooms).forEach(([key, arr]) => {
-                    tabContent.innerHTML += `<b>${key}</b><br>`;
-                    arr.forEach((lager) => {
-                        const lagerKey = Object.keys(lager).find(k => k.endsWith('_containers'));
-                        const lsKey = `lager_${key}_${lagerKey}`;
-                        const checked = localStorage.getItem(lsKey) !== '0' ? 'checked' : '';
-                        tabContent.innerHTML += `<label>
-                        <input type="checkbox" data-key="${key}" data-lager="${lagerKey}" class="setting-lager" ${checked}> ${lager.name}
-                    </label><br>`;
-                    });
-                    tabContent.innerHTML += '<hr>';
-                });
-            }
-        }
-        showTab('ext');
-        content.querySelector('#tab-ext-btn').onclick = () => showTab('ext');
-        content.querySelector('#tab-lager-btn').onclick = () => showTab('lager');
 
-        // Save-Button
+        function showTab(type) {
+    extBtn.classList.toggle('active', type === 'ext');
+    lagerBtn.classList.toggle('active', type === 'lager');
+    tabContent.innerHTML = '';
+    if (type === 'ext') {
+        Object.entries(manualExtensions).forEach(([key, arr]) => {
+            tabContent.innerHTML += `<b>${buildingTypeNames[key] || key}</b><br>`;
+            arr.forEach(ext => {
+                const lsKey = `ext_${key}_${ext.id}`;
+                const checked = localStorage.getItem(lsKey) !== '0' ? 'checked' : '';
+                tabContent.innerHTML += `<label>
+                <input type="checkbox" data-key="${key}" data-id="${ext.id}" class="setting-ext" ${checked}> ${ext.name}
+                </label><br>`;
+            });
+            tabContent.innerHTML += '<hr>';
+        });
+    } else {
+        Object.entries(manualStorageRooms).forEach(([key, arr]) => {
+            tabContent.innerHTML += `<b>${buildingTypeNames[key] || key}</b><br>`;
+            arr.forEach((lager) => {
+                const lagerKey = Object.keys(lager).find(k => k.endsWith('_containers'));
+                const lsKey = `lager_${key}_${lagerKey}`;
+                const checked = localStorage.getItem(lsKey) !== '0' ? 'checked' : '';
+                tabContent.innerHTML += `<label>
+                <input type="checkbox" data-key="${key}" data-lager="${lagerKey}" class="setting-lager" ${checked}> ${lager.name}
+                </label><br>`;
+            });
+            tabContent.innerHTML += '<hr>';
+        });
+    }
+}
+        extBtn.onclick = () => showTab('ext');
+        lagerBtn.onclick = () => showTab('lager');
+
+        // Speichern & schließen
         content.querySelector('#settings-save-btn').onclick = () => {
             tabContent.querySelectorAll('.setting-ext').forEach(cb => {
                 const lsKey = `ext_${cb.dataset.key}_${cb.dataset.id}`;
@@ -626,12 +672,14 @@
                 localStorage.setItem(lsKey, cb.checked ? '1' : '0');
             });
             settingsBox.remove();
-            // Optional: Seite neu laden oder Tabellen neu rendern
             location.reload();
         };
 
+        // Modal schließt bei Klick auf den Hintergrund
         settingsBox.onclick = (e) => { if (e.target === settingsBox) settingsBox.remove(); };
     }
+
+    // Button mit Dialog verknüpfen
     settingsButton.onclick = openSettingsDialog;
 
     // Darkmode oder Whitemode anwenden
@@ -909,28 +957,6 @@
                 buildingGroups[buildingTypeKey].push({ building, missingExtensions: allowedExtensions });
             }
         });
-
-        const buildingTypeNames = {
-            '0_normal': 'Feuerwache (Normal)',
-            '0_small': 'Feuerwache (Kleinwache)',
-            '1_normal': 'Feuerwehrschule',
-            '2_normal': 'Rettungswache',
-            '3_normal': 'Rettungsschule',
-            '4_normal': 'Krankenhaus',
-            '5_normal': 'Rettungshubschrauber-Station',
-            '6_normal': 'Polizeiwache (Normal)',
-            '6_small': 'Polizeiwache (Kleinwache)',
-            '8_normal': 'Polizeischule',
-            '9_normal': 'Technisches Hilfswerk',
-            '10_normal': 'Technisches Hilfswerk - Bundesschule',
-            '11_normal': 'Bereitschaftspolizei',
-            '12_normal': 'Schnelleinsatzgruppe (SEG)',
-            '13_normal': 'Polizeihubschrauber-Station',
-            '17_normal': 'Polizei-Sondereinheiten',
-            '24_normal': 'Reiterstaffel',
-            '25_normal': 'Bergrettungswache',
-            '27_normal': 'Schule für Seefahrt und Seenotrettung',
-        };
 
         function createHeader(titleText) {
             const header = document.createElement('h4');
