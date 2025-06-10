@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         [LSS] 02 - Erweiterungs-Manager
 // @namespace    http://tampermonkey.net/
-// @version      1.3
+// @version      1.2
 // @description  Listet Wachen auf, bei denen Erweiterungen fehlen und ermöglicht das hinzufügen dieser Erweiterungen.
 // @author       Caddy21
 // @match        https://www.leitstellenspiel.de/
@@ -516,6 +516,124 @@
 
     const lightboxContent = lightbox.querySelector('#extension-lightbox-content');
 
+    const settingsButton = document.createElement('button');
+    settingsButton.id = 'extension-settings-btn';
+    settingsButton.textContent = 'Einstellungen';
+    settingsButton.style.margin = '10px';
+    settingsButton.style.padding = '6px 16px';
+    settingsButton.style.border = 'none';
+    settingsButton.style.borderRadius = '5px';
+    settingsButton.style.cursor = 'pointer';
+    // Noch keine background/color!
+    lightboxContent.insertBefore(settingsButton, lightboxContent.children[1]);
+
+    function openSettingsDialog() {
+        let settingsBox = document.getElementById('extension-settings-lightbox');
+        if (settingsBox) settingsBox.remove();
+
+        settingsBox = document.createElement('div');
+        settingsBox.id = 'extension-settings-lightbox';
+        settingsBox.style = `
+        position: fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.7); z-index:10001; display:flex; align-items:center; justify-content:center;
+    `;
+
+        const content = document.createElement('div');
+        content.style = `
+        background:white; color:black; border-radius:8px; padding:32px; max-height:80vh; overflow-y:auto; min-width:350px;
+    `;
+        content.innerHTML = `
+        <h3>Einstellungen – Erweiterungen & Lagerräume</h3>
+        <button id="tab-ext-btn" style="margin-right:10px;">Erweiterungen</button>
+        <button id="tab-lager-btn">Lagerräume</button>
+        <div id="settings-tab-content" style="margin:20px 0;"></div>
+        <button id="settings-save-btn" style="background:#007bff;color:white;padding:8px 20px;border:none;border-radius:5px;">Speichern & Schließen</button>
+    `;
+
+        settingsBox.appendChild(content);
+        document.body.appendChild(settingsBox);
+
+        async function applySettingsButtonTheme() {
+            let isDarkMode = false;
+            if (typeof getUserMode === "function") {
+                try {
+                    const userSettings = await getUserMode();
+                    isDarkMode = userSettings && (userSettings.design_mode === 1 || userSettings.design_mode === 4);
+                } catch (e) {}
+            } else if (window.matchMedia) {
+                isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            }
+
+            settingsButton.style.background = isDarkMode ? "#444" : "#f2f2f2";
+            settingsButton.style.color = isDarkMode ? "#fff" : "#000";
+
+            // Hover Effekt
+            settingsButton.onmouseover = () => {
+                settingsButton.style.background = isDarkMode ? "#555" : "#e0e0e0";
+            };
+            settingsButton.onmouseout = () => {
+                settingsButton.style.background = isDarkMode ? "#444" : "#f2f2f2";
+            };
+        }
+        applySettingsButtonTheme();
+
+        if (window.matchMedia) {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applySettingsButtonTheme);
+        }
+
+        // Tabs
+        const tabContent = content.querySelector('#settings-tab-content');
+        function showTab(type) {
+            tabContent.innerHTML = '';
+            if (type === 'ext') {
+                Object.entries(manualExtensions).forEach(([key, arr]) => {
+                    tabContent.innerHTML += `<b>${key}</b><br>`;
+                    arr.forEach(ext => {
+                        const lsKey = `ext_${key}_${ext.id}`;
+                        const checked = localStorage.getItem(lsKey) !== '0' ? 'checked' : '';
+                        tabContent.innerHTML += `<label>
+                        <input type="checkbox" data-key="${key}" data-id="${ext.id}" class="setting-ext" ${checked}> ${ext.name}
+                    </label><br>`;
+                    });
+                    tabContent.innerHTML += '<hr>';
+                });
+            } else {
+                Object.entries(manualStorageRooms).forEach(([key, arr]) => {
+                    tabContent.innerHTML += `<b>${key}</b><br>`;
+                    arr.forEach((lager) => {
+                        const lagerKey = Object.keys(lager).find(k => k.endsWith('_containers'));
+                        const lsKey = `lager_${key}_${lagerKey}`;
+                        const checked = localStorage.getItem(lsKey) !== '0' ? 'checked' : '';
+                        tabContent.innerHTML += `<label>
+                        <input type="checkbox" data-key="${key}" data-lager="${lagerKey}" class="setting-lager" ${checked}> ${lager.name}
+                    </label><br>`;
+                    });
+                    tabContent.innerHTML += '<hr>';
+                });
+            }
+        }
+        showTab('ext');
+        content.querySelector('#tab-ext-btn').onclick = () => showTab('ext');
+        content.querySelector('#tab-lager-btn').onclick = () => showTab('lager');
+
+        // Save-Button
+        content.querySelector('#settings-save-btn').onclick = () => {
+            tabContent.querySelectorAll('.setting-ext').forEach(cb => {
+                const lsKey = `ext_${cb.dataset.key}_${cb.dataset.id}`;
+                localStorage.setItem(lsKey, cb.checked ? '1' : '0');
+            });
+            tabContent.querySelectorAll('.setting-lager').forEach(cb => {
+                const lsKey = `lager_${cb.dataset.key}_${cb.dataset.lager}`;
+                localStorage.setItem(lsKey, cb.checked ? '1' : '0');
+            });
+            settingsBox.remove();
+            // Optional: Seite neu laden oder Tabellen neu rendern
+            location.reload();
+        };
+
+        settingsBox.onclick = (e) => { if (e.target === settingsBox) settingsBox.remove(); };
+    }
+    settingsButton.onclick = openSettingsDialog;
+
     // Darkmode oder Whitemode anwenden
     function applyTheme() {
         const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -726,6 +844,16 @@
 
     // Funktion um die Tabellen mit Daten zu füllen
     async function renderMissingExtensions(buildings) {
+        // Prüft, ob eine Erweiterung angezeigt werden soll
+        function isExtensionEnabled(key, id) {
+            // Standard: Sichtbar, solange nicht explizit im localStorage auf "0"
+            return localStorage.getItem(`ext_${key}_${id}`) !== '0';
+        }
+        // Prüft, ob ein Lager angezeigt werden soll
+        function isLagerEnabled(key, lagerKey) {
+            // Standard: Sichtbar, solange nicht explizit im localStorage auf "0"
+            return localStorage.getItem(`lager_${key}_${lagerKey}`) !== '0';
+        }
         const userInfo = await getUserCredits();
         const list = document.getElementById('extension-list');
         list.innerHTML = ''; // Lösche den Inhalt der Lightbox
@@ -744,8 +872,10 @@
         buildings.forEach(building => {
             console.log('StorageUpgrades:', building.caption, building.storageUpgrades);
             const buildingTypeKey = `${building.building_type}_${building.small_building ? 'small' : 'normal'}`;
-            const extensions = manualExtensions[buildingTypeKey];
-            if (!extensions) return;
+            // Erweiterungen gemäß User-Einstellungen filtern
+            const extensionsRaw = manualExtensions[buildingTypeKey];
+            if (!extensionsRaw) return;
+            const extensions = extensionsRaw.filter(ext => isExtensionEnabled(buildingTypeKey, ext.id));
 
             const existingExtensions = new Set(building.extensions.map(e => e.type_id));
 
@@ -899,36 +1029,13 @@
             });
 
             group.forEach(({ building }) => {
-                storageGroup.forEach(storage => {
-                    const storageKey = Object.keys(storage).find(k => k.startsWith('initial_') || k.startsWith('additional_'));
-                    const checkbox = document.createElement('input');
-                    checkbox.type = 'checkbox';
-                    checkbox.className = 'storage-checkbox';
-                    checkbox.dataset.buildingId = building.id;
-                    checkbox.dataset.storageTypeId = storageKey;
+                storageGroup
+                    .filter(storage => {
+                    const lagerKey = Object.keys(storage).find(k => k.endsWith('_containers'));
+                    return isLagerEnabled(groupKey, lagerKey);
+                })
+                    .forEach(storage => {
 
-                    const creditButton = createButton(
-                        `${formatNumber(storage.cost)} Credits`,
-                        ['btn-xl', 'credit-button'],
-                        () => buildStorage(building, storageKey, 'credits', storage.cost),
-                        { backgroundColor: '#28a745', color: 'white' }
-                    );
-                    creditButton.disabled = userInfo.credits < storage.cost;
-
-                    const coinsButton = createButton(
-                        `${storage.coins} Coins`,
-                        ['btn-xl', 'coins-button'],
-                        () => buildStorage(building, storageKey, 'coins', storage.coins),
-                        { backgroundColor: '#dc3545', color: 'white' }
-                    );
-                    coinsButton.disabled = userInfo.coins < storage.coins;
-
-                    const row = createRow([
-                        checkbox, getLeitstelleName(building), building.caption, storage.name,
-                        storage.additionalStorage ?? '–', creditButton, coinsButton
-                    ], '', { storageKey });
-
-                    tbody.appendChild(row);
                 });
             });
 
