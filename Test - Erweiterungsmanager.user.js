@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         [LSS] 02 - Erweiterungs-Manager
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.3
 // @description  Listet Wachen auf, bei denen Erweiterungen fehlen und ermöglicht das hinzufügen dieser Erweiterungen.
 // @author       Caddy21
 // @match        https://www.leitstellenspiel.de/
@@ -14,6 +14,7 @@
 
 // To-Do
 // Lagererweiterungen einbauen
+// manualExtensions verbessern um etliches Ausklammern zu verhindern und dem User weniger Arbeit zu machen
 // Suche verbessern
 
 (function() {
@@ -23,32 +24,34 @@
     // Hier könnt Ihr auswählen welche Erweiterung in der Tabelle angezeigt werden soll, dafür die nicht benötigten einfach mit // ausklammern.
     const manualExtensions = {
         '0_normal': [ // Feuerwache (normal)
-//            { id: 0, name: 'Rettungsdienst', cost: 100000, coins: 20 },
-//            { id: 1, name: '1te AB-Stellplatz', cost: 100000, coins: 20 },
-//            { id: 2, name: '2te AB-Stellplatz', cost: 100000, coins: 20 },
-//            { id: 3, name: '3te AB-Stellplatz', cost: 100000, coins: 20 },
-//            { id: 4, name: '4te AB-Stellplatz', cost: 100000, coins: 20 },
-//            { id: 5, name: '5te AB-Stellplatz', cost: 100000, coins: 20 },
-//            { id: 6, name: 'Wasserrettung', cost: 400000, coins: 25 },
-//            { id: 7, name: '6te AB-Stellplatz', cost: 100000, coins: 20 },
-//            { id: 8, name: 'Flughafenfeuerwehr', cost: 300000, coins: 25 },
-//            { id: 9, name: 'Großwache', cost: 1000000, coins: 50 },
-//            { id: 10, name: '7te AB-Stellplatz', cost: 100000, coins: 20 },
-//            { id: 11, name: '8te AB-Stellplatz', cost: 100000, coins: 20 },
-//            { id: 12, name: '9te AB-Stellplatz', cost: 100000, coins: 20 },
-//            { id: 13, name: 'Werkfeuerwehr', cost: 100000, coins: 20 },
-//            { id: 14, name: 'Netzersatzanlage 50', cost: 100000, coins: 20 },
-//            { id: 15, name: 'Netzersatzanlage 200', cost: 100000, coins: 20 },
+            { id: 0, name: 'Rettungsdienst', cost: 100000, coins: 20 },
+            { id: 1, name: '1te AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 2, name: '2te AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 3, name: '3te AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 4, name: '4te AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 5, name: '5te AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 6, name: 'Wasserrettung', cost: 400000, coins: 25 },
+            { id: 7, name: '6te AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 8, name: 'Flughafenfeuerwehr', cost: 300000, coins: 25 },
+            { id: 9, name: 'Großwache', cost: 1000000, coins: 50 },
+            { id: 10, name: '7te AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 11, name: '8te AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 12, name: '9te AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 13, name: 'Werkfeuerwehr', cost: 100000, coins: 20 },
+            { id: 14, name: 'Netzersatzanlage 50', cost: 100000, coins: 20 },
+            { id: 15, name: 'Netzersatzanlage 200', cost: 100000, coins: 20 },
             { id: 16, name: 'Großlüfter', cost: 75000, coins: 15 },
-//            { id: 17, name: '10te AB-Stellplatz', cost: 100000, coins: 20 },
-//            { id: 18, name: 'Drohneneinheit', cost: 150000, coins: 25 },
-//            { id: 19, name: 'Verpflegungsdienst', cost: 200000, coins: 25 },
-//            { id: 20, name: '1te Anhänger Stellplatz', cost: 75000, coins: 15 },
-//            { id: 21, name: '2te Anhänger Stellplatz', cost: 75000, coins: 15 },
-//            { id: 22, name: '3te Anhänger Stellplatz', cost: 75000, coins: 15 },
-//            { id: 23, name: '4te Anhänger Stellplatz', cost: 75000, coins: 15 },
-//            { id: 24, name: '5te Anhänger Stellplatz', cost: 75000, coins: 15 },
+            { id: 17, name: '10te AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 18, name: 'Drohneneinheit', cost: 150000, coins: 25 },
+            { id: 19, name: 'Verpflegungsdienst', cost: 200000, coins: 25 },
+            { id: 20, name: '1te Anhänger Stellplatz', cost: 75000, coins: 15 },
+            { id: 21, name: '2te Anhänger Stellplatz', cost: 75000, coins: 15 },
+            { id: 22, name: '3te Anhänger Stellplatz', cost: 75000, coins: 15 },
+            { id: 23, name: '4te Anhänger Stellplatz', cost: 75000, coins: 15 },
+            { id: 24, name: '5te Anhänger Stellplatz', cost: 75000, coins: 15 },
             { id: 25, name: 'Bahnrettung', cost: 125000, coins: 25 },
+            { id: 26, name: '11te Ab-Stellplatz', cost: 150000, coins: 20 },
+            { id: 27, name: '12te Ab-Stellplatz', cost: 150000, coins: 20 },
         ],
 
         '1_normal': [ // Feuerwehrschule
@@ -58,7 +61,7 @@
         ],
 
         '2_normal': [ // Rettungswache
-//            { id: 0, name: 'Großwache', cost: 1000000, coins: 50 },
+            { id: 0, name: 'Großwache', cost: 1000000, coins: 50 },
         ],
 
         '3_normal': [ // Rettungsschule
@@ -77,11 +80,11 @@
             { id: 6, name: 'Neurochirugie', cost: 70000, coins: 15 },
             { id: 7, name: 'Kardiologie', cost: 70000, coins: 15 },
             { id: 8, name: 'Kardiochirugie', cost: 70000, coins: 15 },
-//            { id: 9, name: 'Großkrankenhaus', cost: 200000, coins: 50 },
+            { id: 9, name: 'Großkrankenhaus', cost: 200000, coins: 50 },
         ],
 
         '5_normal': [ // Rettungshubschrauber-Station
-//            { id: 0, name: 'Windenrettung', cost: 200000, coins: 15 },
+            { id: 0, name: 'Windenrettung', cost: 200000, coins: 15 },
         ],
 
         '6_normal': [ // Polizeiwache
@@ -90,17 +93,17 @@
             { id: 2, name: '3te Zelle', cost: 25000, coins: 5 },
             { id: 3, name: '4te Zelle', cost: 25000, coins: 5 },
             { id: 4, name: '5te Zelle', cost: 25000, coins: 5 },
-//            { id: 5, name: '6te Zelle', cost: 25000, coins: 5 },
-//            { id: 6, name: '7te Zelle', cost: 25000, coins: 5 },
-//            { id: 7, name: '8te Zelle', cost: 25000, coins: 5 },
-//            { id: 8, name: '9te Zelle', cost: 25000, coins: 5 },
-//            { id: 9, name: '10te Zelle', cost: 25000, coins: 5 },
+            { id: 5, name: '6te Zelle', cost: 25000, coins: 5 },
+            { id: 6, name: '7te Zelle', cost: 25000, coins: 5 },
+            { id: 7, name: '8te Zelle', cost: 25000, coins: 5 },
+            { id: 8, name: '9te Zelle', cost: 25000, coins: 5 },
+            { id: 9, name: '10te Zelle', cost: 25000, coins: 5 },
             { id: 10, name: 'Diensthundestaffel', cost: 100000, coins: 10 },
             { id: 11, name: 'Kriminalpolizei', cost: 100000, coins: 20 },
             { id: 12, name: 'Dienstgruppenleitung', cost: 200000, coins: 25 },
             { id: 13, name: 'Motorradstaffel', cost: 75000, coins: 15 },
-//            { id: 14, name: 'Großwache', cost: 1000000, coins: 50 },
-//            { id: 15, name: 'Großgewahrsam', cost: 200000, coins: 50 },
+            { id: 14, name: 'Großwache', cost: 1000000, coins: 50 },
+            { id: 15, name: 'Großgewahrsam', cost: 200000, coins: 50 },
         ],
 
         '8_normal': [ // Polizeischule
@@ -121,8 +124,8 @@
             { id: 8, name: 'Fachgruppe Wasserschaden/Pumpen', cost: 200000, coins: 25 },
             { id: 9, name: 'Fachruppe Schwere Bergung', cost: 200000, coins: 25 },
             { id: 10, name: 'Fachgruppe Elektroversorgung', cost: 200000, coins: 25 },
-//            { id: 11, name: 'Ortsverband-Mannschaftstransportwagen', cost: 50000, coins: 15 },
-//            { id: 12, name: 'Trupp Unbenannte Luftfahrtsysteme', cost: 50000, coins: 15 },
+            { id: 11, name: 'Ortsverband-Mannschaftstransportwagen', cost: 50000, coins: 15 },
+            { id: 12, name: 'Trupp Unbemannte Luftfahrtsysteme', cost: 50000, coins: 15 },
             { id: 13, name: 'Fachzug Führung und Kommunikation', cost: 300000, coins: 25 },
         ],
 
@@ -156,57 +159,58 @@
         ],
 
         '13_normal': [ // Polizeihubschrauberstation
-//            { id: 0, name: 'Außenlastbehälter', cost: 200000, coins: 15 },
-//            { id: 1, name: 'Windenrettung', cost: 200000, coins: 15 },
+            { id: 0, name: 'Außenlastbehälter', cost: 200000, coins: 15 },
+            { id: 1, name: 'Windenrettung', cost: 200000, coins: 15 },
         ],
 
         '17_normal': [ // Polizeisondereinheit
-//            { id: 0, name: 'SEK: 1. Zug', cost: 100000, coins: 10 },
-//            { id: 1, name: 'SEK: 2. Zug', cost: 100000, coins: 10 },
-//            { id: 2, name: 'MEK: 1. Zug', cost: 100000, coins: 10 },
-//            { id: 3, name: 'MEK: 2. Zug', cost: 100000, coins: 10 },
-//            { id: 4, name: 'Diensthundestaffel', cost: 100000, coins: 10 },
+            { id: 0, name: 'SEK: 1. Zug', cost: 100000, coins: 10 },
+            { id: 1, name: 'SEK: 2. Zug', cost: 100000, coins: 10 },
+            { id: 2, name: 'MEK: 1. Zug', cost: 100000, coins: 10 },
+            { id: 3, name: 'MEK: 2. Zug', cost: 100000, coins: 10 },
+            { id: 4, name: 'Diensthundestaffel', cost: 100000, coins: 10 },
 
         ],
+
         '0_small': [ // Feuerwehr (Kleinwache)
-//            { id: 0, name: 'Rettungsdienst', cost: 100000, coins: 20 },
-//            { id: 1, name: '1te AB-Stellplatz', cost: 100000, coins: 20 },
-//            { id: 2, name: '2te AB-Stellplatz', cost: 100000, coins: 20 },
-//            { id: 6, name: 'Wasserrettung', cost: 400000, coins: 25 },
-//            { id: 8, name: 'Flughafenfeuerwehr', cost: 300000, coins: 25 },
-//            { id: 13, name: 'Werkfeuerwehr', cost: 100000, coins: 20 },
-//            { id: 14, name: 'Netzersatzanlage 50', cost: 100000, coins: 20 },
-//            { id: 16, name: 'Großlüfter', cost: 75000, coins: 25 },
-//            { id: 18, name: 'Drohneneinheit', cost: 150000, coins: 25 },
-//            { id: 19, name: 'Verpflegungsdienst', cost: 200000, coins: 25 },
-//            { id: 20, name: '1te Anhänger Stellplatz', cost: 75000, coins: 15 },
-//            { id: 21, name: '2te Anhänger Stellplatz', cost: 75000, coins: 15 },
-//            { id: 25, name: 'Bahnrettung', cost: 125000, coins: 25 },
+            { id: 0, name: 'Rettungsdienst', cost: 100000, coins: 20 },
+            { id: 1, name: '1te AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 2, name: '2te AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 6, name: 'Wasserrettung', cost: 400000, coins: 25 },
+            { id: 8, name: 'Flughafenfeuerwehr', cost: 300000, coins: 25 },
+            { id: 13, name: 'Werkfeuerwehr', cost: 100000, coins: 20 },
+            { id: 14, name: 'Netzersatzanlage 50', cost: 100000, coins: 20 },
+            { id: 16, name: 'Großlüfter', cost: 75000, coins: 25 },
+            { id: 18, name: 'Drohneneinheit', cost: 150000, coins: 25 },
+            { id: 19, name: 'Verpflegungsdienst', cost: 200000, coins: 25 },
+            { id: 20, name: '1te Anhänger Stellplatz', cost: 75000, coins: 15 },
+            { id: 21, name: '2te Anhänger Stellplatz', cost: 75000, coins: 15 },
+            { id: 25, name: 'Bahnrettung', cost: 125000, coins: 25 },
         ],
 
         '6_small': [ // Polizei (Kleinwache)
             { id: 0, name: '1te Zelle', cost: 25000, coins: 5 },
             { id: 1, name: '2te Zelle', cost: 25000, coins: 5 },
-//            { id: 10, name: 'Diensthundestaffel', cost: 100000, coins: 10 },
-//            { id: 11, name: 'Kriminalpolizei', cost: 100000, coins: 20 },
-//            { id: 12, name: 'Dienstgruppenleitung', cost: 200000, coins: 25 },
-//            { id: 13, name: 'Motorradstaffel', cost: 75000, coins: 15 },
+            { id: 10, name: 'Diensthundestaffel', cost: 100000, coins: 10 },
+            { id: 11, name: 'Kriminalpolizei', cost: 100000, coins: 20 },
+            { id: 12, name: 'Dienstgruppenleitung', cost: 200000, coins: 25 },
+            { id: 13, name: 'Motorradstaffel', cost: 75000, coins: 15 },
         ],
 
         '24_normal': [ // Reiterstaffel
-//            { id: 0, name: 'Reiterstaffel', cost: 300000, coins: 25 },
-//            { id: 1, name: 'Reiterstaffel', cost: 300000, coins: 25 },
-//            { id: 2, name: 'Reiterstaffel', cost: 300000, coins: 25 },
-//            { id: 3, name: 'Reiterstaffel', cost: 300000, coins: 25 },
-//            { id: 4, name: 'Reiterstaffel', cost: 300000, coins: 25 },
-//            { id: 5, name: 'Reiterstaffel', cost: 300000, coins: 25 },
+            { id: 0, name: 'Reiterstaffel', cost: 300000, coins: 25 },
+            { id: 1, name: 'Reiterstaffel', cost: 300000, coins: 25 },
+            { id: 2, name: 'Reiterstaffel', cost: 300000, coins: 25 },
+            { id: 3, name: 'Reiterstaffel', cost: 300000, coins: 25 },
+            { id: 4, name: 'Reiterstaffel', cost: 300000, coins: 25 },
+            { id: 5, name: 'Reiterstaffel', cost: 300000, coins: 25 },
         ],
 
         '25_normal': [ // Bergrettungswache
             { id: 0, name: 'Höhenrettung', cost: 50000, coins: 25 },
-//            { id: 1, name: 'Drohneneinheit', cost: 75000, coins: 25 },
+            { id: 1, name: 'Drohneneinheit', cost: 75000, coins: 25 },
             { id: 2, name: 'Rettungshundestaffel', cost: 350000, coins: 25 },
-//            { id: 3, name: 'Rettungsdienst', cost: 100000, coins: 20 },
+            { id: 3, name: 'Rettungsdienst', cost: 100000, coins: 20 },
         ],
 
         '27_normal': [ // Schule für Seefahrt und Seenotrettung
@@ -217,7 +221,32 @@
 
     };
 
+    const manualStorageRooms = {
+        '0_normal': [
+            { initial_containers: 10, name: 'Lagerraum', cost: 25000, coins: 10, additionalStorage: 40 },
+            { additional_containers_1: 20, name: '1te Zusätzlicher Lagerraum', cost: 50000, coins: 10, additionalStorage: 30 },
+            { additional_containers_3: 40, name: '3te Zusätzlicher Lagerraum', cost: 50000, coins: 10, additionalStorage: 30 },
+            { additional_containers_4: 50, name: '4te Zusätzlicher Lagerraum', cost: 50000, coins: 10, additionalStorage: 30 },
+            { additional_containers_5: 60, name: '5te Zusätzlicher Lagerraum', cost: 50000, coins: 10, additionalStorage: 30 },
+            { additional_containers_6: 70, name: '6te Zusätzlicher Lagerraum', cost: 50000, coins: 10, additionalStorage: 30 },
+        ],
+
+        '0_small': [
+            { initial_containers: 10, name: 'Lagerraum', cost: 25000, coins: 10, additionalStorage: 40 },
+            { additional_containers_1: 20, name: '1te Zusätzlicher Lagerraum', cost: 50000, coins: 10, additionalStorage: 30 },
+            { additional_containers_2: 30, name: '2te Zusätzlicher Lagerraum', cost: 50000, coins: 10, additionalStorage: 30 },
+
+        ],
+
+        '5_normal': [ // Rettungshubschrauber-Station
+            {initial_containers: 40, name: 'Lagerraum', cost: 25000, coins: 10, additionalStorage: 40 },
+
+        ],
+
+    };
     // Ab hier nichts mehr ändern! (Es sei denn Ihr wisst was Ihr tut)
+
+    const inProgressStorageUpgrades = new Map(); // Map<buildingId, Set<storageKey>
 
     // Funktion um die Lightbox und Stile zu erstellen
     const styles = `
@@ -713,6 +742,7 @@
         });
 
         buildings.forEach(building => {
+            console.log('StorageUpgrades:', building.caption, building.storageUpgrades);
             const buildingTypeKey = `${building.building_type}_${building.small_building ? 'small' : 'normal'}`;
             const extensions = manualExtensions[buildingTypeKey];
             if (!extensions) return;
@@ -742,7 +772,7 @@
                 return !existingExtensions.has(extension.id);
             });
 
-            if (allowedExtensions.length > 0) {
+            if (allowedExtensions.length > 0 || ['0_normal', '0_small', '5_normal'].includes(buildingTypeKey)) {
                 if (!buildingGroups[buildingTypeKey]) {
                     buildingGroups[buildingTypeKey] = [];
                 }
@@ -772,175 +802,221 @@
             '27_normal': 'Schule für Seefahrt und Seenotrettung',
         };
 
-        Object.keys(buildingGroups).forEach(groupKey => {
-            const group = buildingGroups[groupKey];
-            const buildingType = buildingTypeNames[groupKey] || 'Unbekannt';
+        function createHeader(titleText) {
+            const header = document.createElement('h4');
+            header.textContent = titleText;
+            header.classList.add('building-header');
+            return header;
+        }
 
-            const buildingHeader = document.createElement('h4');
-            buildingHeader.textContent = `${buildingType}`;
-            buildingHeader.classList.add('building-header');
-            list.appendChild(buildingHeader);
+        function createButton(text, classList, onClick, styles = {}) {
+            const button = document.createElement('button');
+            button.textContent = text;
+            button.classList.add('btn', ...classList);
+            Object.assign(button.style, styles);
+            if (onClick) button.onclick = onClick;
+            return button;
+        }
 
-            const buttonContainer = document.createElement('div');
-            buttonContainer.style.display = 'flex';
-            buttonContainer.style.gap = '10px';
-            buttonContainer.style.justifyContent = 'center';
-            buttonContainer.style.alignItems = 'center';
-
-            const spoilerButton = document.createElement('button');
-            spoilerButton.textContent = 'Erweiterungen anzeigen';
-            spoilerButton.classList.add('btn', 'spoiler-button');
-            buttonContainer.appendChild(spoilerButton);
-
-            const buildSelectedButton = document.createElement('button');
-            buildSelectedButton.textContent = 'Ausgewählte Erweiterungen bauen';
-            buildSelectedButton.classList.add('btn', 'build-selected-button');
-            buildSelectedButton.disabled = true; // Initial disabled
-            buildSelectedButton.onclick = () => buildSelectedExtensions();
-            buttonContainer.appendChild(buildSelectedButton);
-
-            const buildAllButton = document.createElement('button');
-            buildAllButton.textContent = 'Sämtliche Erweiterungen bei allen Wachen bauen';
-            buildAllButton.classList.add('btn', 'build-all-button');
-            buildAllButton.onclick = () => showCurrencySelectionForAll(groupKey);
-            buttonContainer.appendChild(buildAllButton);
-
-            document.body.appendChild(buttonContainer);
-
-            list.appendChild(buttonContainer);
-
-            const contentWrapper = document.createElement('div');
-            contentWrapper.className = 'spoiler-content';
-            contentWrapper.style.display = 'none';
-
-            const searchInput = document.createElement('input');
-            searchInput.type = "text";
-            searchInput.placeholder = "🔍 Hier könnt Ihr nach Leistellen, Wachen oder Erweiterungen suchen...";
-            searchInput.style.width = "100%";
-            searchInput.style.marginBottom = "10px";
-            searchInput.style.padding = "5px";
-            searchInput.style.fontSize = "14px";
-            searchInput.style.display = 'block';
-
-            spoilerButton.addEventListener('click', () => {
-                if (contentWrapper.style.display === 'none') {
-                    contentWrapper.style.display = 'block';
-                    spoilerButton.textContent = 'Erweiterungen ausblenden';
-                } else {
-                    contentWrapper.style.display = 'none';
-                    spoilerButton.textContent = 'Erweiterungen anzeigen';
-                }
-            });
-
+        function createTable(headers, groupKey) {
             const table = document.createElement('table');
             table.innerHTML = `
-            <thead style="background-color: #f2f2f2; font-weight: bold; border-bottom: 2px solid #ccc;">
-             <tr>
-               <th style="padding: 10px; text-align: center; vertical-align: middle;">
-               Alle An- / Abwählen <br>
-               <input type="checkbox" class="select-all-checkbox" data-group="${groupKey}">
-             </th>
-                 <th style="padding: 10px; text-align: center; vertical-align: middle;">Leitstellen</th>
-                 <th style="padding: 10px; text-align: center; vertical-align: middle;">Wachen</th>
-                 <th style="padding: 10px; text-align: center; vertical-align: middle;">Baubare Erweiterungen</th>
-                 <th style="padding: 10px; text-align: center; vertical-align: middle;">Bauen mit Credits</th>
-                 <th style="padding: 10px; text-align: center; vertical-align: middle;">Bauen mit Coins</th>
+        <thead style="background-color: #f2f2f2; font-weight: bold; border-bottom: 2px solid #ccc;">
+            <tr>
+                ${headers.map(h => `<th style="${h.style || 'padding: 10px; text-align: center; vertical-align: middle;'}">${h.html}</th>`).join('')}
             </tr>
-          </thead>
-      <tbody></tbody>
+        </thead>
+        <tbody></tbody>
     `;
+            return { table, tbody: table.querySelector('tbody') };
+        }
 
-            const tbody = table.querySelector('tbody');
-            const selectAllCheckbox = table.querySelector('.select-all-checkbox');
+        function createSearchInput(placeholderText) {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.placeholder = placeholderText;
+            Object.assign(input.style, {
+                width: '100%',
+                marginBottom: '10px',
+                padding: '5px',
+                fontSize: '14px',
+                display: 'block'
+            });
+            return input;
+        }
 
-            selectAllCheckbox.addEventListener('change', function() {
-                const groupCheckboxes = table.querySelectorAll('.extension-checkbox');
-                groupCheckboxes.forEach(checkbox => {
-                    if (!checkbox.disabled && checkbox.offsetParent !== null) {
-                        checkbox.checked = selectAllCheckbox.checked;
-                    }
-                });
+        // Hilfsfunktionen
+        function createRow(cells, rowClass = '', dataAttributes = {}) {
+            const row = document.createElement('tr');
+            if (rowClass) row.className = rowClass;
+            Object.entries(dataAttributes).forEach(([key, value]) => row.dataset[key] = value);
 
-                updateBuildSelectedButton();
+            cells.forEach(content => {
+                const td = document.createElement('td');
+                td.style.textAlign = 'center';
+                td.style.verticalAlign = 'middle';
+                if (content instanceof HTMLElement) td.appendChild(content);
+                else td.textContent = content;
+                row.appendChild(td);
             });
 
-            group.forEach(({ building, missingExtensions }) => {
-                missingExtensions.forEach(extension => {
-                    if (isExtensionLimitReached(building, extension.id)) {
-                        return;
-                    }
+            return row;
+        }
 
-                    const row = document.createElement('tr');
-                    row.classList.add(`row-${building.id}-${extension.id}`);
+        function createSpoilerWrapper(button, wrapper, showText, hideText) {
+            button.addEventListener('click', () => {
+                const visible = wrapper.style.display === 'block';
+                wrapper.style.display = visible ? 'none' : 'block';
+                button.textContent = visible ? showText : hideText;
+            });
+        }
 
-                    const checkboxCell = document.createElement('td');
+        function addStorageRoomsSection(group, groupKey, buttonContainer, list) {
+            const storageGroup = manualStorageRooms[groupKey];
+            if (!storageGroup) return;
+
+            const storageButton = createButton('Lagerräume anzeigen', ['spoiler-button'], null, {
+                backgroundColor: '#ffc107', color: 'black'
+            });
+            buttonContainer.insertBefore(storageButton, buttonContainer.children[1]);
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'spoiler-content';
+            wrapper.style.display = 'none';
+
+            const searchInput = createSearchInput("🔍 Lagerräume durchsuchen...");
+            wrapper.appendChild(searchInput);
+
+            const { table, tbody } = createTable([
+                { html: `An- / Abwählen<br><input type="checkbox" class="select-all-checkbox" data-group="${groupKey}">` },
+                { html: 'Leitstelle' }, { html: 'Wache' }, { html: 'Lagertyp' },
+                { html: 'Kapazität' }, { html: 'Bauen mit Credits' }, { html: 'Bauen mit Coins' }
+            ], groupKey);
+            wrapper.appendChild(table);
+
+            searchInput.addEventListener('input', () => {
+                filterTable(tbody, searchInput.value.toLowerCase());
+            });
+
+            group.forEach(({ building }) => {
+                storageGroup.forEach(storage => {
+                    const storageKey = Object.keys(storage).find(k => k.startsWith('initial_') || k.startsWith('additional_'));
                     const checkbox = document.createElement('input');
                     checkbox.type = 'checkbox';
-                    checkbox.className = 'extension-checkbox';
+                    checkbox.className = 'storage-checkbox';
                     checkbox.dataset.buildingId = building.id;
-                    checkbox.dataset.extensionId = extension.id;
-                    checkbox.disabled = userInfo.credits < extension.cost || userInfo.coins < extension.coins;
-                    checkbox.addEventListener('change', updateBuildSelectedButton);
-                    checkboxCell.style.textAlign = 'center';
-                    checkboxCell.style.verticalAlign = 'middle';
-                    checkboxCell.appendChild(checkbox);
-                    row.appendChild(checkboxCell);
+                    checkbox.dataset.storageTypeId = storageKey;
 
-                    const leitstelleCell = document.createElement('td');
-                    leitstelleCell.textContent = getLeitstelleName(building);
-                    leitstelleCell.style.textAlign = 'center';
-                    leitstelleCell.style.verticalAlign = 'middle';
-                    row.appendChild(leitstelleCell);
+                    const creditButton = createButton(
+                        `${formatNumber(storage.cost)} Credits`,
+                        ['btn-xl', 'credit-button'],
+                        () => buildStorage(building, storageKey, 'credits', storage.cost),
+                        { backgroundColor: '#28a745', color: 'white' }
+                    );
+                    creditButton.disabled = userInfo.credits < storage.cost;
 
-                    const nameCell = document.createElement('td');
-                    nameCell.textContent = building.caption;
-                    nameCell.style.textAlign = 'center';
-                    nameCell.style.verticalAlign = 'middle';
-                    row.appendChild(nameCell);
+                    const coinsButton = createButton(
+                        `${storage.coins} Coins`,
+                        ['btn-xl', 'coins-button'],
+                        () => buildStorage(building, storageKey, 'coins', storage.coins),
+                        { backgroundColor: '#dc3545', color: 'white' }
+                    );
+                    coinsButton.disabled = userInfo.coins < storage.coins;
 
-                    const extensionCell = document.createElement('td');
-                    extensionCell.textContent = extension.name;
-                    extensionCell.style.textAlign = 'center';
-                    extensionCell.style.verticalAlign = 'middle';
-                    row.appendChild(extensionCell);
-
-                    const creditCell = document.createElement('td');
-                    const creditButton = document.createElement('button');
-                    creditButton.textContent = `${formatNumber(extension.cost)} Credits`;
-                    creditButton.classList.add('btn', 'btn-xl', 'credit-button');
-                    creditButton.style.backgroundColor = '#28a745';
-                    creditButton.style.color = 'white';
-                    creditButton.disabled = userInfo.credits < extension.cost;
-                    creditButton.onclick = () => buildExtension(building, extension.id, 'credits', extension.cost, row);
-                    creditCell.style.textAlign = 'center';
-                    creditCell.style.verticalAlign = 'middle';
-                    creditCell.appendChild(creditButton);
-                    row.appendChild(creditCell);
-
-                    const coinsCell = document.createElement('td');
-                    const coinsButton = document.createElement('button');
-                    coinsButton.textContent = `${extension.coins} Coins`;
-                    coinsButton.classList.add('btn', 'btn-xl', 'coins-button');
-                    coinsButton.style.backgroundColor = '#dc3545';
-                    coinsButton.style.color = 'white';
-                    coinsButton.disabled = userInfo.coins < extension.coins;
-                    coinsButton.onclick = () => buildExtension(building, extension.id, 'coins', extension.coins, row);
-                    coinsCell.style.textAlign = 'center';
-                    coinsCell.style.verticalAlign = 'middle';
-                    coinsCell.appendChild(coinsButton);
-                    row.appendChild(coinsCell);
+                    const row = createRow([
+                        checkbox, getLeitstelleName(building), building.caption, storage.name,
+                        storage.additionalStorage ?? '–', creditButton, coinsButton
+                    ], '', { storageKey });
 
                     tbody.appendChild(row);
                 });
             });
 
+            createSpoilerWrapper(storageButton, wrapper, 'Lagerräume anzeigen', 'Lagerräume ausblenden');
+            list.appendChild(wrapper);
+        }
+
+        // Hauptfunktion
+        Object.keys(buildingGroups).forEach(groupKey => {
+            const group = buildingGroups[groupKey];
+            const buildingType = buildingTypeNames[groupKey] || 'Unbekannt';
+            list.appendChild(createHeader(buildingType));
+
+            const buttonContainer = document.createElement('div');
+            Object.assign(buttonContainer.style, { display: 'flex', gap: '10px', justifyContent: 'center', alignItems: 'center' });
+            list.appendChild(buttonContainer);
+
+            const spoilerButton = createButton('Erweiterungen anzeigen', ['spoiler-button']);
+            const buildSelectedButton = createButton('Ausgewählte Erweiterungen bauen', ['build-selected-button'], () => buildSelectedExtensions());
+            buildSelectedButton.disabled = true;
+            const buildAllButton = createButton('Sämtliche Erweiterungen bei allen Wachen bauen', ['build-all-button'], () => showCurrencySelectionForAll(groupKey));
+
+            [spoilerButton, buildSelectedButton, buildAllButton].forEach(btn => buttonContainer.appendChild(btn));
+
+            if (['0_normal', '0_small', '5_normal'].includes(groupKey)) {
+                addStorageRoomsSection(group, groupKey, buttonContainer, list);
+            }
+
+            const contentWrapper = document.createElement('div');
+            contentWrapper.className = 'spoiler-content';
+            contentWrapper.style.display = 'none';
+            createSpoilerWrapper(spoilerButton, contentWrapper, 'Erweiterungen anzeigen', 'Erweiterungen ausblenden');
+
+            const searchInput = createSearchInput("🔍 Hier könnt Ihr nach Leistellen, Wachen oder Erweiterungen suchen...");
+            const { table, tbody } = createTable([
+                { html: `Alle An- / Abwählen<br><input type="checkbox" class="select-all-checkbox" data-group="${groupKey}">` },
+                { html: 'Leitstelle' }, { html: 'Wachen' }, { html: 'Baubare Erweiterungen' },
+                { html: 'Bauen mit Credits' }, { html: 'Bauen mit Coins' }
+            ], groupKey);
             contentWrapper.appendChild(searchInput);
             contentWrapper.appendChild(table);
             list.appendChild(contentWrapper);
 
-            searchInput.addEventListener("input", function() {
-                const searchTerm = searchInput.value.toLowerCase();
-                filterTable(tbody, searchTerm);
+            searchInput.addEventListener('input', () => filterTable(tbody, searchInput.value.toLowerCase()));
+
+            table.querySelector('.select-all-checkbox').addEventListener('change', function () {
+                const checkboxes = table.querySelectorAll('.extension-checkbox');
+                checkboxes.forEach(cb => {
+                    if (!cb.disabled && cb.offsetParent !== null) cb.checked = this.checked;
+                });
+                updateBuildSelectedButton();
+            });
+
+            group.forEach(({ building, missingExtensions }) => {
+                missingExtensions.forEach(extension => {
+                    if (isExtensionLimitReached(building, extension.id)) return;
+
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.className = 'extension-checkbox';
+                    checkbox.dataset.buildingId = building.id;
+                    checkbox.dataset.extensionId = extension.id;
+                    checkbox.disabled = userInfo.credits < extension.cost && userInfo.coins < extension.coins;
+                    checkbox.addEventListener('change', updateBuildSelectedButton);
+
+                    const creditButton = createButton(
+                        `${formatNumber(extension.cost)} Credits`,
+                        ['btn-xl', 'credit-button'],
+                        () => buildExtension(building, extension.id, 'credits', extension.cost),
+                        { backgroundColor: '#28a745', color: 'white' }
+                    );
+                    creditButton.disabled = userInfo.credits < extension.cost;
+
+                    const coinsButton = createButton(
+                        `${extension.coins} Coins`,
+                        ['btn-xl', 'coins-button'],
+                        () => buildExtension(building, extension.id, 'coins', extension.coins),
+                        { backgroundColor: '#dc3545', color: 'white' }
+                    );
+                    coinsButton.disabled = userInfo.coins < extension.coins;
+
+                    const row = createRow([
+                        checkbox, getLeitstelleName(building), building.caption, extension.name,
+                        creditButton, coinsButton
+                    ], `row-${building.id}-${extension.id}`);
+
+                    tbody.appendChild(row);
+                });
             });
         });
     }
@@ -955,26 +1031,18 @@
         buildingsData = [];
     });
 
-    // Initial den Button hinzufügen
-    addMenuButton();
-
     // Funktion zur Filterungen der Tabelleninhalten
     function filterTable(tbody, searchTerm) {
         const rows = tbody.querySelectorAll("tr");
+        searchTerm = searchTerm.toLowerCase();
 
         rows.forEach(row => {
-            const leitstelle = row.cells[1]?.textContent.toLowerCase() || "";
-            const wachenName = row.cells[2]?.textContent.toLowerCase() || "";
-            const erweiterung = row.cells[3]?.textContent.toLowerCase() || "";
-            const isBuilt = row.classList.contains("built"); // Prüft, ob bereits gebaut
+            const cells = Array.from(row.cells).map(cell => cell.textContent.toLowerCase());
+            const isBuilt = row.classList.contains("built");
 
-            if (isBuilt) {
-                row.style.display = "none"; // Gebaute Zeilen bleiben unsichtbar
-            } else if (leitstelle.includes(searchTerm) || wachenName.includes(searchTerm) || erweiterung.includes(searchTerm)) {
-                row.style.display = "";
-            } else {
-                row.style.display = "none";
-            }
+            const matchesSearch = cells.some(text => text.includes(searchTerm));
+
+            row.style.display = (!isBuilt && matchesSearch) ? "" : "none";
         });
     }
 
@@ -990,6 +1058,9 @@
         const bpolAllExtensions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; // Alle BPol-Erweiterungen
         const polSonderEinheitAllExtensions = [0, 1, 2, 3, 4]; // Alle PolSondereinheit-Erweiterungen
         const KhAllExtensions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]; // Alle Krankenhaus-Erweiterungen
+
+        const extension = building.extensions_available?.find(ext => ext.id === extensionId);
+        const extensionIdCaption = extension?.caption;
 
         // Falls Premium aktiv ist, gibt es keine Einschränkungen für THW, B-Pol, Schulen und Pol-Sondereinheit
         if (typeof !user_premium !== "undefined" && user_premium) {
@@ -1084,12 +1155,73 @@
             return false;
         }
 
+        // 🔁 Erweiterungsabhängigkeiten für Lagerraum
+        const containerDependencies = {
+            'initial_containers': null, // immer erlaubt
+            'additional_containers_1': 'initial_containers',
+            'additional_containers_2': 'additional_containers_1',
+            'additional_containers_3': 'additional_containers_2',
+            'additional_containers_4': 'additional_containers_3',
+            'additional_containers_5': 'additional_containers_4',
+            'additional_containers_6': 'additional_containers_5',
+        };
+
+        function getExtensionCaption(extensionId, building) {
+            const ext = building.extensions_available?.find(e => e.id === extensionId);
+            return ext?.caption || null;
+        }
+
+        function hasExtensionCaption(building, caption) {
+            return building.extensions.some(ext => ext.caption === caption);
+        }
+
+        const caption = getExtensionCaption(extensionId, building);
+
+        // Wenn es sich um Lagerraum-Erweiterung handelt
+        if (caption && containerDependencies.hasOwnProperty(caption)) {
+            const requiredCaption = containerDependencies[caption];
+
+            // initial_containers ist immer erlaubt (requiredCaption === null)
+            if (requiredCaption === null) return false;
+
+            // Prüfe, ob vorherige Erweiterung gebaut wurde
+            if (!hasExtensionCaption(building, requiredCaption)) return true;
+        }
+
         return false;
+    }
+
+    // Funktion zur Überprüfung zum Bau der Lagerräume
+    function canBuildStorage(building, storageKey) {
+        const buildOrder = [
+            'initial_containers',
+            'additional_containers_1',
+            'additional_containers_2',
+            'additional_containers_3',
+            'additional_containers_4',
+            'additional_containers_5',
+            'additional_containers_6'
+        ];
+
+        const index = buildOrder.indexOf(storageKey);
+        if (index === -1 || index === 0) return true;
+
+        const previousKey = buildOrder[index - 1];
+
+        // Prüfen, ob vorheriger Typ gebaut wurde oder bereits im Bau ist
+        const builtStorage = building.builtStorage || [];
+        const isAlreadyBuilt = builtStorage.includes(previousKey);
+
+        const isInProgress =
+              inProgressStorageUpgrades.has(building.id) &&
+              inProgressStorageUpgrades.get(building.id).has(previousKey);
+
+        return isAlreadyBuilt || isInProgress;
     }
 
     // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    // Anfang des Bereichs für den Bau einer Erweiterung in einem Gebäude
+    // Anfang des Bereichs für den Bau einer Erweiterung oder eines Lager
 
     // Funktion zum Bau einer Erweiterung
     async function buildExtension(building, extensionId, currency, amount, row) {
@@ -1165,8 +1297,68 @@
         });
     }
 
-    // Ende des Bereichs für den Bau * einer Erweiterung * in einem Gebäude
+    // Funktion zum Bau eines Lagerraums
+    async function buildStorage(building, storageKey, currency, cost, row) {
+        // Hilfsfunktion zur Auflösung des Anzeigennamens
+        function getStorageDisplayName(key) {
+            for (const group in manualStorageRooms) {
+                const match = manualStorageRooms[group].find(entry => Object.keys(entry)[0] === key);
+                if (match) {
+                    return match.name;
+                }
+            }
+            return key; // fallback
+        }
 
+        const readableName = getStorageDisplayName(storageKey);
+
+        if (!canBuildStorage(building, storageKey)) {
+            alert(`Die Erweiterung "${readableName}" kann nicht gebaut werden, da die vorherige Lagererweiterung fehlt.`);
+            return;
+        }
+
+        const csrfToken = getCSRFToken();
+        const typeName = storageKey;
+        const buildUrl = `/buildings/${building.id}/storage_upgrade/${currency}/${typeName}?redirect_building_id=${building.id}`;
+
+        await new Promise((resolve, reject) => {
+            GM_xmlhttpRequest({
+                method: 'POST',
+                url: buildUrl,
+                headers: {
+                    'X-CSRF-Token': csrfToken,
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                onload: function(response) {
+                    console.log(`Lagerraum "${typeName}" (${currency}) für Gebäude ${building.id} gebaut.`);
+
+                    // Fortschritt speichern
+                    if (!inProgressStorageUpgrades.has(building.id)) {
+                        inProgressStorageUpgrades.set(building.id, new Set());
+                    }
+                    inProgressStorageUpgrades.get(building.id).add(storageKey);
+
+                    if (row) {
+                        row.classList.add("built");
+                        row.style.backgroundColor = '#d4edda';
+                        row.style.transition = 'opacity 0.5s ease';
+                        row.style.opacity = '0.5';
+
+                        setTimeout(() => {
+                            row.remove();
+                        }, 500);
+                    }
+
+                    resolve(response);
+                },
+                onerror: function(error) {
+                    console.error(`Fehler beim Bauen von "${readableName}" in Gebäude ${building.id}.`, error);
+                    alert(`Der Lagerbau "${readableName}" mit ${currency} ist fehlgeschlagen. Bitte versuche es erneut.`);
+                    reject(error);
+                }
+            });
+        });
+    }
 
     // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
