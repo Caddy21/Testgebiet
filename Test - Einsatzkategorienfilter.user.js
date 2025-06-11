@@ -369,16 +369,13 @@
         // Button-Container einfügen
         searchInput.parentNode.insertBefore(buttonContainer, searchInput);
 
-        // --- Signal für Statistik-Script: Flag und Event (falls Buttons auch mal "manuell" neu gebaut werden) ---
         window.categoryButtonReady = true;
         document.dispatchEvent(new Event('categoryButtonReady'));
 
-        // --- Statistik direkt unter die Buttons schieben ---
+        // Statistik direkt unter die Buttons schieben, falls sie existiert
         const stats = document.getElementById('average_earnings_display');
         if (stats) {
-            if (buttonContainer.nextSibling !== stats) {
-                buttonContainer.parentNode.insertBefore(stats, buttonContainer.nextSibling);
-            }
+            buttonContainer.parentNode.insertBefore(stats, buttonContainer.nextSibling);
         }
 
         // Zahnrad-Einstellungen-Button (hinter "Alle anzeigen"), falls du das hast!
@@ -461,21 +458,20 @@
             populateGroupSettings(container, categoryGroups, allCategories, customCategoryLabels);
         }
 
-        // Buttons neu aufbauen:
+        // Statistik-Bereich sichern (falls vorhanden)
+        let stats = document.getElementById('average_earnings_display');
+        if (stats && stats.parentNode) {
+            stats.parentNode.removeChild(stats);
+        }
+
+        // Buttons neu aufbauen
         createCategoryButtons();
 
-        // --- Signal für Statistik-Script, dass Buttons wieder da sind! ---
+        // Statistik-Flag/Event für Script 2 (wichtig, damit Statistik im Notfall neu erstellt wird)
         window.categoryButtonReady = true;
         document.dispatchEvent(new Event('categoryButtonReady'));
 
-        // --- Statistik direkt unter die neuen Buttons schieben! ---
-        const buttonContainer = document.getElementById('categoryButtonContainer');
-        const stats = document.getElementById('average_earnings_display');
-        if (buttonContainer && stats) {
-            if (buttonContainer.nextSibling !== stats) {
-                buttonContainer.parentNode.insertBefore(stats, buttonContainer.nextSibling);
-            }
-        }
+
     }
 
     // Funktiom zum erstellen des Einstellungsbutton
