@@ -1,6 +1,6 @@
 
 // ==UserScript==
-// @name         [LSS] Einsatzkategorienfilter
+// @name         [LSS] 09 - Einsatzkategorienfilter
 // @namespace    http://tampermonkey.net/
 // @version      1.7
 // @description  Filtert die Einsatzliste nach Kategorien
@@ -109,6 +109,8 @@
         'criminal_investigation': 'Zeigt alle Einsätze der Kriminalpolizei',
         'seg_medical_service': 'Zeigt alle Einsätze des Sanitäts- und Rettungsdienstes',
         'seg': 'Zeigt alle Einsätze der Schnelleinsatzgruppe',
+        'energy_supply': 'Zeigt alle Einsätze der NEA50 an',
+        'energy_supply_2': 'Zeigt alle Einsätze der NEA200 an',
 
     };
 
@@ -259,7 +261,7 @@
         buttonContainer.style.marginBottom = '10px';
 
         const desiredOrder = [
-            'fire', 'police', 'ambulance', 'thw', 'riot_police', 'water_rescue', 'mountain', 'coastal', 'airport', 'factory_fire_brigade', 'criminal_investigation', 'seg', 'seg_medical_service', 'event'
+            'fire', 'police', 'ambulance', 'thw', 'riot_police', 'water_rescue', 'mountain', 'coastal', 'airport', 'factory_fire_brigade', 'criminal_investigation', 'seg', 'seg_medical_service', 'energy_supply', 'energy_supply_2', 'event'
         ];
 
         // Kategorie-Buttons erzeugen
