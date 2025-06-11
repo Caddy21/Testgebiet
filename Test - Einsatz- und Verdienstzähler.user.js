@@ -1,10 +1,11 @@
 // ==UserScript==
-// @name         Einsatz- und Verdienststatistik (robust, auch ohne Script 1)
-// @namespace    https://github.com/Caddy21/Testgebiet
-// @version      2.3
-// @description  Zeigt Einsatz- und Verdienststatistiken, auch allein lauffähig (per Flag, Event, Fallback)
+// @name         [LSS] 25 - Einsatz- und Verdienststatistik
+// @namespace    https://github.com/Caddy21/LSS-Scripte
+// @version      1.0
+// @description  Zeigt Einsatz- und Verdienststatistiken für Tag / Woche / Monat / Jahr
 // @author       Caddy21
-// @match        *://*/*
+// @match        https://www.leitstellenspiel.de
+// @icon         https://github.com/Caddy21/-docs-assets-css/raw/main/yoshi_icon__by_josecapes_dgqbro3-fullview.png
 // @grant        GM.getValue
 // @grant        GM.setValue
 // ==/UserScript==
@@ -33,31 +34,28 @@
         return 1 + Math.floor(diff / 7);
     }
 
-    // FallbackMode: true = erzwinge Statistik auch ohne categoryButtonContainer
+    // Statistik-Box erzeugen (wie gehabt)
     function createEarningsAndMissionsContainer(fallbackMode = false) {
         if (document.getElementById('average_earnings_display')) return;
 
         let containerParent = null;
         let insertBeforeNode = null;
 
-        if (!fallbackMode) {
-            const catButtonContainer = document.getElementById('categoryButtonContainer');
-            if (catButtonContainer && catButtonContainer.parentNode) {
-                containerParent = catButtonContainer.parentNode;
-                insertBeforeNode = catButtonContainer.nextSibling;
-            }
-        }
-
-        // Wenn kein Button-Container: Fallback auf Suchfeld
-        if (!containerParent) {
+        // Immer versuchen, Statistik nach dem Button-Container zu platzieren, falls vorhanden
+        const catButtonContainer = document.getElementById('categoryButtonContainer');
+        if (catButtonContainer && catButtonContainer.parentNode) {
+            containerParent = catButtonContainer.parentNode;
+            insertBeforeNode = catButtonContainer.nextSibling;
+        } else if (fallbackMode) {
+            // Nur wenn wirklich kein Button-Container da ist: vor das Suchfeld
             const searchInput = document.getElementById('search_input_field_missions');
             if (searchInput && searchInput.parentNode) {
                 containerParent = searchInput.parentNode;
-                insertBeforeNode = searchInput; // Statistik VOR das Suchfeld
+                insertBeforeNode = searchInput;
             }
         }
 
-        if (!containerParent) return; // Keine sinnvolle Position gefunden
+        if (!containerParent) return;
 
         const earningsContainer = document.createElement('div');
         earningsContainer.id = 'average_earnings_display';
@@ -259,26 +257,44 @@
         }
     }
 
-    function startStats(fallbackMode = false) {
-        if (window.__statsStarted) return;
-        window.__statsStarted = true;
-        loadMissionDataFromStorage();
-        createEarningsAndMissionsContainer(fallbackMode);
-        updateMissionCounts();
-        updateAverageEarnings();
-        setInterval(updateMissionCounts, 1000);
-        setInterval(updateAverageEarnings, 1000);
+    // NEU: Stellt sicher, dass der Statistikbereich immer existiert!
+    function ensureStatsContainerExists() {
+        if (!document.getElementById('average_earnings_display')) {
+            createEarningsAndMissionsContainer(false);
+            updateMissionCounts();
+            updateAverageEarnings();
+        }
     }
 
-    // Hybrid: Starte sofort wenn Button-Flag da, sonst auf Event warten, sonst Fallback
+    function startStats(fallbackMode = false) {
+        // Starte Intervall-Timer nur EINMAL!
+        if (!window.__statsStarted) {
+            window.__statsStarted = true;
+            setInterval(updateMissionCounts, 1000);
+            setInterval(updateAverageEarnings, 1000);
+        }
+        // Egal wie oft das Event kommt: Statistikbox ggf. neu bauen!
+        ensureStatsContainerExists();
+    }
+
+    // Starte Statistik-Script, sobald Buttons da sind:
     if (window.categoryButtonReady) {
-        startStats(false); // Normale Integration
+        startStats(false);
     } else {
+        // Auf Event warten
         document.addEventListener('categoryButtonReady', () => startStats(false));
-        // Fallback: Wenn nach 2 Sekunden immer noch nichts gestartet, Statistik trotzdem einfügen!
+        // Fallback nach 2 Sekunden (wenn Script 1 nicht da)
         setTimeout(() => {
             if (!window.__statsStarted) startStats(true);
         }, 2000);
     }
+
+    // WICHTIG: Bei JEDEM categoryButtonReady-Event prüfen, ob Statistikbox fehlt und ggf. neu einfügen!
+    document.addEventListener('categoryButtonReady', () => {
+        ensureStatsContainerExists();
+    });
+
+    // Optional: missionData laden
+    loadMissionDataFromStorage();
 
 })();
