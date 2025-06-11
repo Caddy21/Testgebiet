@@ -1,11 +1,10 @@
 // ==UserScript==
-// @name         [LSS] 25 - Einsatz- und Verdienststatistik
+// @name         [LSS] 25 - Einsatz- und Verdienststatistik (robust, immer sichtbar)
 // @namespace    https://github.com/Caddy21/LSS-Scripte
 // @version      1.0
-// @description  Zeigt Einsatz- und Verdienststatistiken für Tag / Woche / Monat / Jahr
+// @description  Zeigt Einsatz- und Verdienststatistiken, bleibt immer sichtbar – auch nach UI-Aktionen!
 // @author       Caddy21
 // @match        https://www.leitstellenspiel.de
-// @icon         https://github.com/Caddy21/-docs-assets-css/raw/main/yoshi_icon__by_josecapes_dgqbro3-fullview.png
 // @grant        GM.getValue
 // @grant        GM.setValue
 // ==/UserScript==
