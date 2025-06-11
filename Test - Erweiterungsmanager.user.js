@@ -21,37 +21,37 @@
     'use strict';
     // Manuelle Konfiguration der Erweiterungen
 
-    // Hier könnt Ihr auswählen welche Erweiterung in der Tabelle angezeigt werden soll, dafür die nicht benötigten einfach mit // ausklammern.
     const manualExtensions = {
         '0_normal': [ // Feuerwache (normal)
             { id: 0, name: 'Rettungsdienst', cost: 100000, coins: 20 },
+            { id: 6, name: 'Wasserrettung', cost: 400000, coins: 25 },
+            { id: 8, name: 'Flughafenfeuerwehr', cost: 300000, coins: 25 },
+            { id: 13, name: 'Werkfeuerwehr', cost: 100000, coins: 20 },
+            { id: 14, name: 'Netzersatzanlage 50', cost: 100000, coins: 20 },
+            { id: 15, name: 'Netzersatzanlage 200', cost: 100000, coins: 20 },
+            { id: 16, name: 'Großlüfter', cost: 75000, coins: 15 },
+            { id: 18, name: 'Drohneneinheit', cost: 150000, coins: 25 },
+            { id: 19, name: 'Verpflegungsdienst', cost: 200000, coins: 25 },
+            { id: 25, name: 'Bahnrettung', cost: 125000, coins: 25 },
+            { id: 9, name: 'Großwache', cost: 1000000, coins: 50 },
             { id: 1, name: '1te AB-Stellplatz', cost: 100000, coins: 20 },
             { id: 2, name: '2te AB-Stellplatz', cost: 100000, coins: 20 },
             { id: 3, name: '3te AB-Stellplatz', cost: 100000, coins: 20 },
             { id: 4, name: '4te AB-Stellplatz', cost: 100000, coins: 20 },
             { id: 5, name: '5te AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 6, name: 'Wasserrettung', cost: 400000, coins: 25 },
             { id: 7, name: '6te AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 8, name: 'Flughafenfeuerwehr', cost: 300000, coins: 25 },
-            { id: 9, name: 'Großwache', cost: 1000000, coins: 50 },
             { id: 10, name: '7te AB-Stellplatz', cost: 100000, coins: 20 },
             { id: 11, name: '8te AB-Stellplatz', cost: 100000, coins: 20 },
             { id: 12, name: '9te AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 13, name: 'Werkfeuerwehr', cost: 100000, coins: 20 },
-            { id: 14, name: 'Netzersatzanlage 50', cost: 100000, coins: 20 },
-            { id: 15, name: 'Netzersatzanlage 200', cost: 100000, coins: 20 },
-            { id: 16, name: 'Großlüfter', cost: 75000, coins: 15 },
             { id: 17, name: '10te AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 18, name: 'Drohneneinheit', cost: 150000, coins: 25 },
-            { id: 19, name: 'Verpflegungsdienst', cost: 200000, coins: 25 },
+            { id: 26, name: '11te Ab-Stellplatz', cost: 150000, coins: 20 },
+            { id: 27, name: '12te Ab-Stellplatz', cost: 150000, coins: 20 },
             { id: 20, name: '1te Anhänger Stellplatz', cost: 75000, coins: 15 },
             { id: 21, name: '2te Anhänger Stellplatz', cost: 75000, coins: 15 },
             { id: 22, name: '3te Anhänger Stellplatz', cost: 75000, coins: 15 },
             { id: 23, name: '4te Anhänger Stellplatz', cost: 75000, coins: 15 },
             { id: 24, name: '5te Anhänger Stellplatz', cost: 75000, coins: 15 },
-            { id: 25, name: 'Bahnrettung', cost: 125000, coins: 25 },
-            { id: 26, name: '11te Ab-Stellplatz', cost: 150000, coins: 20 },
-            { id: 27, name: '12te Ab-Stellplatz', cost: 150000, coins: 20 },
+
         ],
 
         '1_normal': [ // Feuerwehrschule
@@ -174,8 +174,6 @@
 
         '0_small': [ // Feuerwehr (Kleinwache)
             { id: 0, name: 'Rettungsdienst', cost: 100000, coins: 20 },
-            { id: 1, name: '1te AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 2, name: '2te AB-Stellplatz', cost: 100000, coins: 20 },
             { id: 6, name: 'Wasserrettung', cost: 400000, coins: 25 },
             { id: 8, name: 'Flughafenfeuerwehr', cost: 300000, coins: 25 },
             { id: 13, name: 'Werkfeuerwehr', cost: 100000, coins: 20 },
@@ -183,9 +181,11 @@
             { id: 16, name: 'Großlüfter', cost: 75000, coins: 25 },
             { id: 18, name: 'Drohneneinheit', cost: 150000, coins: 25 },
             { id: 19, name: 'Verpflegungsdienst', cost: 200000, coins: 25 },
+            { id: 25, name: 'Bahnrettung', cost: 125000, coins: 25 },
+            { id: 1, name: '1te AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 2, name: '2te AB-Stellplatz', cost: 100000, coins: 20 },
             { id: 20, name: '1te Anhänger Stellplatz', cost: 75000, coins: 15 },
             { id: 21, name: '2te Anhänger Stellplatz', cost: 75000, coins: 15 },
-            { id: 25, name: 'Bahnrettung', cost: 125000, coins: 25 },
         ],
 
         '6_small': [ // Polizei (Kleinwache)
@@ -220,7 +220,6 @@
         ],
 
     };
-
     const manualStorageRooms = {
         '0_normal': [
             { initial_containers: 10, name: 'Lagerraum', cost: 25000, coins: 10, additionalStorage: 40 },
@@ -244,33 +243,28 @@
         ],
 
     };
-    // Ab hier nichts mehr ändern! (Es sei denn Ihr wisst was Ihr tut)
-
     const buildingTypeNames = {
-            '0_normal': 'Feuerwache (Normal)',
-            '0_small': 'Feuerwache (Kleinwache)',
-            '1_normal': 'Feuerwehrschule',
-            '2_normal': 'Rettungswache',
-            '3_normal': 'Rettungsschule',
-            '4_normal': 'Krankenhaus',
-            '5_normal': 'Rettungshubschrauber-Station',
-            '6_normal': 'Polizeiwache (Normal)',
-            '6_small': 'Polizeiwache (Kleinwache)',
-            '8_normal': 'Polizeischule',
-            '9_normal': 'Technisches Hilfswerk',
-            '10_normal': 'Technisches Hilfswerk - Bundesschule',
-            '11_normal': 'Bereitschaftspolizei',
-            '12_normal': 'Schnelleinsatzgruppe (SEG)',
-            '13_normal': 'Polizeihubschrauber-Station',
-            '17_normal': 'Polizei-Sondereinheiten',
-            '24_normal': 'Reiterstaffel',
-            '25_normal': 'Bergrettungswache',
-            '27_normal': 'Schule für Seefahrt und Seenotrettung',
-        };
-
-    const inProgressStorageUpgrades = new Map(); // Map<buildingId, Set<storageKey>
-
-    // Funktion um die Lightbox und Stile zu erstellen
+        '0_normal': 'Feuerwache (Normal)',
+        '0_small': 'Feuerwache (Kleinwache)',
+        '1_normal': 'Feuerwehrschule',
+        '2_normal': 'Rettungswache',
+        '3_normal': 'Rettungsschule',
+        '4_normal': 'Krankenhaus',
+        '5_normal': 'Rettungshubschrauber-Station',
+        '6_normal': 'Polizeiwache (Normal)',
+        '6_small': 'Polizeiwache (Kleinwache)',
+        '8_normal': 'Polizeischule',
+        '9_normal': 'Technisches Hilfswerk',
+        '10_normal': 'Technisches Hilfswerk - Bundesschule',
+        '11_normal': 'Bereitschaftspolizei',
+        '12_normal': 'Schnelleinsatzgruppe (SEG)',
+        '13_normal': 'Polizeihubschrauber-Station',
+        '17_normal': 'Polizei-Sondereinheiten',
+        '24_normal': 'Reiterstaffel',
+        '25_normal': 'Bergrettungswache',
+        '27_normal': 'Schule für Seefahrt und Seenotrettung',
+    };
+    const inProgressStorageUpgrades = new Map();
     const styles = `
         #extension-lightbox {
             position: fixed;
@@ -426,21 +420,20 @@
         #open-extension-helper {
             cursor: pointer;
         }
-
         #extension-settings-btn {
-    background: var(--background-color);
-    color: var(--text-color);
-    border: 1px solid var(--border-color);
-    margin: 10px;
-    padding: 6px 16px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-#extension-settings-btn:hover {
-    background: var(--border-color);
-}
-#extension-settings-lightbox .settings-content {
+           background: var(--background-color);
+           color: var(--text-color);
+           border: 1px solid var(--border-color);
+           margin: 10px;
+           padding: 6px 16px;
+           border-radius: 5px;
+           cursor: pointer;
+           transition: background 0.2s;
+       }
+       #extension-settings-btn:hover {
+          background: var(--border-color);
+       }
+       #extension-settings-lightbox .settings-content {
     background: var(--background-color);
     color: var(--text-color);
     border-radius: 8px;
@@ -448,36 +441,111 @@
     max-height: 80vh;
     overflow-y: auto;
     min-width: 350px;
+    /* NEU: Breite begrenzen, mittig ausrichten */
+    max-width: 600px;
+    width: 95vw;
+    margin: 0 auto;
+    box-sizing: border-box;
     border: 1px solid var(--border-color);
 }
-#extension-settings-lightbox .tab-ext-btn {
-    background-color: #28a745;
+
+#extension-settings-lightbox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Das Modal nimmt nur so viel Platz ein, wie nötig */
+}
+      #extension-settings-lightbox .tab-ext-btn {
+          background-color: #28a745;
+          color: #fff;
+          border: none;
+          padding: 8px 20px;
+          border-radius: 5px;
+          margin-right: 10px;
+          cursor: pointer;
+          font-weight: bold;
+          transition: background 0.2s;
+      }
+      #extension-settings-lightbox .tab-ext-btn:hover,
+      #extension-settings-lightbox .tab-ext-btn.active {
+          background-color: #218838;
+      }
+      #extension-settings-lightbox .tab-lager-btn {
+          background-color: #ffc107;
+          color: #333;
+          border: none;
+          padding: 8px 20px;
+          border-radius: 5px;
+          cursor: pointer;
+          font-weight: bold;
+          transition: background 0.2s;
+      }
+      #extension-settings-lightbox .tab-lager-btn:hover,
+      #extension-settings-lightbox .tab-lager-btn.active {
+          background-color: #e0a800;
+      }
+     .tab-header {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+}
+.tab-btn {
+    padding: 2px 10px;
+    font-size: 13px;
+    border: 1px solid var(--border-color, #ccc);
+    background: var(--background-color, #eee);
+    color: var(--text-color, #333);
+    cursor: pointer;
+    border-radius: 4px 4px 0 0;
+    font-weight: 500;
+    min-width: 60px;
+    min-height: 24px;
+    outline: none;
+    transition: background 0.2s, color 0.2s;
+    margin-bottom: -1px;
+}
+.tab-btn.active {
+    background: var(--background-color, #fff);
+    color: var(--text-color, #000);
+    border-bottom: 1px solid var(--background-color, #fff);
+    z-index: 1;
+}
+.tab-bodies .tab-body {
+    display: none;
+    padding: 8px 0;
+}
+.tab-bodies .tab-body.active {
+    display: block;
+}
+.tab-btn.active {
+    background: #28a745; /* sattes Grün */
     color: #fff;
-    border: none;
-    padding: 8px 20px;
-    border-radius: 5px;
-    margin-right: 10px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background 0.2s;
+    border-bottom: 1px solid var(--background-color, #fff);
+    z-index: 1;
 }
-#extension-settings-lightbox .tab-ext-btn:hover,
-#extension-settings-lightbox .tab-ext-btn.active {
-    background-color: #218838;
+.checkbox-columns {
+    display: flex;
+    gap: 24px;
+    justify-content: flex-start;
 }
-#extension-settings-lightbox .tab-lager-btn {
-    background-color: #ffc107;
-    color: #333;
-    border: none;
-    padding: 8px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background 0.2s;
+.checkbox-column {
+    display: flex;
+    flex-direction: column;
+    min-width: 200px;
+    /* Passe min-width nach Wunsch an */
 }
-#extension-settings-lightbox .tab-lager-btn:hover,
-#extension-settings-lightbox .tab-lager-btn.active {
-    background-color: #e0a800;
+.checkbox-column label {
+    margin-bottom: 2px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+    line-height: 1.2;
+}
+.checkbox-column br {
+    display: none; /* Zeilenumbruch vermeiden, da Flexbox verwendet wird */
 }
     `;
 
@@ -628,35 +696,79 @@
         const tabContent = content.querySelector('#settings-tab-content');
 
         function showTab(type) {
-    extBtn.classList.toggle('active', type === 'ext');
-    lagerBtn.classList.toggle('active', type === 'lager');
-    tabContent.innerHTML = '';
-    if (type === 'ext') {
-        Object.entries(manualExtensions).forEach(([key, arr]) => {
-            tabContent.innerHTML += `<b>${buildingTypeNames[key] || key}</b><br>`;
-            arr.forEach(ext => {
-                const lsKey = `ext_${key}_${ext.id}`;
-                const checked = localStorage.getItem(lsKey) !== '0' ? 'checked' : '';
-                tabContent.innerHTML += `<label>
-                <input type="checkbox" data-key="${key}" data-id="${ext.id}" class="setting-ext" ${checked}> ${ext.name}
-                </label><br>`;
+    tabContent.innerHTML = "";
+    let allKeys = type === 'ext' ? Object.keys(manualExtensions) : Object.keys(manualStorageRooms);
+
+    // Tab-Header (wie gehabt)
+    let tabHeader = document.createElement('div');
+    tabHeader.className = 'tab-header';
+    allKeys.forEach((key, idx) => {
+        let btn = document.createElement('button');
+        btn.className = 'tab-btn' + (idx === 0 ? ' active' : '');
+        btn.textContent = buildingTypeNames[key] || key;
+        btn.dataset.key = key;
+        tabHeader.appendChild(btn);
+    });
+    tabContent.appendChild(tabHeader);
+
+    // Tab-Inhalte
+    let tabBodies = document.createElement('div');
+    tabBodies.className = 'tab-bodies';
+
+    allKeys.forEach((key, idx) => {
+        let body = document.createElement('div');
+        body.className = 'tab-body' + (idx === 0 ? ' active' : '');
+        body.dataset.key = key;
+
+        let options = (type === 'ext' ? manualExtensions[key] : manualStorageRooms[key]) || [];
+        if (options.length > 0) {
+            // In zwei Spalten aufteilen, wenn mehr als 11 Optionen
+            let colCount = options.length > 11 ? 2 : 1;
+            let itemsPerCol = Math.ceil(options.length / colCount);
+            let columns = [];
+            for (let c = 0; c < colCount; c++) {
+                columns[c] = document.createElement('div');
+                columns[c].className = 'checkbox-column';
+            }
+            options.forEach((opt, i) => {
+                let col = Math.floor(i / itemsPerCol);
+                let id = type === 'ext'
+                    ? opt.id
+                    : Object.keys(opt).find(k => k.endsWith('_containers'));
+                let lsKey = type === 'ext'
+                    ? `ext_${key}_${id}`
+                    : `lager_${key}_${id}`;
+                let checked = localStorage.getItem(lsKey) !== '0' ? 'checked' : '';
+                let optionName = opt.name || opt.caption || id;
+                let label = document.createElement('label');
+                label.innerHTML = `<input type="checkbox" data-key="${key}" data-id="${id}"
+                      class="${type === 'ext' ? 'setting-ext' : 'setting-lager'}" ${checked}>
+                    ${optionName}`;
+                columns[col].appendChild(label);
+                columns[col].appendChild(document.createElement('br'));
             });
-            tabContent.innerHTML += '<hr>';
-        });
-    } else {
-        Object.entries(manualStorageRooms).forEach(([key, arr]) => {
-            tabContent.innerHTML += `<b>${buildingTypeNames[key] || key}</b><br>`;
-            arr.forEach((lager) => {
-                const lagerKey = Object.keys(lager).find(k => k.endsWith('_containers'));
-                const lsKey = `lager_${key}_${lagerKey}`;
-                const checked = localStorage.getItem(lsKey) !== '0' ? 'checked' : '';
-                tabContent.innerHTML += `<label>
-                <input type="checkbox" data-key="${key}" data-lager="${lagerKey}" class="setting-lager" ${checked}> ${lager.name}
-                </label><br>`;
+            let columnsContainer = document.createElement('div');
+            columnsContainer.className = 'checkbox-columns';
+            columns.forEach(col => columnsContainer.appendChild(col));
+            body.appendChild(columnsContainer);
+        } else {
+            body.innerHTML = '<em>Keine Optionen</em>';
+        }
+        tabBodies.appendChild(body);
+    });
+    tabContent.appendChild(tabBodies);
+
+    // Tab-Logik
+    tabHeader.addEventListener('click', function(e) {
+        if (e.target.classList.contains('tab-btn')) {
+            tabHeader.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            e.target.classList.add('active');
+            let key = e.target.dataset.key;
+            tabBodies.querySelectorAll('.tab-body').forEach(div => {
+                div.classList.toggle('active', div.dataset.key === key);
             });
-            tabContent.innerHTML += '<hr>';
-        });
-    }
+        }
+    });
 }
         extBtn.onclick = () => showTab('ext');
         lagerBtn.onclick = () => showTab('lager');
