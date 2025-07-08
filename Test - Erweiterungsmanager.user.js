@@ -639,31 +639,40 @@
     lightbox.id = 'extension-lightbox';
     lightbox.style.display = 'none';
     lightbox.innerHTML = `
-            <div id="extension-lightbox-content">
-                <button id="close-extension-helper">Schließen</button>
-                <h2>Erweiterungs-Manager<br><h5>
-                <br>In den unteren Tabellen könnt Ihr eure Erweiterungen verwalten und über die verschiedenen Möglichkeiten in Auftraug geben.
-                <br>Feedback jeglicher Art könnt Ihr gern im Forum im entsprechenden Thread hinterlassen.
-                <br>
-                <br>
-                <br>
-                <div id="extension-list">
-                Bitte habe einen Moment Geduld!
-                <br>
-                <br>
-                Lade Gebäudedaten und erstelle die Tabellen...</div>
-            </div>
-        `;
+    <div id="extension-lightbox-content">
+        <button id="close-extension-helper">Schließen</button>
+        <h2>Erweiterungs-Manager</h2>
+<h5>
+    <br>Herzlich willkommen beim ultimativen Ausbau-Assistenten für eure Wachen! 🚒🏗️
+    <br>
+    <br>Dieses kleine Helferlein zeigt euch genau, wo noch Platz nach oben ist: Welche Erweiterungen und Lagerräume eurer Gebäude fehlen – und mit nur einem Klick geht’s direkt in den Ausbau. Einfacher wird’s nicht!
+    <br>
+    <br>Und das Beste: Über den
+    <button id="extension-settings-btn-inline" style="background:#007bff; color:white; padding:4px 10px; border:none; border-radius:4px; font-size:0.9em; cursor:pointer;">
+        Einstellungen
+    </button>
+    -Button könnt ihr festlegen, welche Erweiterungen und Lagerräume euch pro Wachen-Typ angezeigt werden – ganz nach eurem Geschmack. Einmal gespeichert, für immer gemerkt.
+    <br>
+    <br>Kleiner Hinweis am Rande: Feedback, Verbesserungsvorschläge oder Liebesbriefe zum Skript sind jederzeit im Forum willkommen. 💌
+    <br>
+    <br>
+    <br>Und nun viel Erfolg beim Credits ausgeben!
+    <div id="extension-list">
+    Einen Moment Geduld bitte …
+    <br><br>
+    Gebäudedaten werden geladen, Kaffee kocht – gleich geht's los!
+    </div>
+</h5>
+
+`;
 
     document.body.appendChild(lightbox);
 
     const lightboxContent = lightbox.querySelector('#extension-lightbox-content');
 
     // Einstellungen-Button erstellen und ins Lightbox einfügen
-    const settingsButton = document.createElement('button');
-    settingsButton.id = 'extension-settings-btn';
-    settingsButton.textContent = 'Einstellungen';
-    lightboxContent.insertBefore(settingsButton, lightboxContent.children[1]);
+    const settingsButton = document.getElementById('extension-settings-btn-inline');
+    settingsButton.onclick = openSettingsDialog;
 
     // Funktion für das Einstellungs-Dialog
     function openSettingsDialog() {
@@ -680,12 +689,26 @@
         const content = document.createElement('div');
         content.className = 'settings-content';
         content.innerHTML = `
-        <h3>Einstellungen – Erweiterungen & Lagerräume</h3>
-        <button id="tab-ext-btn" class="tab-ext-btn active">Erweiterungen</button>
-        <button id="tab-lager-btn" class="tab-lager-btn">Lagerräume</button>
-        <div id="settings-tab-content" style="margin:20px 0;"></div>
-        <button id="settings-save-btn" style="background:#007bff;color:white;padding:8px 20px;border:none;border-radius:5px;">Speichern & Schließen</button>
-    `;
+  <h4 style="margin-bottom: 10px;">
+    🛠️ Hier könnt ihr festlegen, welche Erweiterungen und Lagerräume pro Wachen-Typ angezeigt werden sollen.
+  </h4>
+
+    Die Auswahl wird gespeichert und beim nächsten Besuch automatisch übernommen.
+  </p>
+  <div style="margin-bottom: 10px;">
+    <button id="tab-ext-btn" class="tab-ext-btn active">Erweiterungen</button>
+    <button id="tab-lager-btn" class="tab-lager-btn">Lagerräume</button>
+  </div>
+  <div id="settings-tab-content" style="margin:20px 0;"></div>
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+    <button id="settings-save-btn" style="background:#007bff; color:white; padding:8px 20px; border:none; border-radius:5px;">
+      💾 Speichern
+    </button>
+    <button id="settings-close-btn" style="background:#dc3545; color:white; padding:8px 20px; border:none; border-radius:5px;">
+      ✖️ Schließen
+    </button>
+  </div>
+`;
 
         settingsBox.appendChild(content);
         document.body.appendChild(settingsBox);
@@ -696,84 +719,84 @@
         const tabContent = content.querySelector('#settings-tab-content');
 
         function showTab(type) {
-    tabContent.innerHTML = "";
-    let allKeys = type === 'ext' ? Object.keys(manualExtensions) : Object.keys(manualStorageRooms);
+            tabContent.innerHTML = "";
+            let allKeys = type === 'ext' ? Object.keys(manualExtensions) : Object.keys(manualStorageRooms);
 
-    // Tab-Header (wie gehabt)
-    let tabHeader = document.createElement('div');
-    tabHeader.className = 'tab-header';
-    allKeys.forEach((key, idx) => {
-        let btn = document.createElement('button');
-        btn.className = 'tab-btn' + (idx === 0 ? ' active' : '');
-        btn.textContent = buildingTypeNames[key] || key;
-        btn.dataset.key = key;
-        tabHeader.appendChild(btn);
-    });
-    tabContent.appendChild(tabHeader);
+            // Tab-Header (wie gehabt)
+            let tabHeader = document.createElement('div');
+            tabHeader.className = 'tab-header';
+            allKeys.forEach((key, idx) => {
+                let btn = document.createElement('button');
+                btn.className = 'tab-btn' + (idx === 0 ? ' active' : '');
+                btn.textContent = buildingTypeNames[key] || key;
+                btn.dataset.key = key;
+                tabHeader.appendChild(btn);
+            });
+            tabContent.appendChild(tabHeader);
 
-    // Tab-Inhalte
-    let tabBodies = document.createElement('div');
-    tabBodies.className = 'tab-bodies';
+            // Tab-Inhalte
+            let tabBodies = document.createElement('div');
+            tabBodies.className = 'tab-bodies';
 
-    allKeys.forEach((key, idx) => {
-        let body = document.createElement('div');
-        body.className = 'tab-body' + (idx === 0 ? ' active' : '');
-        body.dataset.key = key;
+            allKeys.forEach((key, idx) => {
+                let body = document.createElement('div');
+                body.className = 'tab-body' + (idx === 0 ? ' active' : '');
+                body.dataset.key = key;
 
-        let options = (type === 'ext' ? manualExtensions[key] : manualStorageRooms[key]) || [];
-        if (options.length > 0) {
-            // In zwei Spalten aufteilen, wenn mehr als 11 Optionen
-            let colCount = options.length > 11 ? 2 : 1;
-            let itemsPerCol = Math.ceil(options.length / colCount);
-            let columns = [];
-            for (let c = 0; c < colCount; c++) {
-                columns[c] = document.createElement('div');
-                columns[c].className = 'checkbox-column';
-            }
-            options.forEach((opt, i) => {
-                let col = Math.floor(i / itemsPerCol);
-                let id = type === 'ext'
-                    ? opt.id
-                    : Object.keys(opt).find(k => k.endsWith('_containers'));
-                let lsKey = type === 'ext'
-                    ? `ext_${key}_${id}`
-                    : `lager_${key}_${id}`;
-                let checked = localStorage.getItem(lsKey) !== '0' ? 'checked' : '';
-                let optionName = opt.name || opt.caption || id;
-                let label = document.createElement('label');
-                label.innerHTML = `<input type="checkbox" data-key="${key}" data-id="${id}"
+                let options = (type === 'ext' ? manualExtensions[key] : manualStorageRooms[key]) || [];
+                if (options.length > 0) {
+                    // In zwei Spalten aufteilen, wenn mehr als 11 Optionen
+                    let colCount = options.length > 11 ? 2 : 1;
+                    let itemsPerCol = Math.ceil(options.length / colCount);
+                    let columns = [];
+                    for (let c = 0; c < colCount; c++) {
+                        columns[c] = document.createElement('div');
+                        columns[c].className = 'checkbox-column';
+                    }
+                    options.forEach((opt, i) => {
+                        let col = Math.floor(i / itemsPerCol);
+                        let id = type === 'ext'
+                        ? opt.id
+                        : Object.keys(opt).find(k => k.endsWith('_containers'));
+                        let lsKey = type === 'ext'
+                        ? `ext_${key}_${id}`
+                        : `lager_${key}_${id}`;
+                        let checked = localStorage.getItem(lsKey) !== '0' ? 'checked' : '';
+                        let optionName = opt.name || opt.caption || id;
+                        let label = document.createElement('label');
+                        label.innerHTML = `<input type="checkbox" data-key="${key}" data-id="${id}"
                       class="${type === 'ext' ? 'setting-ext' : 'setting-lager'}" ${checked}>
                     ${optionName}`;
-                columns[col].appendChild(label);
-                columns[col].appendChild(document.createElement('br'));
+                        columns[col].appendChild(label);
+                        columns[col].appendChild(document.createElement('br'));
+                    });
+                    let columnsContainer = document.createElement('div');
+                    columnsContainer.className = 'checkbox-columns';
+                    columns.forEach(col => columnsContainer.appendChild(col));
+                    body.appendChild(columnsContainer);
+                } else {
+                    body.innerHTML = '<em>Keine Optionen</em>';
+                }
+                tabBodies.appendChild(body);
             });
-            let columnsContainer = document.createElement('div');
-            columnsContainer.className = 'checkbox-columns';
-            columns.forEach(col => columnsContainer.appendChild(col));
-            body.appendChild(columnsContainer);
-        } else {
-            body.innerHTML = '<em>Keine Optionen</em>';
-        }
-        tabBodies.appendChild(body);
-    });
-    tabContent.appendChild(tabBodies);
+            tabContent.appendChild(tabBodies);
 
-    // Tab-Logik
-    tabHeader.addEventListener('click', function(e) {
-        if (e.target.classList.contains('tab-btn')) {
-            tabHeader.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            e.target.classList.add('active');
-            let key = e.target.dataset.key;
-            tabBodies.querySelectorAll('.tab-body').forEach(div => {
-                div.classList.toggle('active', div.dataset.key === key);
+            // Tab-Logik
+            tabHeader.addEventListener('click', function(e) {
+                if (e.target.classList.contains('tab-btn')) {
+                    tabHeader.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+                    let key = e.target.dataset.key;
+                    tabBodies.querySelectorAll('.tab-body').forEach(div => {
+                        div.classList.toggle('active', div.dataset.key === key);
+                    });
+                }
             });
         }
-    });
-}
         extBtn.onclick = () => showTab('ext');
         lagerBtn.onclick = () => showTab('lager');
 
-        // Speichern & schließen
+        // Speichern
         content.querySelector('#settings-save-btn').onclick = () => {
             tabContent.querySelectorAll('.setting-ext').forEach(cb => {
                 const lsKey = `ext_${cb.dataset.key}_${cb.dataset.id}`;
@@ -785,6 +808,11 @@
             });
             settingsBox.remove();
             location.reload();
+        };
+
+        // Nur schließen (ohne speichern)
+        content.querySelector('#settings-close-btn').onclick = () => {
+            settingsBox.remove();
         };
 
         // Modal schließt bei Klick auf den Hintergrund
