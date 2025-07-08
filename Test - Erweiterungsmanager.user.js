@@ -224,6 +224,7 @@
         '0_normal': [
             { initial_containers: 10, name: 'Lagerraum', cost: 25000, coins: 10, additionalStorage: 40 },
             { additional_containers_1: 20, name: '1te Zusätzlicher Lagerraum', cost: 50000, coins: 10, additionalStorage: 30 },
+            { additional_containers_1: 30, name: '2te Zusätzlicher Lagerraum', cost: 50000, coins: 10, additionalStorage: 30 },
             { additional_containers_3: 40, name: '3te Zusätzlicher Lagerraum', cost: 50000, coins: 10, additionalStorage: 30 },
             { additional_containers_4: 50, name: '4te Zusätzlicher Lagerraum', cost: 50000, coins: 10, additionalStorage: 30 },
             { additional_containers_5: 60, name: '5te Zusätzlicher Lagerraum', cost: 50000, coins: 10, additionalStorage: 30 },
@@ -653,7 +654,10 @@
     </button>
     -Button könnt ihr festlegen, welche Erweiterungen und Lagerräume euch pro Wachen-Typ angezeigt werden – ganz nach eurem Geschmack. Einmal gespeichert, für immer gemerkt.
     <br>
-    <br>Kleiner Hinweis am Rande: Feedback, Verbesserungsvorschläge oder Liebesbriefe zum Skript sind jederzeit im Forum willkommen. 💌
+    <br>Kleiner Hinweis am Rande: Feedback, Verbesserungsvorschläge oder Liebesbriefe zum Skript sind jederzeit im
+    <a href="https://forum.leitstellenspiel.de/index.php?thread/27856-script-erweiterungs-manager/" target="_blank" style="color:#007bff; text-decoration:none;">
+        <strong>Forum</strong>
+    </a> willkommen. 💌
     <br>
     <br>
     <br>Und nun viel Erfolg beim Credits ausgeben!
@@ -1032,11 +1036,13 @@
 
     // Funktion um die Tabellen mit Daten zu füllen
     async function renderMissingExtensions(buildings) {
+
         // Prüft, ob eine Erweiterung angezeigt werden soll
         function isExtensionEnabled(key, id) {
             // Standard: Sichtbar, solange nicht explizit im localStorage auf "0"
             return localStorage.getItem(`ext_${key}_${id}`) !== '0';
         }
+
         // Prüft, ob ein Lager angezeigt werden soll
         function isLagerEnabled(key, lagerKey) {
             // Standard: Sichtbar, solange nicht explizit im localStorage auf "0"
@@ -1197,11 +1203,51 @@
             group.forEach(({ building }) => {
                 storageGroup
                     .filter(storage => {
-                    const lagerKey = Object.keys(storage).find(k => k.endsWith('_containers'));
+                    // Lager-Key erkennen (initial_containers oder additional_containers_X)
+                    const lagerKey = Object.keys(storage).find(k => k.endsWith('_containers') || k === 'initial_containers');
                     return isLagerEnabled(groupKey, lagerKey);
                 })
                     .forEach(storage => {
+                    const lagerKey = Object.keys(storage).find(k => k.endsWith('_containers') || k === 'initial_containers');
+                    const canBuild = canBuildStorage(building, lagerKey);
 
+                    // Checkbox
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.className = 'storage-checkbox';
+                    checkbox.dataset.buildingId = building.id;
+                    checkbox.dataset.lagerKey = lagerKey;
+                    checkbox.disabled = !canBuild;
+
+                    // Bau-Buttons
+                    const creditButton = createButton(
+                        `${formatNumber(storage.cost)} Credits`,
+                        ['btn-xl', 'credit-button'],
+                        () => buildStorage(building, lagerKey, 'credits', storage.cost),
+                        { backgroundColor: '#28a745', color: 'white' }
+                    );
+                    creditButton.disabled = !canBuild;
+
+                    const coinsButton = createButton(
+                        `${storage.coins} Coins`,
+                        ['btn-xl', 'coins-button'],
+                        () => buildStorage(building, lagerKey, 'coins', storage.coins),
+                        { backgroundColor: '#dc3545', color: 'white' }
+                    );
+                    coinsButton.disabled = !canBuild;
+
+                    // Tabellenzeile erzeugen
+                    const row = createRow([
+                        checkbox,
+                        getLeitstelleName(building),
+                        building.caption,
+                        storage.name,
+                        storage.additionalStorage ?? storage.initial_containers ?? "",
+                        creditButton,
+                        coinsButton
+                    ]);
+
+                    tbody.appendChild(row);
                 });
             });
 
@@ -1694,111 +1740,140 @@
 
     // Funktion zum Bau der ausgewählten Erweiterungen
     async function buildSelectedExtensions() {
-        const selectedExtensions = document.querySelectorAll('.extension-checkbox:checked');
+        // Alle angehakten Erweiterungs- und Lagerraum-Checkboxen sammeln
+        const selectedExtensionCheckboxes = document.querySelectorAll('.extension-checkbox:checked');
+        const selectedStorageCheckboxes = document.querySelectorAll('.storage-checkbox:checked');
 
-        // Checkboxen sofort entmarkieren
-        selectedExtensions.forEach(checkbox => {
-            checkbox.checked = false;
-        });
-
+        // Erweiterungen nach Gebäude gruppieren
         const selectedExtensionsByBuilding = {};
-
-        selectedExtensions.forEach(checkbox => {
+        selectedExtensionCheckboxes.forEach(checkbox => {
             const buildingId = checkbox.dataset.buildingId;
             const extensionId = checkbox.dataset.extensionId;
-
-            if (!selectedExtensionsByBuilding[buildingId]) {
-                selectedExtensionsByBuilding[buildingId] = [];
-            }
+            if (!selectedExtensionsByBuilding[buildingId]) selectedExtensionsByBuilding[buildingId] = [];
             selectedExtensionsByBuilding[buildingId].push(parseInt(extensionId, 10));
         });
 
+        // Lagerräume nach Gebäude gruppieren
+        const selectedStorageByBuilding = {};
+        selectedStorageCheckboxes.forEach(checkbox => {
+            const buildingId = checkbox.dataset.buildingId;
+            const lagerKey = checkbox.dataset.lagerKey;
+            if (!selectedStorageByBuilding[buildingId]) selectedStorageByBuilding[buildingId] = [];
+            selectedStorageByBuilding[buildingId].push(lagerKey);
+        });
+
+        // Bei Kleinwachen: Validierung für maximal erlaubte Erweiterungen (wie bisher)
         for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
             const building = buildingsData.find(b => String(b.id) === String(buildingId));
-
-            if (!building) continue; // Falls das Gebäude nicht gefunden wird, einfach überspringen
-
-            // **Überprüfung nur für Kleinwachen**
+            if (!building) continue;
             if (building.small_building) {
-                // Feuerwehr Kleinwache - ungültige Kombinationen
                 if (building.building_type === 0) {
                     const invalidCombinationsFeuerwache = [0, 6, 8, 13, 14, 16, 18, 19, 25];
-                    const selectedInvalidExtensionsFeuerwache = extensions.filter(extensionId => invalidCombinationsFeuerwache.includes(extensionId));
-                    if (selectedInvalidExtensionsFeuerwache.length > 1) {
-                        showError("Information zu deinem Bauvorhaben:\n\nDiese Erweiterungen für die Feuerwache (Kleinwache) können nicht zusammen gebaut werden.\n\nBitte wähle nur eine Erweiterung aus.");
-
-                        // Master-Checkbox entmarkieren & Button deaktivieren
-                        document.querySelector('.select-all-checkbox').checked = false;
+                    const selectedInvalid = extensions.filter(id => invalidCombinationsFeuerwache.includes(id));
+                    if (selectedInvalid.length > 1) {
+                        showError("Für die Feuerwache (Kleinwache) darf nur eine Spezial-Erweiterung gewählt werden.");
                         updateBuildSelectedButton();
                         return;
-
                     }
                 }
-
-                // Polizeiwache Kleinwache - ungültige Kombinationen
                 if (building.building_type === 6) {
                     const invalidCombinationsPolizei = [10, 11, 12, 13];
-                    const selectedInvalidExtensionsPolizei = extensions.filter(extensionId => invalidCombinationsPolizei.includes(extensionId));
-                    if (selectedInvalidExtensionsPolizei.length > 1) {
-                        showError("Information zu deinem Bauvorhaben:\n\nDiese Erweiterungen für die Polizeiwache (Kleinwache) können nicht zusammen gebaut werden.\n\nBitte wähle nur eine Erweiterung aus.");
-
-                        // Master-Checkbox entmarkieren & Button deaktivieren
-                        document.querySelector('.select-all-checkbox').checked = false;
+                    const selectedInvalid = extensions.filter(id => invalidCombinationsPolizei.includes(id));
+                    if (selectedInvalid.length > 1) {
+                        showError("Für die Polizeiwache (Kleinwache) darf nur eine Spezial-Erweiterung gewählt werden.");
                         updateBuildSelectedButton();
                         return;
-
                     }
                 }
             }
         }
 
-        const userInfo = await getUserCredits(); // Holt die User-Daten
-
-        // Beispiel zur Verwendung der Variable
-        if (user_premium) {
-            console.log("User is a premium member.");
-        } else {
-            console.log("User is not a premium member.");
-        }
-
-        // Fahren Sie mit der Verarbeitung fort, abhängig vom Premium-Status des Benutzers
+        // Premium-Check: Bei Nicht-Premium max. 2 Erweiterungen auf einmal
         if (!user_premium) {
             for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
                 if (extensions.length > 2) {
-                    alert(`Zu viele Erweiterungen für Gebäude ${getBuildingCaption(buildingId)} ausgewählt.\n\nDa du keinen Premium-Account hast, kannst du maximal 2 Ausbauten auswählen.`);
-
-                    // Master-Checkbox entmarkieren & Button deaktivieren
-                    document.querySelector('.select-all-checkbox').checked = false;
+                    alert(`Ohne Premium-Account kannst du pro Gebäude nur 2 Erweiterungen gleichzeitig bauen.`);
                     updateBuildSelectedButton();
                     return;
                 }
             }
         }
 
-        // Der Rest der Verarbeitung bleibt unverändert
-        let totalCredits = 0;
-        let totalCoins = 0;
+        // Währungsabfrage (Credits/Coins) – wir gehen davon aus, dass Erweiterungen und Lagerräume mit Credits gebaut werden sollen
+        const userInfo = await getUserCredits();
 
-        // Berechnung der Gesamtkosten
+        // Gesamtkosten berechnen (du kannst auch Coins analog hinzufügen, falls gewünscht)
+        let totalCredits = 0;
+        // Erweiterungen
         for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
             extensions.forEach(extensionId => {
                 const row = document.querySelector(`.row-${buildingId}-${extensionId}`);
-                totalCredits += parseInt(row.querySelector('.credit-button').innerText.replace(/\D/g, ''), 10);
-                totalCoins += parseInt(row.querySelector('.coins-button').innerText.replace(/\D/g, ''), 10);
+                if (row) {
+                    totalCredits += parseInt(row.querySelector('.credit-button').innerText.replace(/\D/g, ''), 10);
+                }
+            });
+        }
+        // Lagerräume
+        for (const [buildingId, lagerKeys] of Object.entries(selectedStorageByBuilding)) {
+            lagerKeys.forEach(lagerKey => {
+                // Finde die passende Tabellenzeile und Kosten
+                const selector = `.storage-checkbox[data-building-id="${buildingId}"][data-lager-key="${lagerKey}"]`;
+                const row = document.querySelector(selector)?.closest('tr');
+                if (row) {
+                    totalCredits += parseInt(row.querySelector('.credit-button').innerText.replace(/\D/g, ''), 10);
+                }
             });
         }
 
-        // Zeige Währungsauswahl, falls keine Fehler aufgetreten sind
-        showCurrencySelection(selectedExtensionsByBuilding, userInfo);
+        // Prüfen ob User genug Credits hat
+        if (userInfo.credits < totalCredits) {
+            alert(`Du hast nicht genug Credits (${formatNumber(totalCredits)} benötigt).`);
+            updateBuildSelectedButton();
+            return;
+        }
 
-        // Alle "Select All"-Checkboxen abwählen
-        document.querySelectorAll('.select-all-checkbox').forEach(checkbox => {
-            checkbox.checked = false;
-            checkbox.dispatchEvent(new Event('change')); // Event auslösen, falls nötig
-        });
+        // Währungsdialog überspringen (immer Credits) – Wenn Coins-Option gewünscht ist, bitte Bescheid geben!
+        // Fortschrittsanzeige (optional)
+        const totalCount =
+              Object.values(selectedExtensionsByBuilding).reduce((a, b) => a + b.length, 0) +
+              Object.values(selectedStorageByBuilding).reduce((a, b) => a + b.length, 0);
 
-        // Sicherstellen, dass der Button deaktiviert wird
-        setTimeout(updateBuildSelectedButton, 100);
+        let builtCount = 0;
+        const { progressContainer, progressText, progressFill } = await createProgressBar(totalCount);
+
+        // Erweiterungen bauen
+        for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
+            const building = buildingsData.find(b => String(b.id) === String(buildingId));
+            for (const extensionId of extensions) {
+                const row = document.querySelector(`.row-${buildingId}-${extensionId}`);
+                const extensionCost = row ? parseInt(row.querySelector('.credit-button').innerText.replace(/\D/g, ''), 10) : 0;
+                await buildExtension(building, extensionId, 'credits', extensionCost, row);
+                builtCount++;
+                updateProgress(builtCount, totalCount, progressText, progressFill);
+            }
+        }
+
+        // Lagerräume bauen
+        for (const [buildingId, lagerKeys] of Object.entries(selectedStorageByBuilding)) {
+            const building = buildingsData.find(b => String(b.id) === String(buildingId));
+            for (const lagerKey of lagerKeys) {
+                const selector = `.storage-checkbox[data-building-id="${buildingId}"][data-lager-key="${lagerKey}"]`;
+                const row = document.querySelector(selector)?.closest('tr');
+                const storageCost = row ? parseInt(row.querySelector('.credit-button').innerText.replace(/\D/g, ''), 10) : 0;
+                await buildStorage(building, lagerKey, 'credits', storageCost, row);
+                builtCount++;
+                updateProgress(builtCount, totalCount, progressText, progressFill);
+            }
+        }
+
+        removeProgressBar(progressContainer);
+
+        // Nach dem Bau: Tabelle aktualisieren
+        renderMissingExtensions(buildingsData);
+
+        // Checkboxen abwählen und Button deaktivieren
+        document.querySelectorAll('.extension-checkbox, .storage-checkbox').forEach(cb => cb.checked = false);
+        updateBuildSelectedButton();
     }
 
     // Funktiom um eine Fehlermeldung auszugeben
@@ -1997,21 +2072,20 @@
         document.body.appendChild(selectionDiv);
     }
 
-    // Updatefunktion des Buttons
     function updateBuildSelectedButton() {
-        const groups = document.querySelectorAll('.spoiler-content');
-        groups.forEach(group => {
-            const buildSelectedButton = group.previousElementSibling.querySelector('.build-selected-button');
-            const selectedCheckboxes = group.querySelectorAll('.extension-checkbox:checked');
-            if (buildSelectedButton) {
-                buildSelectedButton.disabled = selectedCheckboxes.length === 0;
-            }
+        const anySelected = document.querySelector('.extension-checkbox:checked, .storage-checkbox:checked');
+        const buildSelectedButtons = document.querySelectorAll('.build-selected-button');
+        buildSelectedButtons.forEach(btn => {
+            btn.disabled = !anySelected;
         });
     }
 
     // Event-Listener für Checkbox-Änderungen hinzufügen
     document.addEventListener('change', (event) => {
-        if (event.target.classList.contains('extension-checkbox')) {
+        if (
+            event.target.classList.contains('extension-checkbox') ||
+            event.target.classList.contains('storage-checkbox')
+        ) {
             updateBuildSelectedButton();
         }
     });
