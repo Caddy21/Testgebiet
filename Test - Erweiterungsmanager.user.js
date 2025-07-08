@@ -1218,6 +1218,7 @@
                     checkbox.dataset.buildingId = building.id;
                     checkbox.dataset.lagerKey = lagerKey;
                     checkbox.disabled = !canBuild;
+                    checkbox.dataset.group = groupKey;
 
                     // Bau-Buttons
                     const creditButton = createButton(
@@ -1266,7 +1267,12 @@
             list.appendChild(buttonContainer);
 
             const spoilerButton = createButton('Erweiterungen anzeigen', ['spoiler-button']);
-            const buildSelectedButton = createButton('Ausgewählte Erweiterungen bauen', ['build-selected-button'], () => buildSelectedExtensions());
+            const buildSelectedButton = createButton(
+                'Ausgewählte Erweiterungen bauen',
+                ['build-selected-button'],
+                () => buildSelectedExtensions(groupKey)
+            );
+            buildSelectedButton.dataset.group = groupKey;
             buildSelectedButton.disabled = true;
             const buildAllButton = createButton('Sämtliche Erweiterungen bei allen Wachen bauen', ['build-all-button'], () => showCurrencySelectionForAll(groupKey));
 
@@ -1312,6 +1318,7 @@
                     checkbox.dataset.extensionId = extension.id;
                     checkbox.disabled = userInfo.credits < extension.cost && userInfo.coins < extension.coins;
                     checkbox.addEventListener('change', updateBuildSelectedButton);
+                    checkbox.dataset.group = groupKey;
 
                     const creditButton = createButton(
                         `${formatNumber(extension.cost)} Credits`,
@@ -2073,9 +2080,12 @@
     }
 
     function updateBuildSelectedButton() {
-        const anySelected = document.querySelector('.extension-checkbox:checked, .storage-checkbox:checked');
-        const buildSelectedButtons = document.querySelectorAll('.build-selected-button');
-        buildSelectedButtons.forEach(btn => {
+        document.querySelectorAll('.build-selected-button').forEach(btn => {
+            const groupKey = btn.dataset.group;
+            const anySelected = document.querySelector(
+                `.extension-checkbox[data-group="${groupKey}"]:checked,
+             .storage-checkbox[data-group="${groupKey}"]:checked`
+            );
             btn.disabled = !anySelected;
         });
     }
