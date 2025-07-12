@@ -267,236 +267,206 @@
     };
     const inProgressStorageUpgrades = new Map();
     const styles = `
-        #extension-lightbox {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-        }
-        #extension-lightbox #extension-lightbox-content {
-            background: var(--background-color, white);
-            color: var(--text-color, black);
-            border: 1px solid var(--border-color, black);
-            padding: 20px;
-            width: 80%;
-            max-width: 1500px;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-            text-align: center;
-            border-radius: 10px; /* Abgerundete Ecken */
-        }
-        #extension-lightbox #close-extension-helper {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: red;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-        :root {
-            --background-color: #f2f2f2;
-            --text-color: #000;
-            --border-color: #ccc;
-            --button-background-color: #007bff;
-            --button-text-color: #ffffff;
-            --button-hover-background-color: #0056b3;
-        }
-        #extension-lightbox table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-            font-size: 16px;
-        }
-        #extension-lightbox th {
-            text-align: center;
-            vertical-align: middle;
-        }
-        #extension-lightbox table td {
-            background-color: var(--background-color);
-            color: var(--text-color);
-            border: 1px solid var(--border-color);
-            padding: 10px;
-            text-align: center; /* Text in der Mitte */
-            vertical-align: middle;
-        }
-        #extension-lightbox thead {
-            background-color: #f2f2f2;
-            font-weight: bold;
-            border-bottom: 2px solid #ccc;
-        }
-        #extension-lightbox .extension-button,
-        #extension-lightbox .build-selected-button,
-        #extension-lightbox .build-all-button,
-        #extension-lightbox .spoiler-button {
-            color: var(--button-text-color);
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 4px;
-            font-size: 14px;
-            transition: background-color 0.2s ease-in-out;
-        }
-        #extension-lightbox .extension-button {
-            background-color: var(--button-background-color);
-        }
-        #extension-lightbox .extension-button:hover:enabled {
-            background-color: var(--button-hover-background-color);
-        }
-        #extension-lightbox .build-selected-button {
-            background-color: blue;
-        }
-        #extension-lightbox .build-all-button {
-            background-color: red;
-        }
-        #extension-lightbox .build-selected-button:hover:enabled,
-        #extension-lightbox .build-all-button:hover:enabled {
-            filter: brightness(90%);
-        }
-        #extension-lightbox .spoiler-button {
-            background-color: green;
-        }
-        #extension-lightbox .extension-button:disabled,
-        #extension-lightbox .build-selected-button:disabled,
-        #extension-lightbox .build-all-button:disabled {
-            background-color: gray !important;
-            cursor: not-allowed;
-        }
-        #extension-lightbox .spoiler-content {
-            display: none;
-        }
-        #extension-lightbox .extension-search {
-            width: 100%;
-            padding: 8px;
-            margin: 10px 0;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            font-size: 14px;
-        }
-        .currency-selection {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            border: 1px solid black;
-            padding: 20px;
-            z-index: 10001;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            border-radius: 8px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .currency-button {
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 4px;
-            border: none;
-            color: #ffffff;
-        }
-        .credits-button {
-            background-color: #28a745;
-        }
-        .coins-button {
-            background-color: #dc3545;
-        }
-        .cancel-button {
-            background-color: #6c757d;
-            color: #ffffff;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-        #open-extension-helper {
-            cursor: pointer;
-        }
-        #extension-settings-btn {
-           background: var(--background-color);
-           color: var(--text-color);
-           border: 1px solid var(--border-color);
-           margin: 10px;
-           padding: 6px 16px;
-           border-radius: 5px;
-           cursor: pointer;
-           transition: background 0.2s;
-       }
-       #extension-settings-btn:hover {
-          background: var(--border-color);
-       }
-       #extension-settings-lightbox .settings-content {
+  :root {
+    --background-color: #f2f2f2;
+    --text-color: #000;
+    --border-color: #ccc;
+    --button-background-color: #007bff;
+    --button-text-color: #fff;
+    --button-hover-background-color: #0056b3;
+  }
+
+  #extension-lightbox, #extension-settings-lightbox {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+  }
+
+  #extension-lightbox {
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  #extension-lightbox-content, .settings-content {
     background: var(--background-color);
     color: var(--text-color);
-    border-radius: 8px;
-    padding: 32px;
-    max-height: 80vh;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 20px;
+    width: 80%;
+    max-width: 1500px;
+    max-height: 90vh;
     overflow-y: auto;
-    min-width: 350px;
-    /* NEU: Breite begrenzen, mittig ausrichten */
+    text-align: center;
+    position: relative;
+  }
+
+  .settings-content {
+    padding: 32px;
     max-width: 600px;
     width: 95vw;
-    margin: 0 auto;
+    min-width: 350px;
+    border-radius: 8px;
     box-sizing: border-box;
-    border: 1px solid var(--border-color);
-}
+  }
 
-#extension-settings-lightbox {
+  #close-extension-helper, .cancel-button {
+    position: absolute;
+    top: 10px; right: 10px;
+    background: red;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 16px;
+  }
+
+  th, td {
+    border: 1px solid var(--border-color);
+    padding: 10px;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  thead {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    border-bottom: 2px solid #ccc;
+  }
+
+  .extension-button, .build-selected-button, .build-all-button, .spoiler-button {
+    color: var(--button-text-color);
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background-color 0.2s ease-in-out;
+  }
+
+  .extension-button { background: var(--button-background-color); }
+  .extension-button:hover:enabled { background: var(--button-hover-background-color); }
+
+  .build-selected-button { background: blue; }
+  .build-all-button { background: red; }
+  .build-selected-button:hover:enabled,
+  .build-all-button:hover:enabled { filter: brightness(90%); }
+
+  .spoiler-button { background: green; }
+
+  .extension-button:disabled,
+  .build-selected-button:disabled,
+  .build-all-button:disabled {
+    background: gray !important;
+    cursor: not-allowed;
+  }
+
+  .spoiler-content { display: none; }
+
+  .extension-search {
+    width: 100%;
+    padding: 8px;
+    margin: 10px 0;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 14px;
+  }
+
+  .currency-selection {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border: 1px solid black;
+    padding: 20px;
+    z-index: 10001;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    /* Das Modal nimmt nur so viel Platz ein, wie nötig */
-}
-      #extension-settings-lightbox .tab-ext-btn {
-          background-color: #28a745;
-          color: #fff;
-          border: none;
-          padding: 8px 20px;
-          border-radius: 5px;
-          margin-right: 10px;
-          cursor: pointer;
-          font-weight: bold;
-          transition: background 0.2s;
-      }
-      #extension-settings-lightbox .tab-ext-btn:hover,
-      #extension-settings-lightbox .tab-ext-btn.active {
-          background-color: #218838;
-      }
-      #extension-settings-lightbox .tab-lager-btn {
-          background-color: #ffc107;
-          color: #333;
-          border: none;
-          padding: 8px 20px;
-          border-radius: 5px;
-          cursor: pointer;
-          font-weight: bold;
-          transition: background 0.2s;
-      }
-      #extension-settings-lightbox .tab-lager-btn:hover,
-      #extension-settings-lightbox .tab-lager-btn.active {
-          background-color: #e0a800;
-      }
-     .tab-header {
+    flex-direction: column;
+    gap: 10px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .currency-button, .credits-button, .coins-button, .cancel-button {
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 4px;
+    border: none;
+    color: #fff;
+  }
+
+  .credits-button { background: #28a745; }
+  .coins-button { background: #dc3545; }
+  .cancel-button { background: #6c757d; }
+
+  #open-extension-helper, #extension-settings-btn {
+    cursor: pointer;
+  }
+
+  #extension-settings-btn {
+    background: var(--background-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    margin: 10px;
+    padding: 6px 16px;
+    border-radius: 5px;
+    transition: background 0.2s;
+  }
+
+  #extension-settings-btn:hover {
+    background: var(--border-color);
+  }
+
+  .tab-ext-btn, .tab-lager-btn {
+    padding: 8px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+    border: none;
+  }
+
+  .tab-ext-btn {
+    background: #28a745;
+    color: #fff;
+  }
+
+  .tab-ext-btn:hover, .tab-ext-btn.active {
+    background: #218838;
+  }
+
+  .tab-lager-btn {
+    background: #ffc107;
+    color: #333;
+  }
+
+  .tab-lager-btn:hover, .tab-lager-btn.active {
+    background: #e0a800;
+  }
+
+  .tab-header {
     display: flex;
     gap: 2px;
     margin-bottom: 6px;
     flex-wrap: wrap;
-}
-.tab-btn {
+  }
+
+  .tab-btn {
     padding: 2px 10px;
     font-size: 13px;
-    border: 1px solid var(--border-color, #ccc);
-    background: var(--background-color, #eee);
-    color: var(--text-color, #333);
+    border: 1px solid var(--border-color);
+    background: var(--background-color);
+    color: var(--text-color);
     cursor: pointer;
     border-radius: 4px 4px 0 0;
     font-weight: 500;
@@ -505,50 +475,49 @@
     outline: none;
     transition: background 0.2s, color 0.2s;
     margin-bottom: -1px;
-}
-.tab-btn.active {
-    background: var(--background-color, #fff);
-    color: var(--text-color, #000);
-    border-bottom: 1px solid var(--background-color, #fff);
+  }
+
+  .tab-btn.active {
+    background: #28a745;
+    color: #fff;
+    border-bottom: 1px solid var(--background-color);
     z-index: 1;
-}
-.tab-bodies .tab-body {
+  }
+
+  .tab-bodies .tab-body {
     display: none;
     padding: 8px 0;
-}
-.tab-bodies .tab-body.active {
+  }
+
+  .tab-bodies .tab-body.active {
     display: block;
-}
-.tab-btn.active {
-    background: #28a745; /* sattes Grün */
-    color: #fff;
-    border-bottom: 1px solid var(--background-color, #fff);
-    z-index: 1;
-}
-.checkbox-columns {
+  }
+
+  .checkbox-columns {
     display: flex;
     gap: 24px;
     justify-content: flex-start;
-}
-.checkbox-column {
+  }
+
+  .checkbox-column {
     display: flex;
     flex-direction: column;
     min-width: 200px;
-    /* Passe min-width nach Wunsch an */
-}
-.checkbox-column label {
+  }
+
+  .checkbox-column label {
     margin-bottom: 2px;
-    padding: 0;
     display: flex;
     align-items: center;
     gap: 4px;
     font-size: 14px;
     line-height: 1.2;
-}
-.checkbox-column br {
-    display: none; /* Zeilenumbruch vermeiden, da Flexbox verwendet wird */
-}
-    `;
+  }
+
+  .checkbox-column br {
+    display: none;
+  }
+`;
 
     // Funktion zum Abrufen der Benutzereinstellungen vom API
     async function getUserMode() {
@@ -642,11 +611,13 @@
     lightbox.innerHTML = `
     <div id="extension-lightbox-content">
         <button id="close-extension-helper">Schließen</button>
-        <h2>Erweiterungs-Manager</h2>
+        <h3>🚒🏗️ <strong>Herzlich willkommen beim ultimativen Ausbau-Assistenten für eure Wachen!</strong> 🚒🏗️</h3>
+<h2>
+    <br>Dem Erweiterungs-Manager
+</h2>
 <h5>
-    <br>Herzlich willkommen beim ultimativen Ausbau-Assistenten für eure Wachen! 🚒🏗️
     <br>
-    <br>Dieses kleine Helferlein zeigt euch genau, wo noch Platz nach oben ist: Welche Erweiterungen und Lagerräume eurer Gebäude fehlen – und mit nur einem Klick geht’s direkt in den Ausbau. Einfacher wird’s nicht!
+    <br>Dieses kleine Helferlein zeigt euch genau, wo noch Platz in euren Wachen ist: Welche <strong>Erweiterungen</strong> und <strong>Lagerräume</strong> noch möglich sind – und mit nur ein paar Klicks geht’s direkt in den Ausbau. Einfacher wird’s nicht!
     <br>
     <br>Und das Beste: Über den
     <button id="extension-settings-btn-inline" style="background:#007bff; color:white; padding:4px 10px; border:none; border-radius:4px; font-size:0.9em; cursor:pointer;">
@@ -654,13 +625,13 @@
     </button>
     -Button könnt ihr festlegen, welche Erweiterungen und Lagerräume euch pro Wachen-Typ angezeigt werden – ganz nach eurem Geschmack. Einmal gespeichert, für immer gemerkt.
     <br>
-    <br>Kleiner Hinweis am Rande: Feedback, Verbesserungsvorschläge oder Liebesbriefe zum Skript sind jederzeit im
+    <br>Kleiner Hinweis am Rande: Feedback, Verbesserungsvorschläge oder Kritik zum Skript sind jederzeit im
     <a href="https://forum.leitstellenspiel.de/index.php?thread/27856-script-erweiterungs-manager/" target="_blank" style="color:#007bff; text-decoration:none;">
         <strong>Forum</strong>
     </a> willkommen. 💌
     <br>
     <br>
-    <br>Und nun viel Erfolg beim Credits ausgeben!
+    <br>Und nun viel Spaß beim Credits oder Coins ausgeben!
     <div id="extension-list">
     Einen Moment Geduld bitte …
     <br><br>
@@ -694,24 +665,23 @@
         content.className = 'settings-content';
         content.innerHTML = `
   <h4 style="margin-bottom: 10px;">
-    🛠️ Hier könnt ihr festlegen, welche Erweiterungen und Lagerräume pro Wachen-Typ angezeigt werden sollen.
+        🛠️ Hier könnt ihr festlegen, welche Erweiterungen und Lagerräume pro Wachen-Typ angezeigt werden sollen.
   </h4>
-
-    Die Auswahl wird gespeichert und beim nächsten Besuch automatisch übernommen.
+        Die Auswahl wird gespeichert und beim nächsten Besuch automatisch übernommen.
   </p>
-  <div style="margin-bottom: 10px;">
-    <button id="tab-ext-btn" class="tab-ext-btn active">Erweiterungen</button>
-    <button id="tab-lager-btn" class="tab-lager-btn">Lagerräume</button>
-  </div>
-  <div id="settings-tab-content" style="margin:20px 0;"></div>
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
-    <button id="settings-save-btn" style="background:#007bff; color:white; padding:8px 20px; border:none; border-radius:5px;">
-      💾 Speichern
-    </button>
-    <button id="settings-close-btn" style="background:#dc3545; color:white; padding:8px 20px; border:none; border-radius:5px;">
-      ✖️ Schließen
-    </button>
-  </div>
+       <div style="margin-bottom: 10px;">
+       <button id="tab-ext-btn" class="tab-ext-btn active">Erweiterungen</button>
+       <button id="tab-lager-btn" class="tab-lager-btn">Lagerräume</button>
+       </div>
+       <div id="settings-tab-content" style="margin:20px 0;"></div>
+       <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+       <button id="settings-save-btn" style="background:#007bff; color:white; padding:8px 20px; border:none; border-radius:5px;">
+       💾 Speichern
+       </button>
+       <button id="settings-close-btn" style="background:#dc3545; color:white; padding:8px 20px; border:none; border-radius:5px;">
+       ✖️ Schließen
+       </button>
+       </div>
 `;
 
         settingsBox.appendChild(content);
@@ -761,13 +731,14 @@
                         let col = Math.floor(i / itemsPerCol);
                         let id = type === 'ext'
                         ? opt.id
-                        : Object.keys(opt).find(k => k.endsWith('_containers'));
+                        : Object.keys(opt).find(k => k.endsWith('_containers') || k === 'initial_containers');
                         let lsKey = type === 'ext'
                         ? `ext_${key}_${id}`
                         : `lager_${key}_${id}`;
                         let checked = localStorage.getItem(lsKey) !== '0' ? 'checked' : '';
                         let optionName = opt.name || opt.caption || id;
                         let label = document.createElement('label');
+                        // WICHTIG: data-id für Lager!
                         label.innerHTML = `<input type="checkbox" data-key="${key}" data-id="${id}"
                       class="${type === 'ext' ? 'setting-ext' : 'setting-lager'}" ${checked}>
                     ${optionName}`;
@@ -800,6 +771,9 @@
         extBtn.onclick = () => showTab('ext');
         lagerBtn.onclick = () => showTab('lager');
 
+        // Standard: Erweiterungen anzeigen
+        showTab('ext');
+
         // Speichern
         content.querySelector('#settings-save-btn').onclick = () => {
             tabContent.querySelectorAll('.setting-ext').forEach(cb => {
@@ -807,7 +781,7 @@
                 localStorage.setItem(lsKey, cb.checked ? '1' : '0');
             });
             tabContent.querySelectorAll('.setting-lager').forEach(cb => {
-                const lsKey = `lager_${cb.dataset.key}_${cb.dataset.lager}`;
+                const lsKey = `lager_${cb.dataset.key}_${cb.dataset.id}`;
                 localStorage.setItem(lsKey, cb.checked ? '1' : '0');
             });
             settingsBox.remove();
@@ -818,9 +792,6 @@
         content.querySelector('#settings-close-btn').onclick = () => {
             settingsBox.remove();
         };
-
-        // Modal schließt bei Klick auf den Hintergrund
-        settingsBox.onclick = (e) => { if (e.target === settingsBox) settingsBox.remove(); };
     }
 
     // Button mit Dialog verknüpfen
@@ -1189,12 +1160,25 @@
             const searchInput = createSearchInput("🔍 Lagerräume durchsuchen...");
             wrapper.appendChild(searchInput);
 
+
             const { table, tbody } = createTable([
                 { html: `An- / Abwählen<br><input type="checkbox" class="select-all-checkbox" data-group="${groupKey}">` },
                 { html: 'Leitstelle' }, { html: 'Wache' }, { html: 'Lagertyp' },
                 { html: 'Kapazität' }, { html: 'Bauen mit Credits' }, { html: 'Bauen mit Coins' }
             ], groupKey);
             wrapper.appendChild(table);
+
+            // <--- HIER EINBAUEN!
+            const selectAll = table.querySelector('.select-all-checkbox');
+            if (selectAll) {
+                selectAll.addEventListener('change', function () {
+                    const checkboxes = table.querySelectorAll('.storage-checkbox');
+                    checkboxes.forEach(cb => {
+                        if (!cb.disabled && cb.offsetParent !== null) cb.checked = this.checked;
+                    });
+                    updateBuildSelectedButton();
+                });
+            }
 
             searchInput.addEventListener('input', () => {
                 filterTable(tbody, searchInput.value.toLowerCase());
@@ -1625,66 +1609,101 @@
 
     // Funktion zum Bau eines Lagerraums
     async function buildStorage(building, storageKey, currency, cost, row) {
-        // Hilfsfunktion zur Auflösung des Anzeigennamens
-        function getStorageDisplayName(key) {
-            for (const group in manualStorageRooms) {
-                const match = manualStorageRooms[group].find(entry => Object.keys(entry)[0] === key);
-                if (match) {
-                    return match.name;
+    // Gibt das passende Lagerobjekt aus manualStorageRooms zurück
+    function getStorageEntryByKey(key) {
+        for (const group in manualStorageRooms) {
+            for (const entry of manualStorageRooms[group]) {
+                const entryKey = Object.keys(entry)[0];
+                if (entryKey === key) {
+                    return { ...entry, key: entryKey };
                 }
             }
-            return key; // fallback
         }
+        return null;
+    }
 
-        const readableName = getStorageDisplayName(storageKey);
+    // Findet den nächsten noch nicht gebauten zusätzlichen Lagerraum
+    function getNextAdditionalStorage(building, groupKey) {
+        const built = new Set(building.storage_upgrades || []);
+        const entries = manualStorageRooms[groupKey] || [];
+        return entries.find(e => !built.has(Object.keys(e)[0]));
+    }
 
-        if (!canBuildStorage(building, storageKey)) {
-            alert(`Die Erweiterung "${readableName}" kann nicht gebaut werden, da die vorherige Lagererweiterung fehlt.`);
+    // Gruppenschlüssel (z. B. "0_normal", "0_small", …) aus Gebäude-Typ ermitteln
+    function getGroupKeyForBuilding(building) {
+        // Beispielhafte Logik – ggf. anpassen!
+        if (building.building_type === 5) return '5_normal'; // Rettungshubschrauber
+        if (building.level < 5) return '0_small';
+        return '0_normal';
+    }
+
+    const groupKey = getGroupKeyForBuilding(building);
+    let entry;
+
+    // Falls storageKey nur ein Platzhalter ist (z. B. "additional_containers")
+    if (storageKey === 'additional_containers') {
+        entry = getNextAdditionalStorage(building, groupKey);
+        if (!entry) {
+            alert("Alle zusätzlichen Lagerräume wurden bereits gebaut.");
             return;
         }
-
-        const csrfToken = getCSRFToken();
-        const typeName = storageKey;
-        const buildUrl = `/buildings/${building.id}/storage_upgrade/${currency}/${typeName}?redirect_building_id=${building.id}`;
-
-        await new Promise((resolve, reject) => {
-            GM_xmlhttpRequest({
-                method: 'POST',
-                url: buildUrl,
-                headers: {
-                    'X-CSRF-Token': csrfToken,
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                onload: function(response) {
-                    console.log(`Lagerraum "${typeName}" (${currency}) für Gebäude ${building.id} gebaut.`);
-
-                    // Fortschritt speichern
-                    if (!inProgressStorageUpgrades.has(building.id)) {
-                        inProgressStorageUpgrades.set(building.id, new Set());
-                    }
-                    inProgressStorageUpgrades.get(building.id).add(storageKey);
-
-                    if (row) {
-                        row.classList.add("built");
-                        row.style.backgroundColor = '#d4edda';
-                        row.style.transition = 'opacity 0.5s ease';
-                        row.style.opacity = '0.5';
-
-                        setTimeout(() => {
-                            row.remove();
-                        }, 500);
-                    }
-
-                    resolve(response);
-                },
-                onerror: function(error) {
-                    console.error(`Fehler beim Bauen von "${readableName}" in Gebäude ${building.id}.`, error);
-                    alert(`Der Lagerbau "${readableName}" mit ${currency} ist fehlgeschlagen. Bitte versuche es erneut.`);
-                    reject(error);
-                }
-            });
-        });
+    } else {
+        entry = getStorageEntryByKey(storageKey);
+        if (!entry) {
+            alert(`Unbekannte Lagererweiterung: ${storageKey}`);
+            return;
+        }
     }
+
+    const typeName = entry.key;
+    const readableName = entry.name;
+
+    if (!canBuildStorage(building, typeName)) {
+        alert(`Die Erweiterung "${readableName}" kann nicht gebaut werden, da die vorherige Lagererweiterung fehlt.`);
+        return;
+    }
+
+    const csrfToken = getCSRFToken();
+    const buildUrl = `/buildings/${building.id}/storage_upgrade/${currency}/${typeName}?redirect_building_id=${building.id}`;
+
+    await new Promise((resolve, reject) => {
+        GM_xmlhttpRequest({
+            method: 'POST',
+            url: buildUrl,
+            headers: {
+                'X-CSRF-Token': csrfToken,
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            onload: function (response) {
+                console.log(`Lagerraum "${typeName}" (${currency}) für Gebäude ${building.id} gebaut.`);
+
+                if (!inProgressStorageUpgrades.has(building.id)) {
+                    inProgressStorageUpgrades.set(building.id, new Set());
+                }
+                inProgressStorageUpgrades.get(building.id).add(typeName);
+
+                if (row) {
+                    row.classList.add("built");
+                    row.style.backgroundColor = '#d4edda';
+                    row.style.transition = 'opacity 0.5s ease';
+                    row.style.opacity = '0.5';
+
+                    setTimeout(() => {
+                        row.remove();
+                    }, 1000);
+                }
+
+                resolve(response);
+            },
+            onerror: function (error) {
+                console.error(`Fehler beim Bauen von "${readableName}" in Gebäude ${building.id}.`, error);
+                alert(`Der Lagerbau "${readableName}" mit ${currency} ist fehlgeschlagen. Bitte versuche es erneut.`);
+                reject(error);
+            }
+        });
+    });
+}
+
 
     // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1812,25 +1831,41 @@
         // Gesamtkosten berechnen (du kannst auch Coins analog hinzufügen, falls gewünscht)
         let totalCredits = 0;
         // Erweiterungen
+        // Erweiterungen bauen
         for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
-            extensions.forEach(extensionId => {
-                const row = document.querySelector(`.row-${buildingId}-${extensionId}`);
-                if (row) {
-                    totalCredits += parseInt(row.querySelector('.credit-button').innerText.replace(/\D/g, ''), 10);
+            const building = buildingsData.find(b => String(b.id) === String(buildingId));
+            if (!building) continue;
+
+            for (const extensionId of extensions) {
+                try {
+                    await buildExtension(building, extensionId, 'credits');
+                    builtCount++;
+                    updateProgressBar(progressFill, progressText, builtCount, totalCount);
+                } catch (e) {
+                    console.error(`Fehler beim Bau der Erweiterung ${extensionId} für Gebäude ${buildingId}`, e);
                 }
-            });
+            }
         }
-        // Lagerräume
+
+        // Lagerräume bauen
         for (const [buildingId, lagerKeys] of Object.entries(selectedStorageByBuilding)) {
-            lagerKeys.forEach(lagerKey => {
-                // Finde die passende Tabellenzeile und Kosten
-                const selector = `.storage-checkbox[data-building-id="${buildingId}"][data-lager-key="${lagerKey}"]`;
-                const row = document.querySelector(selector)?.closest('tr');
-                if (row) {
-                    totalCredits += parseInt(row.querySelector('.credit-button').innerText.replace(/\D/g, ''), 10);
+            const building = buildingsData.find(b => String(b.id) === String(buildingId));
+            if (!building) continue;
+
+            for (const lagerKey of lagerKeys) {
+                try {
+                    await buildStorage(building, lagerKey, 'credits');
+                    builtCount++;
+                    updateProgressBar(progressFill, progressText, builtCount, totalCount);
+                } catch (e) {
+                    console.error(`Fehler beim Bau des Lagerraums ${lagerKey} für Gebäude ${buildingId}`, e);
                 }
-            });
+            }
         }
+
+        // Nach Abschluss:
+        alert('Bau abgeschlossen!');
+        updateBuildSelectedButton();
 
         // Prüfen ob User genug Credits hat
         if (userInfo.credits < totalCredits) {
