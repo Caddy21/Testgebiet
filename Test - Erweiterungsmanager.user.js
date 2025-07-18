@@ -8,13 +8,14 @@
 // @grant        GM_xmlhttpRequest
 // @connect      api.lss-manager.de
 // @connect      leitstellenspiel.de
+// @grant        GM_getValue
+// @grant        GM_setValue
 // @icon         https://github.com/Caddy21/-docs-assets-css/raw/main/yoshi_icon__by_josecapes_dgqbro3-fullview.png
 // @run-at       document-end
 // ==/UserScript==
 
 // To-Do
 // Lagererweiterungen einbauen
-// manualExtensions verbessern um etliches Ausklammern zu verhindern und dem User weniger Arbeit zu machen
 
 (function() {
     'use strict';
@@ -220,6 +221,28 @@
 
     };
 
+    const buildingTypeNames = {
+        '0_normal': 'Feuerwache (Normal)',
+        '0_small': 'Feuerwache (Kleinwache)',
+        '1_normal': 'Feuerwehrschule',
+        '2_normal': 'Rettungswache',
+        '3_normal': 'Rettungsschule',
+        '4_normal': 'Krankenhaus',
+        '5_normal': 'Rettungshubschrauber-Station',
+        '6_normal': 'Polizeiwache (Normal)',
+        '6_small': 'Polizeiwache (Kleinwache)',
+        '8_normal': 'Polizeischule',
+        '9_normal': 'Technisches Hilfswerk',
+        '10_normal': 'Technisches Hilfswerk - Bundesschule',
+        '11_normal': 'Bereitschaftspolizei',
+        '12_normal': 'Schnelleinsatzgruppe (SEG)',
+        '13_normal': 'Polizeihubschrauber-Station',
+        '17_normal': 'Polizei-Sondereinheiten',
+        '24_normal': 'Reiterstaffel',
+        '25_normal': 'Bergrettungswache',
+        '27_normal': 'Schule für Seefahrt und Seenotrettung',
+    };
+
     // Ab hier nichts mehr ändern! (Es sei denn Ihr wisst was Ihr tut)
 
     // Funktion um die Lightbox und Stile zu erstellen
@@ -378,7 +401,228 @@
         #open-extension-helper {
             cursor: pointer;
         }
+
     `;
+
+    const SETTINGS_KEY = 'enabledExtensions';
+
+    const defaultExtensionSettings = {};
+    for (const category in manualExtensions) {
+        for (const ext of manualExtensions[category]) {
+            defaultExtensionSettings[`${category}_${ext.id}`] = true;
+        }
+    }
+
+    function getExtensionSettings() {
+        return { ...defaultExtensionSettings, ...GM_getValue(SETTINGS_KEY, {}) };
+    }
+
+    function saveExtensionSettings(settings) {
+        GM_setValue(SETTINGS_KEY, settings);
+    }
+
+    function openExtensionSettingsOverlay() {
+        const settings = getExtensionSettings();
+        const originalSettings = { ...settings };
+
+        const overlay = document.createElement('div');
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100vw';
+        overlay.style.height = '100vh';
+        overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+        overlay.style.zIndex = '10001';
+        overlay.style.overflowY = 'auto';
+
+        const panel = document.createElement('div');
+        panel.style.margin = '50px auto';
+        panel.style.padding = '20px';
+        panel.style.background = 'var(--background-color, #fff)';
+        panel.style.color = 'var(--text-color, #000)';
+        panel.style.borderRadius = '10px';
+        panel.style.maxWidth = '800px';
+
+        const close = document.createElement('button');
+        close.textContent = 'Schließen';
+        close.style.float = 'right';
+        close.style.marginBottom = '10px';
+        close.style.background = 'transparent';
+        close.style.color = 'var(--text-color, #000)';
+        close.style.border = '1px solid var(--border-color, #ccc)';
+        close.style.padding = '5px 10px';
+        close.style.borderRadius = '5px';
+        close.addEventListener('click', () => overlay.remove());
+        panel.appendChild(close);
+
+        const title = document.createElement('h2');
+        title.textContent = 'Erweiterungen verwalten';
+        panel.appendChild(title);
+
+        const form = document.createElement('form');
+
+        // Hilfsfunktion zum Aktualisieren der Checkboxen nach Änderungen am settings-Objekt
+        function updateCheckboxes() {
+            for (const input of form.querySelectorAll('input[type=checkbox][data-key]')) {
+                const key = input.dataset.key;
+                input.checked = settings[key];
+            }
+        }
+
+        for (const category in manualExtensions) {
+            const fieldset = document.createElement('fieldset');
+
+            const legend = document.createElement('legend');
+            legend.style.color = 'var(--text-color, #000)';
+            legend.style.borderBottom = '1px solid var(--border-color, #ccc)';
+            legend.style.padding = '6px 10px';
+            legend.style.marginBottom = '6px';
+            legend.style.cursor = 'pointer';
+            legend.style.userSelect = 'none';
+            legend.style.fontWeight = '600';
+            legend.style.fontSize = '0.95em';
+
+            // Chevron-Symbol
+            const chevron = document.createElement('span');
+            chevron.textContent = '▶';
+            chevron.style.marginRight = '8px';
+            chevron.style.transition = 'transform 0.2s ease';
+
+            const legendText = document.createElement('span');
+            legendText.textContent = buildingTypeNames[category] || category;
+
+            legend.appendChild(chevron);
+            legend.appendChild(legendText);
+
+            // Container für die Checkboxen
+            const contentContainer = document.createElement('div');
+            contentContainer.style.display = 'none'; // geschlossen
+            contentContainer.style.gridTemplateColumns = 'repeat(auto-fill, minmax(150px, 1fr))';
+            contentContainer.style.gap = '8px';
+            contentContainer.style.padding = '8px 0';
+
+            // Alle-An/Abwählen Checkbox im Spoiler
+            const allCheckboxLabel = document.createElement('label');
+            allCheckboxLabel.style.gridColumn = '1 / -1';
+            allCheckboxLabel.style.display = 'flex';
+            allCheckboxLabel.style.alignItems = 'center';
+            allCheckboxLabel.style.gap = '6px';
+            allCheckboxLabel.style.fontWeight = '500';
+
+            const selectAllCheckbox = document.createElement('input');
+            selectAllCheckbox.type = 'checkbox';
+            selectAllCheckbox.dataset.group = category;
+
+            const selectAllText = document.createElement('span');
+            selectAllText.textContent = 'Alle Erweiterungen an-/abwählen';
+            selectAllText.style.fontWeight = 'bold';
+            selectAllText.style.color = 'var(--primary-color, #007bff)';
+
+            allCheckboxLabel.appendChild(selectAllCheckbox);
+            allCheckboxLabel.appendChild(selectAllText);
+            contentContainer.appendChild(allCheckboxLabel);
+
+            const checkboxes = [];
+
+            manualExtensions[category].forEach(ext => {
+                const key = `${category}_${ext.id}`;
+                const label = document.createElement('label');
+                label.style.display = 'flex';
+                label.style.alignItems = 'center';
+                label.style.gap = '6px';
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = settings[key];
+                checkbox.dataset.key = key;
+
+                checkbox.addEventListener('change', () => {
+                    settings[key] = checkbox.checked;
+                    updateSelectAllCheckbox();
+                });
+
+                label.appendChild(checkbox);
+                label.append(` ${ext.name}`);
+                contentContainer.appendChild(label);
+                checkboxes.push(checkbox);
+            });
+
+            function updateSelectAllCheckbox() {
+                const allChecked = checkboxes.every(cb => cb.checked);
+                selectAllCheckbox.checked = allChecked;
+            }
+
+            selectAllCheckbox.addEventListener('change', () => {
+                checkboxes.forEach(cb => {
+                    cb.checked = selectAllCheckbox.checked;
+                    settings[cb.dataset.key] = cb.checked;
+                });
+            });
+
+            // Spoiler-Öffnen / -Schließen mit Chevron
+            legend.addEventListener('click', (e) => {
+                const isOpen = contentContainer.style.display === 'grid';
+                contentContainer.style.display = isOpen ? 'none' : 'grid';
+                chevron.textContent = isOpen ? '▶' : '▼';
+            });
+
+            updateSelectAllCheckbox();
+
+            fieldset.appendChild(legend);
+            fieldset.appendChild(contentContainer);
+            form.appendChild(fieldset);
+        }
+
+        panel.appendChild(form);
+
+        // Buttons Container
+        const btnContainer = document.createElement('div');
+        btnContainer.style.marginTop = '15px';
+        btnContainer.style.textAlign = 'right';
+
+        // Speichern Button
+        const saveBtn = document.createElement('button');
+        saveBtn.type = 'button';
+        saveBtn.textContent = 'Speichern';
+        saveBtn.style.marginRight = '10px';
+        saveBtn.style.background = 'transparent';
+        saveBtn.style.color = 'var(--text-color, #000)';
+        saveBtn.style.border = '1px solid var(--border-color, #ccc)';
+        saveBtn.style.padding = '5px 10px';
+        saveBtn.style.borderRadius = '5px';
+        saveBtn.addEventListener('click', () => {
+            saveExtensionSettings(settings);
+            alert('Einstellungen gespeichert!');
+            overlay.remove();
+        });
+        btnContainer.appendChild(saveBtn);
+
+        // Zurücksetzen Button
+        const resetBtn = document.createElement('button');
+        resetBtn.type = 'button';
+        resetBtn.textContent = 'Zurücksetzen';
+        resetBtn.style.background = 'transparent';
+        resetBtn.style.color = 'var(--text-color, #000)';
+        resetBtn.style.border = '1px solid var(--border-color, #ccc)';
+        resetBtn.style.padding = '5px 10px';
+        resetBtn.style.borderRadius = '5px';
+        resetBtn.addEventListener('click', () => {
+            for (const key in settings) {
+                settings[key] = true;
+            }
+            updateCheckboxes();
+            form.querySelectorAll('fieldset').forEach(fieldset => {
+                const selectAll = fieldset.querySelector('input[type="checkbox"][data-group]');
+                if (selectAll) selectAll.checked = true;
+            });
+        });
+        btnContainer.appendChild(resetBtn);
+
+        panel.appendChild(btnContainer);
+        overlay.appendChild(panel);
+        document.body.appendChild(overlay);
+    }
+
 
     // Funktion zum Abrufen der Benutzereinstellungen vom API
     async function getUserMode() {
@@ -465,28 +709,33 @@
     styleElement.innerHTML = styles;
     document.head.appendChild(styleElement);
 
-    // Erstellt das Lightbox-Interface
     const lightbox = document.createElement('div');
     lightbox.id = 'extension-lightbox';
     lightbox.style.display = 'none';
     lightbox.innerHTML = `
-            <div id="extension-lightbox-content">
-                <button id="close-extension-helper">Schließen</button>
-                <h2>Erweiterungs-Manager<br><h5>
-                <br>In den unteren Tabellen könnt Ihr eure Erweiterungen verwalten und über die verschiedenen Möglichkeiten in Auftraug geben.
-                <br>Feedback jeglicher Art könnt Ihr gern im Forum im entsprechenden Thread hinterlassen.
-                <br>
-                <br>
-                <br>
-                <div id="extension-list">
-                Bitte habe einen Moment Geduld!
-                <br>
-                <br>
-                Lade Gebäudedaten und erstelle die Tabellen...</div>
-            </div>
-        `;
+    <div id="extension-lightbox-content">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <button id="close-extension-helper">Schließen</button>
+            <button id="open-extension-settings" style="padding: 5px 10px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                ⚙️ Einstellungen
+            </button>
+        </div>
+        <h2>Erweiterungs-Manager</h2>
+        <h5>
+            <br>In den unteren Tabellen könnt Ihr eure Erweiterungen verwalten und über die verschiedenen Möglichkeiten in Auftrag geben.
+            <br>Feedback jeglicher Art könnt Ihr gern im Forum im entsprechenden Thread hinterlassen.
+        </h5>
+        <br>
+        <div id="extension-list">
+            Bitte habe einen Moment Geduld!
+            <br><br>
+            Lade Gebäudedaten und erstelle die Tabellen...
+        </div>
+    </div>
+`;
 
     document.body.appendChild(lightbox);
+    document.getElementById('open-extension-settings').addEventListener('click', openExtensionSettingsOverlay);
 
     const lightboxContent = lightbox.querySelector('#extension-lightbox-content');
 
@@ -714,14 +963,24 @@
             return a.building_type - b.building_type;
         });
 
+        const settings = getExtensionSettings();  // Aktuelle Einstellungen holen
+
         buildings.forEach(building => {
-            const buildingTypeKey = `${building.building_type}_${building.small_building ? 'small' : 'normal'}`;
-            const extensions = manualExtensions[buildingTypeKey];
+            // Key für Einstellungen, so wie du sie im Overlay verwendet hast
+            const baseKey = `${building.building_type}_${building.small_building ? 'small' : 'normal'}`;
+
+            const extensions = manualExtensions[baseKey];
             if (!extensions) return;
 
             const existingExtensions = new Set(building.extensions.map(e => e.type_id));
 
             const allowedExtensions = extensions.filter(extension => {
+                // Key für einzelne Extension zusammensetzen
+                const key = `${baseKey}_${extension.id}`;
+
+                // Nur Erweiterungen anzeigen, die in den Einstellungen aktiviert sind
+                if (!settings[key]) return false;
+
                 if (isExtensionLimitReached(building, extension.id)) return false;
 
                 if (building.building_type === 6 && building.small_building) {
@@ -742,32 +1001,11 @@
             });
 
             if (allowedExtensions.length > 0) {
-                if (!buildingGroups[buildingTypeKey]) buildingGroups[buildingTypeKey] = [];
-                buildingGroups[buildingTypeKey].push({ building, missingExtensions: allowedExtensions });
+                if (!buildingGroups[baseKey]) buildingGroups[baseKey] = [];
+                buildingGroups[baseKey].push({ building, missingExtensions: allowedExtensions });
             }
         });
 
-        const buildingTypeNames = {
-            '0_normal': 'Feuerwache (Normal)',
-            '0_small': 'Feuerwache (Kleinwache)',
-            '1_normal': 'Feuerwehrschule',
-            '2_normal': 'Rettungswache',
-            '3_normal': 'Rettungsschule',
-            '4_normal': 'Krankenhaus',
-            '5_normal': 'Rettungshubschrauber-Station',
-            '6_normal': 'Polizeiwache (Normal)',
-            '6_small': 'Polizeiwache (Kleinwache)',
-            '8_normal': 'Polizeischule',
-            '9_normal': 'Technisches Hilfswerk',
-            '10_normal': 'Technisches Hilfswerk - Bundesschule',
-            '11_normal': 'Bereitschaftspolizei',
-            '12_normal': 'Schnelleinsatzgruppe (SEG)',
-            '13_normal': 'Polizeihubschrauber-Station',
-            '17_normal': 'Polizei-Sondereinheiten',
-            '24_normal': 'Reiterstaffel',
-            '25_normal': 'Bergrettungswache',
-            '27_normal': 'Schule für Seefahrt und Seenotrettung',
-        };
 
         Object.keys(buildingGroups).forEach(groupKey => {
             const group = buildingGroups[groupKey];
@@ -1834,5 +2072,7 @@
         // Entferne die Fortschrittsanzeige, wenn alle Erweiterungen gebaut wurden
         removeProgressBar(progressContainer);
     }
+
+    // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 })();
