@@ -21,37 +21,37 @@
     'use strict';
     // Manuelle Konfiguration der Erweiterungen
 
+    // Hier könnt Ihr auswählen welche Erweiterung in der Tabelle angezeigt werden soll, dafür die nicht benötigten einfach mit // ausklammern.
     const manualExtensions = {
         '0_normal': [ // Feuerwache (normal)
             { id: 0, name: 'Rettungsdienst', cost: 100000, coins: 20 },
-            { id: 6, name: 'Wasserrettung', cost: 400000, coins: 25 },
-            { id: 8, name: 'Flughafenfeuerwehr', cost: 300000, coins: 25 },
-            { id: 13, name: 'Werkfeuerwehr', cost: 100000, coins: 20 },
-            { id: 14, name: 'Netzersatzanlage 50', cost: 100000, coins: 20 },
-            { id: 15, name: 'Netzersatzanlage 200', cost: 100000, coins: 20 },
-            { id: 16, name: 'Großlüfter', cost: 75000, coins: 15 },
-            { id: 18, name: 'Drohneneinheit', cost: 150000, coins: 25 },
-            { id: 19, name: 'Verpflegungsdienst', cost: 200000, coins: 25 },
-            { id: 25, name: 'Bahnrettung', cost: 125000, coins: 25 },
-            { id: 9, name: 'Großwache', cost: 1000000, coins: 50 },
             { id: 1, name: '1te AB-Stellplatz', cost: 100000, coins: 20 },
             { id: 2, name: '2te AB-Stellplatz', cost: 100000, coins: 20 },
             { id: 3, name: '3te AB-Stellplatz', cost: 100000, coins: 20 },
             { id: 4, name: '4te AB-Stellplatz', cost: 100000, coins: 20 },
             { id: 5, name: '5te AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 6, name: 'Wasserrettung', cost: 400000, coins: 25 },
             { id: 7, name: '6te AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 8, name: 'Flughafenfeuerwehr', cost: 300000, coins: 25 },
+            { id: 9, name: 'Großwache', cost: 1000000, coins: 50 },
             { id: 10, name: '7te AB-Stellplatz', cost: 100000, coins: 20 },
             { id: 11, name: '8te AB-Stellplatz', cost: 100000, coins: 20 },
             { id: 12, name: '9te AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 13, name: 'Werkfeuerwehr', cost: 100000, coins: 20 },
+            { id: 14, name: 'Netzersatzanlage 50', cost: 100000, coins: 20 },
+            { id: 15, name: 'Netzersatzanlage 200', cost: 100000, coins: 20 },
+            { id: 16, name: 'Großlüfter', cost: 75000, coins: 15 },
             { id: 17, name: '10te AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 26, name: '11te Ab-Stellplatz', cost: 150000, coins: 20 },
-            { id: 27, name: '12te Ab-Stellplatz', cost: 150000, coins: 20 },
+            { id: 18, name: 'Drohneneinheit', cost: 150000, coins: 25 },
+            { id: 19, name: 'Verpflegungsdienst', cost: 200000, coins: 25 },
             { id: 20, name: '1te Anhänger Stellplatz', cost: 75000, coins: 15 },
             { id: 21, name: '2te Anhänger Stellplatz', cost: 75000, coins: 15 },
             { id: 22, name: '3te Anhänger Stellplatz', cost: 75000, coins: 15 },
             { id: 23, name: '4te Anhänger Stellplatz', cost: 75000, coins: 15 },
             { id: 24, name: '5te Anhänger Stellplatz', cost: 75000, coins: 15 },
-
+            { id: 25, name: 'Bahnrettung', cost: 125000, coins: 25 },
+            { id: 26, name: '11te Ab-Stellplatz', cost: 150000, coins: 20 },
+            { id: 27, name: '12te Ab-Stellplatz', cost: 150000, coins: 20 },
         ],
 
         '1_normal': [ // Feuerwehrschule
@@ -125,7 +125,7 @@
             { id: 9, name: 'Fachruppe Schwere Bergung', cost: 200000, coins: 25 },
             { id: 10, name: 'Fachgruppe Elektroversorgung', cost: 200000, coins: 25 },
             { id: 11, name: 'Ortsverband-Mannschaftstransportwagen', cost: 50000, coins: 15 },
-            { id: 12, name: 'Trupp Unbemannte Luftfahrtsysteme', cost: 50000, coins: 15 },
+            { id: 12, name: 'Trupp Unbenannte Luftfahrtsysteme', cost: 50000, coins: 15 },
             { id: 13, name: 'Fachzug Führung und Kommunikation', cost: 300000, coins: 25 },
         ],
 
@@ -171,9 +171,10 @@
             { id: 4, name: 'Diensthundestaffel', cost: 100000, coins: 10 },
 
         ],
-
         '0_small': [ // Feuerwehr (Kleinwache)
             { id: 0, name: 'Rettungsdienst', cost: 100000, coins: 20 },
+            { id: 1, name: '1te AB-Stellplatz', cost: 100000, coins: 20 },
+            { id: 2, name: '2te AB-Stellplatz', cost: 100000, coins: 20 },
             { id: 6, name: 'Wasserrettung', cost: 400000, coins: 25 },
             { id: 8, name: 'Flughafenfeuerwehr', cost: 300000, coins: 25 },
             { id: 13, name: 'Werkfeuerwehr', cost: 100000, coins: 20 },
@@ -181,11 +182,9 @@
             { id: 16, name: 'Großlüfter', cost: 75000, coins: 25 },
             { id: 18, name: 'Drohneneinheit', cost: 150000, coins: 25 },
             { id: 19, name: 'Verpflegungsdienst', cost: 200000, coins: 25 },
-            { id: 25, name: 'Bahnrettung', cost: 125000, coins: 25 },
-            { id: 1, name: '1te AB-Stellplatz', cost: 100000, coins: 20 },
-            { id: 2, name: '2te AB-Stellplatz', cost: 100000, coins: 20 },
             { id: 20, name: '1te Anhänger Stellplatz', cost: 75000, coins: 15 },
             { id: 21, name: '2te Anhänger Stellplatz', cost: 75000, coins: 15 },
+            { id: 25, name: 'Bahnrettung', cost: 125000, coins: 25 },
         ],
 
         '6_small': [ // Polizei (Kleinwache)
@@ -220,304 +219,166 @@
         ],
 
     };
-    const manualStorageRooms = {
-        '0_normal': [
-            { initial_containers: 10, name: 'Lagerraum', cost: 25000, coins: 10, additionalStorage: 40 },
-            { additional_containers_1: 20, name: '1te Zusätzlicher Lagerraum', cost: 50000, coins: 10, additionalStorage: 30 },
-            { additional_containers_1: 30, name: '2te Zusätzlicher Lagerraum', cost: 50000, coins: 10, additionalStorage: 30 },
-            { additional_containers_3: 40, name: '3te Zusätzlicher Lagerraum', cost: 50000, coins: 10, additionalStorage: 30 },
-            { additional_containers_4: 50, name: '4te Zusätzlicher Lagerraum', cost: 50000, coins: 10, additionalStorage: 30 },
-            { additional_containers_5: 60, name: '5te Zusätzlicher Lagerraum', cost: 50000, coins: 10, additionalStorage: 30 },
-            { additional_containers_6: 70, name: '6te Zusätzlicher Lagerraum', cost: 50000, coins: 10, additionalStorage: 30 },
-        ],
 
-        '0_small': [
-            { initial_containers: 10, name: 'Lagerraum', cost: 25000, coins: 10, additionalStorage: 40 },
-            { additional_containers_1: 20, name: '1te Zusätzlicher Lagerraum', cost: 50000, coins: 10, additionalStorage: 30 },
-            { additional_containers_2: 30, name: '2te Zusätzlicher Lagerraum', cost: 50000, coins: 10, additionalStorage: 30 },
+    // Ab hier nichts mehr ändern! (Es sei denn Ihr wisst was Ihr tut)
 
-        ],
-
-        '5_normal': [ // Rettungshubschrauber-Station
-            {initial_containers: 40, name: 'Lagerraum', cost: 25000, coins: 10, additionalStorage: 40 },
-
-        ],
-
-    };
-    const buildingTypeNames = {
-        '0_normal': 'Feuerwache (Normal)',
-        '0_small': 'Feuerwache (Kleinwache)',
-        '1_normal': 'Feuerwehrschule',
-        '2_normal': 'Rettungswache',
-        '3_normal': 'Rettungsschule',
-        '4_normal': 'Krankenhaus',
-        '5_normal': 'Rettungshubschrauber-Station',
-        '6_normal': 'Polizeiwache (Normal)',
-        '6_small': 'Polizeiwache (Kleinwache)',
-        '8_normal': 'Polizeischule',
-        '9_normal': 'Technisches Hilfswerk',
-        '10_normal': 'Technisches Hilfswerk - Bundesschule',
-        '11_normal': 'Bereitschaftspolizei',
-        '12_normal': 'Schnelleinsatzgruppe (SEG)',
-        '13_normal': 'Polizeihubschrauber-Station',
-        '17_normal': 'Polizei-Sondereinheiten',
-        '24_normal': 'Reiterstaffel',
-        '25_normal': 'Bergrettungswache',
-        '27_normal': 'Schule für Seefahrt und Seenotrettung',
-    };
-    const inProgressStorageUpgrades = new Map();
+    // Funktion um die Lightbox und Stile zu erstellen
     const styles = `
-  :root {
-    --background-color: #f2f2f2;
-    --text-color: #000;
-    --border-color: #ccc;
-    --button-background-color: #007bff;
-    --button-text-color: #fff;
-    --button-hover-background-color: #0056b3;
-  }
-
-  #extension-lightbox, #extension-settings-lightbox {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 10000;
-  }
-
-  #extension-lightbox {
-    background: rgba(0, 0, 0, 0.5);
-  }
-
-  #extension-lightbox-content, .settings-content {
-    background: var(--background-color);
-    color: var(--text-color);
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    padding: 20px;
-    width: 80%;
-    max-width: 1500px;
-    max-height: 90vh;
-    overflow-y: auto;
-    text-align: center;
-    position: relative;
-  }
-
-  .settings-content {
-    padding: 32px;
-    max-width: 600px;
-    width: 95vw;
-    min-width: 350px;
-    border-radius: 8px;
-    box-sizing: border-box;
-  }
-
-  #close-extension-helper, .cancel-button {
-    position: absolute;
-    top: 10px; right: 10px;
-    background: red;
-    color: #fff;
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
-    border-radius: 4px;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-    font-size: 16px;
-  }
-
-  th, td {
-    border: 1px solid var(--border-color);
-    padding: 10px;
-    text-align: center;
-    vertical-align: middle;
-  }
-
-  thead {
-    background-color: #f2f2f2;
-    font-weight: bold;
-    border-bottom: 2px solid #ccc;
-  }
-
-  .extension-button, .build-selected-button, .build-all-button, .spoiler-button {
-    color: var(--button-text-color);
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
-    border-radius: 4px;
-    font-size: 14px;
-    transition: background-color 0.2s ease-in-out;
-  }
-
-  .extension-button { background: var(--button-background-color); }
-  .extension-button:hover:enabled { background: var(--button-hover-background-color); }
-
-  .build-selected-button { background: blue; }
-  .build-all-button { background: red; }
-  .build-selected-button:hover:enabled,
-  .build-all-button:hover:enabled { filter: brightness(90%); }
-
-  .spoiler-button { background: green; }
-
-  .extension-button:disabled,
-  .build-selected-button:disabled,
-  .build-all-button:disabled {
-    background: gray !important;
-    cursor: not-allowed;
-  }
-
-  .spoiler-content { display: none; }
-
-  .extension-search {
-    width: 100%;
-    padding: 8px;
-    margin: 10px 0;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    font-size: 14px;
-  }
-
-  .currency-selection {
-    position: fixed;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    border: 1px solid black;
-    padding: 20px;
-    z-index: 10001;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    border-radius: 8px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  }
-
-  .currency-button, .credits-button, .coins-button, .cancel-button {
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 4px;
-    border: none;
-    color: #fff;
-  }
-
-  .credits-button { background: #28a745; }
-  .coins-button { background: #dc3545; }
-  .cancel-button { background: #6c757d; }
-
-  #open-extension-helper, #extension-settings-btn {
-    cursor: pointer;
-  }
-
-  #extension-settings-btn {
-    background: var(--background-color);
-    color: var(--text-color);
-    border: 1px solid var(--border-color);
-    margin: 10px;
-    padding: 6px 16px;
-    border-radius: 5px;
-    transition: background 0.2s;
-  }
-
-  #extension-settings-btn:hover {
-    background: var(--border-color);
-  }
-
-  .tab-ext-btn, .tab-lager-btn {
-    padding: 8px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background 0.2s;
-    border: none;
-  }
-
-  .tab-ext-btn {
-    background: #28a745;
-    color: #fff;
-  }
-
-  .tab-ext-btn:hover, .tab-ext-btn.active {
-    background: #218838;
-  }
-
-  .tab-lager-btn {
-    background: #ffc107;
-    color: #333;
-  }
-
-  .tab-lager-btn:hover, .tab-lager-btn.active {
-    background: #e0a800;
-  }
-
-  .tab-header {
-    display: flex;
-    gap: 2px;
-    margin-bottom: 6px;
-    flex-wrap: wrap;
-  }
-
-  .tab-btn {
-    padding: 2px 10px;
-    font-size: 13px;
-    border: 1px solid var(--border-color);
-    background: var(--background-color);
-    color: var(--text-color);
-    cursor: pointer;
-    border-radius: 4px 4px 0 0;
-    font-weight: 500;
-    min-width: 60px;
-    min-height: 24px;
-    outline: none;
-    transition: background 0.2s, color 0.2s;
-    margin-bottom: -1px;
-  }
-
-  .tab-btn.active {
-    background: #28a745;
-    color: #fff;
-    border-bottom: 1px solid var(--background-color);
-    z-index: 1;
-  }
-
-  .tab-bodies .tab-body {
-    display: none;
-    padding: 8px 0;
-  }
-
-  .tab-bodies .tab-body.active {
-    display: block;
-  }
-
-  .checkbox-columns {
-    display: flex;
-    gap: 24px;
-    justify-content: flex-start;
-  }
-
-  .checkbox-column {
-    display: flex;
-    flex-direction: column;
-    min-width: 200px;
-  }
-
-  .checkbox-column label {
-    margin-bottom: 2px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 14px;
-    line-height: 1.2;
-  }
-
-  .checkbox-column br {
-    display: none;
-  }
-`;
+        #extension-lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+        #extension-lightbox #extension-lightbox-content {
+            background: var(--background-color, white);
+            color: var(--text-color, black);
+            border: 1px solid var(--border-color, black);
+            padding: 20px;
+            width: 80%;
+            max-width: 1500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            text-align: center;
+            border-radius: 10px; /* Abgerundete Ecken */
+        }
+        #extension-lightbox #close-extension-helper {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        :root {
+            --background-color: #f2f2f2;
+            --text-color: #000;
+            --border-color: #ccc;
+            --button-background-color: #007bff;
+            --button-text-color: #ffffff;
+            --button-hover-background-color: #0056b3;
+        }
+        #extension-lightbox table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+        #extension-lightbox th {
+            text-align: center;
+            vertical-align: middle;
+        }
+        #extension-lightbox table td {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            text-align: center; /* Text in der Mitte */
+            vertical-align: middle;
+        }
+        #extension-lightbox thead {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            border-bottom: 2px solid #ccc;
+        }
+        #extension-lightbox .extension-button,
+        #extension-lightbox .build-selected-button,
+        #extension-lightbox .build-all-button,
+        #extension-lightbox .spoiler-button {
+            color: var(--button-text-color);
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: background-color 0.2s ease-in-out;
+        }
+        #extension-lightbox .extension-button {
+            background-color: var(--button-background-color);
+        }
+        #extension-lightbox .extension-button:hover:enabled {
+            background-color: var(--button-hover-background-color);
+        }
+        #extension-lightbox .build-selected-button {
+            background-color: blue;
+        }
+        #extension-lightbox .build-all-button {
+            background-color: red;
+        }
+        #extension-lightbox .build-selected-button:hover:enabled,
+        #extension-lightbox .build-all-button:hover:enabled {
+            filter: brightness(90%);
+        }
+        #extension-lightbox .spoiler-button {
+            background-color: green;
+        }
+        #extension-lightbox .extension-button:disabled,
+        #extension-lightbox .build-selected-button:disabled,
+        #extension-lightbox .build-all-button:disabled {
+            background-color: gray !important;
+            cursor: not-allowed;
+        }
+        #extension-lightbox .spoiler-content {
+            display: none;
+        }
+        #extension-lightbox .extension-search {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .currency-selection {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border: 1px solid black;
+            padding: 20px;
+            z-index: 10001;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .currency-button {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            border: none;
+            color: #ffffff;
+        }
+        .credits-button {
+            background-color: #28a745;
+        }
+        .coins-button {
+            background-color: #dc3545;
+        }
+        .cancel-button {
+            background-color: #6c757d;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        #open-extension-helper {
+            cursor: pointer;
+        }
+    `;
 
     // Funktion zum Abrufen der Benutzereinstellungen vom API
     async function getUserMode() {
@@ -609,193 +470,25 @@
     lightbox.id = 'extension-lightbox';
     lightbox.style.display = 'none';
     lightbox.innerHTML = `
-    <div id="extension-lightbox-content">
-        <button id="close-extension-helper">Schließen</button>
-        <h3>🚒🏗️ <strong>Herzlich willkommen beim ultimativen Ausbau-Assistenten für eure Wachen!</strong> 🚒🏗️</h3>
-<h2>
-    <br>Dem Erweiterungs-Manager
-</h2>
-<h5>
-    <br>
-    <br>Dieses kleine Helferlein zeigt euch genau, wo noch Platz in euren Wachen ist: Welche <strong>Erweiterungen</strong> und <strong>Lagerräume</strong> noch möglich sind – und mit nur ein paar Klicks geht’s direkt in den Ausbau. Einfacher wird’s nicht!
-    <br>
-    <br>Und das Beste: Über den
-    <button id="extension-settings-btn-inline" style="background:#007bff; color:white; padding:4px 10px; border:none; border-radius:4px; font-size:0.9em; cursor:pointer;">
-        Einstellungen
-    </button>
-    -Button könnt ihr festlegen, welche Erweiterungen und Lagerräume euch pro Wachen-Typ angezeigt werden – ganz nach eurem Geschmack. Einmal gespeichert, für immer gemerkt.
-    <br>
-    <br>Kleiner Hinweis am Rande: Feedback, Verbesserungsvorschläge oder Kritik zum Skript sind jederzeit im
-    <a href="https://forum.leitstellenspiel.de/index.php?thread/27856-script-erweiterungs-manager/" target="_blank" style="color:#007bff; text-decoration:none;">
-        <strong>Forum</strong>
-    </a> willkommen. 💌
-    <br>
-    <br>
-    <br>Und nun viel Spaß beim Credits oder Coins ausgeben!
-    <div id="extension-list">
-    Einen Moment Geduld bitte …
-    <br><br>
-    Gebäudedaten werden geladen, Kaffee kocht – gleich geht's los!
-    </div>
-</h5>
-
-`;
+            <div id="extension-lightbox-content">
+                <button id="close-extension-helper">Schließen</button>
+                <h2>Erweiterungs-Manager<br><h5>
+                <br>In den unteren Tabellen könnt Ihr eure Erweiterungen verwalten und über die verschiedenen Möglichkeiten in Auftraug geben.
+                <br>Feedback jeglicher Art könnt Ihr gern im Forum im entsprechenden Thread hinterlassen.
+                <br>
+                <br>
+                <br>
+                <div id="extension-list">
+                Bitte habe einen Moment Geduld!
+                <br>
+                <br>
+                Lade Gebäudedaten und erstelle die Tabellen...</div>
+            </div>
+        `;
 
     document.body.appendChild(lightbox);
 
     const lightboxContent = lightbox.querySelector('#extension-lightbox-content');
-
-    // Einstellungen-Button erstellen und ins Lightbox einfügen
-    const settingsButton = document.getElementById('extension-settings-btn-inline');
-    settingsButton.onclick = openSettingsDialog;
-
-    // Funktion für das Einstellungs-Dialog
-    function openSettingsDialog() {
-        // Falls bereits geöffnet, altes schließen
-        let settingsBox = document.getElementById('extension-settings-lightbox');
-        if (settingsBox) settingsBox.remove();
-
-        settingsBox = document.createElement('div');
-        settingsBox.id = 'extension-settings-lightbox';
-        settingsBox.style = `
-        position: fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.7); z-index:10001; display:flex; align-items:center; justify-content:center;
-    `;
-
-        const content = document.createElement('div');
-        content.className = 'settings-content';
-        content.innerHTML = `
-  <h4 style="margin-bottom: 10px;">
-        🛠️ Hier könnt ihr festlegen, welche Erweiterungen und Lagerräume pro Wachen-Typ angezeigt werden sollen.
-  </h4>
-        Die Auswahl wird gespeichert und beim nächsten Besuch automatisch übernommen.
-  </p>
-       <div style="margin-bottom: 10px;">
-       <button id="tab-ext-btn" class="tab-ext-btn active">Erweiterungen</button>
-       <button id="tab-lager-btn" class="tab-lager-btn">Lagerräume</button>
-       </div>
-       <div id="settings-tab-content" style="margin:20px 0;"></div>
-       <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
-       <button id="settings-save-btn" style="background:#007bff; color:white; padding:8px 20px; border:none; border-radius:5px;">
-       💾 Speichern
-       </button>
-       <button id="settings-close-btn" style="background:#dc3545; color:white; padding:8px 20px; border:none; border-radius:5px;">
-       ✖️ Schließen
-       </button>
-       </div>
-`;
-
-        settingsBox.appendChild(content);
-        document.body.appendChild(settingsBox);
-
-        // Tab-Logik (optisch und inhaltlich)
-        const extBtn = content.querySelector('#tab-ext-btn');
-        const lagerBtn = content.querySelector('#tab-lager-btn');
-        const tabContent = content.querySelector('#settings-tab-content');
-
-        function showTab(type) {
-            tabContent.innerHTML = "";
-            let allKeys = type === 'ext' ? Object.keys(manualExtensions) : Object.keys(manualStorageRooms);
-
-            // Tab-Header (wie gehabt)
-            let tabHeader = document.createElement('div');
-            tabHeader.className = 'tab-header';
-            allKeys.forEach((key, idx) => {
-                let btn = document.createElement('button');
-                btn.className = 'tab-btn' + (idx === 0 ? ' active' : '');
-                btn.textContent = buildingTypeNames[key] || key;
-                btn.dataset.key = key;
-                tabHeader.appendChild(btn);
-            });
-            tabContent.appendChild(tabHeader);
-
-            // Tab-Inhalte
-            let tabBodies = document.createElement('div');
-            tabBodies.className = 'tab-bodies';
-
-            allKeys.forEach((key, idx) => {
-                let body = document.createElement('div');
-                body.className = 'tab-body' + (idx === 0 ? ' active' : '');
-                body.dataset.key = key;
-
-                let options = (type === 'ext' ? manualExtensions[key] : manualStorageRooms[key]) || [];
-                if (options.length > 0) {
-                    // In zwei Spalten aufteilen, wenn mehr als 11 Optionen
-                    let colCount = options.length > 11 ? 2 : 1;
-                    let itemsPerCol = Math.ceil(options.length / colCount);
-                    let columns = [];
-                    for (let c = 0; c < colCount; c++) {
-                        columns[c] = document.createElement('div');
-                        columns[c].className = 'checkbox-column';
-                    }
-                    options.forEach((opt, i) => {
-                        let col = Math.floor(i / itemsPerCol);
-                        let id = type === 'ext'
-                        ? opt.id
-                        : Object.keys(opt).find(k => k.endsWith('_containers') || k === 'initial_containers');
-                        let lsKey = type === 'ext'
-                        ? `ext_${key}_${id}`
-                        : `lager_${key}_${id}`;
-                        let checked = localStorage.getItem(lsKey) !== '0' ? 'checked' : '';
-                        let optionName = opt.name || opt.caption || id;
-                        let label = document.createElement('label');
-                        // WICHTIG: data-id für Lager!
-                        label.innerHTML = `<input type="checkbox" data-key="${key}" data-id="${id}"
-                      class="${type === 'ext' ? 'setting-ext' : 'setting-lager'}" ${checked}>
-                    ${optionName}`;
-                        columns[col].appendChild(label);
-                        columns[col].appendChild(document.createElement('br'));
-                    });
-                    let columnsContainer = document.createElement('div');
-                    columnsContainer.className = 'checkbox-columns';
-                    columns.forEach(col => columnsContainer.appendChild(col));
-                    body.appendChild(columnsContainer);
-                } else {
-                    body.innerHTML = '<em>Keine Optionen</em>';
-                }
-                tabBodies.appendChild(body);
-            });
-            tabContent.appendChild(tabBodies);
-
-            // Tab-Logik
-            tabHeader.addEventListener('click', function(e) {
-                if (e.target.classList.contains('tab-btn')) {
-                    tabHeader.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-                    e.target.classList.add('active');
-                    let key = e.target.dataset.key;
-                    tabBodies.querySelectorAll('.tab-body').forEach(div => {
-                        div.classList.toggle('active', div.dataset.key === key);
-                    });
-                }
-            });
-        }
-        extBtn.onclick = () => showTab('ext');
-        lagerBtn.onclick = () => showTab('lager');
-
-        // Standard: Erweiterungen anzeigen
-        showTab('ext');
-
-        // Speichern
-        content.querySelector('#settings-save-btn').onclick = () => {
-            tabContent.querySelectorAll('.setting-ext').forEach(cb => {
-                const lsKey = `ext_${cb.dataset.key}_${cb.dataset.id}`;
-                localStorage.setItem(lsKey, cb.checked ? '1' : '0');
-            });
-            tabContent.querySelectorAll('.setting-lager').forEach(cb => {
-                const lsKey = `lager_${cb.dataset.key}_${cb.dataset.id}`;
-                localStorage.setItem(lsKey, cb.checked ? '1' : '0');
-            });
-            settingsBox.remove();
-            location.reload();
-        };
-
-        // Nur schließen (ohne speichern)
-        content.querySelector('#settings-close-btn').onclick = () => {
-            settingsBox.remove();
-        };
-    }
-
-    // Button mit Dialog verknüpfen
-    settingsButton.onclick = openSettingsDialog;
 
     // Darkmode oder Whitemode anwenden
     function applyTheme() {
@@ -1007,329 +700,319 @@
 
     // Funktion um die Tabellen mit Daten zu füllen
     async function renderMissingExtensions(buildings) {
+    const userInfo = await getUserCredits();
+    const list = document.getElementById('extension-list');
+    list.innerHTML = '';
 
-        // Prüft, ob eine Erweiterung angezeigt werden soll
-        function isExtensionEnabled(key, id) {
-            // Standard: Sichtbar, solange nicht explizit im localStorage auf "0"
-            return localStorage.getItem(`ext_${key}_${id}`) !== '0';
+    buildingGroups = {};
+    buildingsData = buildings;
+
+    buildings.sort((a, b) => {
+        if (a.building_type === b.building_type) {
+            return a.caption.localeCompare(b.caption);
         }
+        return a.building_type - b.building_type;
+    });
 
-        // Prüft, ob ein Lager angezeigt werden soll
-        function isLagerEnabled(key, lagerKey) {
-            // Standard: Sichtbar, solange nicht explizit im localStorage auf "0"
-            return localStorage.getItem(`lager_${key}_${lagerKey}`) !== '0';
-        }
-        const userInfo = await getUserCredits();
-        const list = document.getElementById('extension-list');
-        list.innerHTML = ''; // Lösche den Inhalt der Lightbox
+    buildings.forEach(building => {
+        const buildingTypeKey = `${building.building_type}_${building.small_building ? 'small' : 'normal'}`;
+        const extensions = manualExtensions[buildingTypeKey];
+        if (!extensions) return;
 
-        // Setze die globalen Variablen zurück
-        buildingGroups = {};
-        buildingsData = buildings;
+        const existingExtensions = new Set(building.extensions.map(e => e.type_id));
 
-        buildings.sort((a, b) => {
-            if (a.building_type === b.building_type) {
-                return a.caption.localeCompare(b.caption);
+        const allowedExtensions = extensions.filter(extension => {
+            if (isExtensionLimitReached(building, extension.id)) return false;
+
+            if (building.building_type === 6 && building.small_building) {
+                const forbidden = [10, 11, 12, 13];
+                if (forbidden.some(id => existingExtensions.has(id))) {
+                    return !forbidden.includes(extension.id);
+                }
             }
-            return a.building_type - b.building_type;
+
+            if (building.building_type === 0 && building.small_building) {
+                const forbidden = [0, 6, 8, 13, 14, 16, 18, 19, 25];
+                if (forbidden.some(id => existingExtensions.has(id))) {
+                    return !forbidden.includes(extension.id);
+                }
+            }
+
+            return !existingExtensions.has(extension.id);
         });
 
-        buildings.forEach(building => {
-            console.log('StorageUpgrades:', building.caption, building.storageUpgrades);
-            const buildingTypeKey = `${building.building_type}_${building.small_building ? 'small' : 'normal'}`;
-            // Erweiterungen gemäß User-Einstellungen filtern
-            const extensionsRaw = manualExtensions[buildingTypeKey];
-            if (!extensionsRaw) return;
-            const extensions = extensionsRaw.filter(ext => isExtensionEnabled(buildingTypeKey, ext.id));
+        if (allowedExtensions.length > 0) {
+            if (!buildingGroups[buildingTypeKey]) buildingGroups[buildingTypeKey] = [];
+            buildingGroups[buildingTypeKey].push({ building, missingExtensions: allowedExtensions });
+        }
+    });
 
-            const existingExtensions = new Set(building.extensions.map(e => e.type_id));
+    const buildingTypeNames = {
+        '0_normal': 'Feuerwache (Normal)',
+        '0_small': 'Feuerwache (Kleinwache)',
+        '1_normal': 'Feuerwehrschule',
+        '2_normal': 'Rettungswache',
+        '3_normal': 'Rettungsschule',
+        '4_normal': 'Krankenhaus',
+        '5_normal': 'Rettungshubschrauber-Station',
+        '6_normal': 'Polizeiwache (Normal)',
+        '6_small': 'Polizeiwache (Kleinwache)',
+        '8_normal': 'Polizeischule',
+        '9_normal': 'Technisches Hilfswerk',
+        '10_normal': 'Technisches Hilfswerk - Bundesschule',
+        '11_normal': 'Bereitschaftspolizei',
+        '12_normal': 'Schnelleinsatzgruppe (SEG)',
+        '13_normal': 'Polizeihubschrauber-Station',
+        '17_normal': 'Polizei-Sondereinheiten',
+        '24_normal': 'Reiterstaffel',
+        '25_normal': 'Bergrettungswache',
+        '27_normal': 'Schule für Seefahrt und Seenotrettung',
+    };
 
-            const allowedExtensions = extensions.filter(extension => {
-                if (isExtensionLimitReached(building, extension.id)) {
-                    return false;
-                }
+    Object.keys(buildingGroups).forEach(groupKey => {
+        const group = buildingGroups[groupKey];
+        const buildingType = buildingTypeNames[groupKey] || 'Unbekannt';
 
-                // Spezifische Erweiterungen ausblenden, wenn bereits eine der relevanten Erweiterungen vorhanden ist
-                if (building.building_type === 6 && building.small_building) { // Polizeiwache (Kleinwache)
-                    const forbiddenExtensions = [10, 11, 12, 13];
-                    if (forbiddenExtensions.some(id => existingExtensions.has(id))) {
-                        return !forbiddenExtensions.includes(extension.id);
-                    }
-                }
+        const buildingHeader = document.createElement('h4');
+        buildingHeader.textContent = buildingType;
+        buildingHeader.classList.add('building-header');
+        list.appendChild(buildingHeader);
 
-                if (building.building_type === 0 && building.small_building) { // Feuerwache (Kleinwache)
-                    const forbiddenExtensions = [0, 6, 8, 13, 14, 16, 18, 19, 25];
-                    if (forbiddenExtensions.some(id => existingExtensions.has(id))) {
-                        return !forbiddenExtensions.includes(extension.id);
-                    }
-                }
+        const buttonContainer = document.createElement('div');
+        buttonContainer.style.display = 'flex';
+        buttonContainer.style.gap = '10px';
+        buttonContainer.style.justifyContent = 'center';
+        buttonContainer.style.alignItems = 'center';
 
-                return !existingExtensions.has(extension.id);
-            });
+        const spoilerButton = document.createElement('button');
+        spoilerButton.textContent = 'Erweiterungen anzeigen';
+        spoilerButton.classList.add('btn', 'spoiler-button');
+        buttonContainer.appendChild(spoilerButton);
 
-            if (allowedExtensions.length > 0 || ['0_normal', '0_small', '5_normal'].includes(buildingTypeKey)) {
-                if (!buildingGroups[buildingTypeKey]) {
-                    buildingGroups[buildingTypeKey] = [];
-                }
-                buildingGroups[buildingTypeKey].push({ building, missingExtensions: allowedExtensions });
-            }
+        const buildSelectedButton = document.createElement('button');
+        buildSelectedButton.textContent = 'Ausgewählte Erweiterungen bauen';
+        buildSelectedButton.classList.add('btn', 'build-selected-button');
+        buildSelectedButton.disabled = true;
+        buildSelectedButton.onclick = () => buildSelectedExtensions();
+        buttonContainer.appendChild(buildSelectedButton);
+
+        const buildAllButton = document.createElement('button');
+        buildAllButton.textContent = 'Sämtliche Erweiterungen bei allen Wachen bauen';
+        buildAllButton.classList.add('btn', 'build-all-button');
+        buildAllButton.onclick = () => showCurrencySelectionForAll(groupKey);
+        buttonContainer.appendChild(buildAllButton);
+
+        list.appendChild(buttonContainer);
+
+        const contentWrapper = document.createElement('div');
+        contentWrapper.className = 'spoiler-content';
+        contentWrapper.style.display = 'none';
+
+        spoilerButton.addEventListener('click', () => {
+            const visible = contentWrapper.style.display === 'block';
+            contentWrapper.style.display = visible ? 'none' : 'block';
+            spoilerButton.textContent = visible ? 'Erweiterungen anzeigen' : 'Erweiterungen ausblenden';
         });
 
-        function createHeader(titleText) {
-            const header = document.createElement('h4');
-            header.textContent = titleText;
-            header.classList.add('building-header');
-            return header;
-        }
+        const table = document.createElement('table');
+        table.innerHTML = `
+      <thead style="background-color: #f2f2f2; font-weight: bold; border-bottom: 2px solid #ccc;">
+        <tr>
+          <th style="padding: 10px; text-align: center;">Alle An- / Abwählen</th>
+          <th>Leitstellen</th>
+          <th>Wachen</th>
+          <th>Baubare Erweiterungen</th>
+          <th>Bauen mit Credits</th>
+          <th>Bauen mit Coins</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+      `;
 
-        function createButton(text, classList, onClick, styles = {}) {
-            const button = document.createElement('button');
-            button.textContent = text;
-            button.classList.add('btn', ...classList);
-            Object.assign(button.style, styles);
-            if (onClick) button.onclick = onClick;
-            return button;
-        }
+        const tbody = table.querySelector('tbody');
+        const filters = {}; // für kombinierte Filterung
+        const filterRow = document.createElement('tr');
+        const filterElements = {}; // speichert Dropdown-Elemente zum Zurücksetzen
 
-        function createTable(headers, groupKey) {
-            const table = document.createElement('table');
-            table.innerHTML = `
-        <thead style="background-color: #f2f2f2; font-weight: bold; border-bottom: 2px solid #ccc;">
-            <tr>
-                ${headers.map(h => `<th style="${h.style || 'padding: 10px; text-align: center; vertical-align: middle;'}">${h.html}</th>`).join('')}
-            </tr>
-        </thead>
-        <tbody></tbody>
-    `;
-            return { table, tbody: table.querySelector('tbody') };
-        }
+        // Checkbox-Zelle in der Filterzeile
+        const selectAllCell = document.createElement('th');
+        selectAllCell.style.textAlign = 'center';
+        const selectAllCheckbox = document.createElement('input');
+        selectAllCheckbox.type = 'checkbox';
+        selectAllCheckbox.className = 'select-all-checkbox';
+        selectAllCheckbox.dataset.group = groupKey;
+        selectAllCell.appendChild(selectAllCheckbox);
+        filterRow.appendChild(selectAllCell);
 
-        function createSearchInput(placeholderText) {
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.placeholder = placeholderText;
-            Object.assign(input.style, {
-                width: '100%',
-                marginBottom: '10px',
-                padding: '5px',
-                fontSize: '14px',
-                display: 'block'
-            });
-            return input;
-        }
-
-        // Hilfsfunktionen
-        function createRow(cells, rowClass = '', dataAttributes = {}) {
-            const row = document.createElement('tr');
-            if (rowClass) row.className = rowClass;
-            Object.entries(dataAttributes).forEach(([key, value]) => row.dataset[key] = value);
-
-            cells.forEach(content => {
-                const td = document.createElement('td');
-                td.style.textAlign = 'center';
-                td.style.verticalAlign = 'middle';
-                if (content instanceof HTMLElement) td.appendChild(content);
-                else td.textContent = content;
-                row.appendChild(td);
+        // Funktion für Dropdowns mit kombinierten Filtern
+        function createDropdownFilter(options, placeholder, columnIndex) {
+            const cell = document.createElement('th');
+            const select = document.createElement('select');
+            select.innerHTML = `<option value="">🔽 ${placeholder}</option>`;
+            [...new Set(options)].sort().forEach(opt => {
+                const option = document.createElement('option');
+                option.value = opt;
+                option.textContent = opt;
+                select.appendChild(option);
             });
 
-            return row;
+            select.addEventListener('change', () => {
+                if (select.value === '') {
+                    delete filters[columnIndex];
+                } else {
+                    filters[columnIndex] = select.value;
+                }
+                applyAllFilters(table, filters);
+                updateSelectAllCheckboxState();
+            });
+
+            filterElements[columnIndex] = select;
+            cell.appendChild(select);
+            return cell;
         }
 
-        function createSpoilerWrapper(button, wrapper, showText, hideText) {
-            button.addEventListener('click', () => {
-                const visible = wrapper.style.display === 'block';
-                wrapper.style.display = visible ? 'none' : 'block';
-                button.textContent = visible ? showText : hideText;
+        const leitstellen = group.map(g => getLeitstelleName(g.building));
+        const wachen = group.map(g => g.building.caption);
+        const erweiterungen = group.flatMap(g => g.missingExtensions.map(e => e.name));
+
+        filterRow.appendChild(createDropdownFilter(leitstellen, 'Leitstelle', 1));
+        filterRow.appendChild(createDropdownFilter(wachen, 'Wache', 2));
+        filterRow.appendChild(createDropdownFilter(erweiterungen, 'Erweiterung', 3));
+
+        // Filter zurücksetzen Button in 4. Spalte (Bauen mit Credits)
+        const resetCell = document.createElement('th');
+        resetCell.style.textAlign = 'center';
+        const resetButton = document.createElement('button');
+        resetButton.textContent = 'Filter zurücksetzen';
+        resetButton.classList.add('btn', 'btn-sm', 'btn-primary');
+        resetButton.style.padding = '2px 6px';
+        resetButton.style.fontSize = '0.8em';
+        resetButton.style.borderRadius = '0.25rem';
+        resetButton.style.height = 'auto';
+        resetButton.onclick = () => {
+            Object.keys(filterElements).forEach(i => {
+                filterElements[i].selectedIndex = 0;
             });
-        }
+            Object.keys(filters).forEach(k => delete filters[k]);
+            applyAllFilters(table, filters);
+            updateSelectAllCheckboxState();
+        };
+        resetCell.appendChild(resetButton);
+        filterRow.appendChild(resetCell);
 
-        function addStorageRoomsSection(group, groupKey, buttonContainer, list) {
-            const storageGroup = manualStorageRooms[groupKey];
-            if (!storageGroup) return;
+        // Letzte Spalte (Bauen mit Coins) leer lassen
+        filterRow.appendChild(document.createElement('th'));
 
-            const storageButton = createButton('Lagerräume anzeigen', ['spoiler-button'], null, {
-                backgroundColor: '#ffc107', color: 'black'
+        table.querySelector('thead').appendChild(filterRow);
+
+        selectAllCheckbox.addEventListener('change', () => {
+            const rows = tbody.querySelectorAll('tr');
+            rows.forEach(row => {
+                if (row.style.display !== 'none') {
+                    const checkbox = row.querySelector('.extension-checkbox');
+                    if (checkbox && !checkbox.disabled) {
+                        checkbox.checked = selectAllCheckbox.checked;
+                    }
+                }
             });
-            buttonContainer.insertBefore(storageButton, buttonContainer.children[1]);
+            updateBuildSelectedButton();
+            updateSelectAllCheckboxState();
+        });
 
-            const wrapper = document.createElement('div');
-            wrapper.className = 'spoiler-content';
-            wrapper.style.display = 'none';
+        group.forEach(({ building, missingExtensions }) => {
+            missingExtensions.forEach(extension => {
+                if (isExtensionLimitReached(building, extension.id)) return;
 
-            const searchInput = createSearchInput("🔍 Lagerräume durchsuchen...");
-            wrapper.appendChild(searchInput);
+                const row = document.createElement('tr');
 
-
-            const { table, tbody } = createTable([
-                { html: `An- / Abwählen<br><input type="checkbox" class="select-all-checkbox" data-group="${groupKey}">` },
-                { html: 'Leitstelle' }, { html: 'Wache' }, { html: 'Lagertyp' },
-                { html: 'Kapazität' }, { html: 'Bauen mit Credits' }, { html: 'Bauen mit Coins' }
-            ], groupKey);
-            wrapper.appendChild(table);
-
-            // <--- HIER EINBAUEN!
-            const selectAll = table.querySelector('.select-all-checkbox');
-            if (selectAll) {
-                selectAll.addEventListener('change', function () {
-                    const checkboxes = table.querySelectorAll('.storage-checkbox');
-                    checkboxes.forEach(cb => {
-                        if (!cb.disabled && cb.offsetParent !== null) cb.checked = this.checked;
-                    });
+                const checkboxCell = document.createElement('td');
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'extension-checkbox';
+                checkbox.dataset.buildingId = building.id;
+                checkbox.dataset.extensionId = extension.id;
+                checkbox.disabled = userInfo.credits < extension.cost && userInfo.coins < extension.coins;
+                checkbox.addEventListener('change', () => {
                     updateBuildSelectedButton();
+
                 });
-            }
+                checkboxCell.appendChild(checkbox);
+                row.appendChild(checkboxCell);
 
-            searchInput.addEventListener('input', () => {
-                filterTable(tbody, searchInput.value.toLowerCase());
-            });
+                const leitstelleCell = document.createElement('td');
+                leitstelleCell.textContent = getLeitstelleName(building);
+                row.appendChild(leitstelleCell);
 
-            group.forEach(({ building }) => {
-                storageGroup
-                    .filter(storage => {
-                    // Lager-Key erkennen (initial_containers oder additional_containers_X)
-                    const lagerKey = Object.keys(storage).find(k => k.endsWith('_containers') || k === 'initial_containers');
-                    return isLagerEnabled(groupKey, lagerKey);
-                })
-                    .forEach(storage => {
-                    const lagerKey = Object.keys(storage).find(k => k.endsWith('_containers') || k === 'initial_containers');
-                    const canBuild = canBuildStorage(building, lagerKey);
+                const nameCell = document.createElement('td');
+                nameCell.textContent = building.caption;
+                row.appendChild(nameCell);
 
-                    // Checkbox
-                    const checkbox = document.createElement('input');
-                    checkbox.type = 'checkbox';
-                    checkbox.className = 'storage-checkbox';
-                    checkbox.dataset.buildingId = building.id;
-                    checkbox.dataset.lagerKey = lagerKey;
-                    checkbox.disabled = !canBuild;
-                    checkbox.dataset.group = groupKey;
+                const extensionCell = document.createElement('td');
+                extensionCell.textContent = extension.name;
+                row.appendChild(extensionCell);
 
-                    // Bau-Buttons
-                    const creditButton = createButton(
-                        `${formatNumber(storage.cost)} Credits`,
-                        ['btn-xl', 'credit-button'],
-                        () => buildStorage(building, lagerKey, 'credits', storage.cost),
-                        { backgroundColor: '#28a745', color: 'white' }
-                    );
-                    creditButton.disabled = !canBuild;
+                const creditCell = document.createElement('td');
+                const creditButton = document.createElement('button');
+                creditButton.textContent = `${formatNumber(extension.cost)} Credits`;
+                creditButton.classList.add('btn', 'btn-xl', 'credit-button');
+                creditButton.style.backgroundColor = '#28a745';
+                creditButton.style.color = 'white';
+                creditButton.disabled = userInfo.credits < extension.cost;
+                creditButton.onclick = () => buildExtension(building, extension.id, 'credits', extension.cost, row);
+                creditCell.appendChild(creditButton);
+                row.appendChild(creditCell);
 
-                    const coinsButton = createButton(
-                        `${storage.coins} Coins`,
-                        ['btn-xl', 'coins-button'],
-                        () => buildStorage(building, lagerKey, 'coins', storage.coins),
-                        { backgroundColor: '#dc3545', color: 'white' }
-                    );
-                    coinsButton.disabled = !canBuild;
+                const coinsCell = document.createElement('td');
+                const coinsButton = document.createElement('button');
+                coinsButton.textContent = `${extension.coins} Coins`;
+                coinsButton.classList.add('btn', 'btn-xl', 'coins-button');
+                coinsButton.style.backgroundColor = '#dc3545';
+                coinsButton.style.color = 'white';
+                coinsButton.disabled = userInfo.coins < extension.coins;
+                coinsButton.onclick = () => buildExtension(building, extension.id, 'coins', extension.coins, row);
+                coinsCell.appendChild(coinsButton);
+                row.appendChild(coinsCell);
 
-                    // Tabellenzeile erzeugen
-                    const row = createRow([
-                        checkbox,
-                        getLeitstelleName(building),
-                        building.caption,
-                        storage.name,
-                        storage.additionalStorage ?? storage.initial_containers ?? "",
-                        creditButton,
-                        coinsButton
-                    ]);
-
-                    tbody.appendChild(row);
-                });
-            });
-
-            createSpoilerWrapper(storageButton, wrapper, 'Lagerräume anzeigen', 'Lagerräume ausblenden');
-            list.appendChild(wrapper);
-        }
-
-        // Hauptfunktion
-        Object.keys(buildingGroups).forEach(groupKey => {
-            const group = buildingGroups[groupKey];
-            const buildingType = buildingTypeNames[groupKey] || 'Unbekannt';
-            list.appendChild(createHeader(buildingType));
-
-            const buttonContainer = document.createElement('div');
-            Object.assign(buttonContainer.style, { display: 'flex', gap: '10px', justifyContent: 'center', alignItems: 'center' });
-            list.appendChild(buttonContainer);
-
-            const spoilerButton = createButton('Erweiterungen anzeigen', ['spoiler-button']);
-            const buildSelectedButton = createButton(
-                'Ausgewählte Erweiterungen bauen',
-                ['build-selected-button'],
-                () => buildSelectedExtensions(groupKey)
-            );
-            buildSelectedButton.dataset.group = groupKey;
-            buildSelectedButton.disabled = true;
-            const buildAllButton = createButton('Sämtliche Erweiterungen bei allen Wachen bauen', ['build-all-button'], () => showCurrencySelectionForAll(groupKey));
-
-            [spoilerButton, buildSelectedButton, buildAllButton].forEach(btn => buttonContainer.appendChild(btn));
-
-            if (['0_normal', '0_small', '5_normal'].includes(groupKey)) {
-                addStorageRoomsSection(group, groupKey, buttonContainer, list);
-            }
-
-            const contentWrapper = document.createElement('div');
-            contentWrapper.className = 'spoiler-content';
-            contentWrapper.style.display = 'none';
-            createSpoilerWrapper(spoilerButton, contentWrapper, 'Erweiterungen anzeigen', 'Erweiterungen ausblenden');
-
-            const searchInput = createSearchInput("🔍 Hier könnt Ihr nach Leistellen, Wachen oder Erweiterungen suchen...");
-            const { table, tbody } = createTable([
-                { html: `Alle An- / Abwählen<br><input type="checkbox" class="select-all-checkbox" data-group="${groupKey}">` },
-                { html: 'Leitstelle' }, { html: 'Wachen' }, { html: 'Baubare Erweiterungen' },
-                { html: 'Bauen mit Credits' }, { html: 'Bauen mit Coins' }
-            ], groupKey);
-            contentWrapper.appendChild(searchInput);
-            contentWrapper.appendChild(table);
-            list.appendChild(contentWrapper);
-
-            searchInput.addEventListener('input', () => filterTable(tbody, searchInput.value.toLowerCase()));
-
-            table.querySelector('.select-all-checkbox').addEventListener('change', function () {
-                const checkboxes = table.querySelectorAll('.extension-checkbox');
-                checkboxes.forEach(cb => {
-                    if (!cb.disabled && cb.offsetParent !== null) cb.checked = this.checked;
-                });
-                updateBuildSelectedButton();
-            });
-
-            group.forEach(({ building, missingExtensions }) => {
-                missingExtensions.forEach(extension => {
-                    if (isExtensionLimitReached(building, extension.id)) return;
-
-                    const checkbox = document.createElement('input');
-                    checkbox.type = 'checkbox';
-                    checkbox.className = 'extension-checkbox';
-                    checkbox.dataset.buildingId = building.id;
-                    checkbox.dataset.extensionId = extension.id;
-                    checkbox.disabled = userInfo.credits < extension.cost && userInfo.coins < extension.coins;
-                    checkbox.addEventListener('change', updateBuildSelectedButton);
-                    checkbox.dataset.group = groupKey;
-
-                    const creditButton = createButton(
-                        `${formatNumber(extension.cost)} Credits`,
-                        ['btn-xl', 'credit-button'],
-                        () => buildExtension(building, extension.id, 'credits', extension.cost),
-                        { backgroundColor: '#28a745', color: 'white' }
-                    );
-                    creditButton.disabled = userInfo.credits < extension.cost;
-
-                    const coinsButton = createButton(
-                        `${extension.coins} Coins`,
-                        ['btn-xl', 'coins-button'],
-                        () => buildExtension(building, extension.id, 'coins', extension.coins),
-                        { backgroundColor: '#dc3545', color: 'white' }
-                    );
-                    coinsButton.disabled = userInfo.coins < extension.coins;
-
-                    const row = createRow([
-                        checkbox, getLeitstelleName(building), building.caption, extension.name,
-                        creditButton, coinsButton
-                    ], `row-${building.id}-${extension.id}`);
-
-                    tbody.appendChild(row);
-                });
+                tbody.appendChild(row);
             });
         });
-    }
+
+        contentWrapper.appendChild(table);
+        list.appendChild(contentWrapper);
+
+        function applyAllFilters(table, filters) {
+            const rows = table.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                let visible = true;
+                Object.entries(filters).forEach(([columnIndex, value]) => {
+                    const cellText = row.children[columnIndex]?.textContent.toLowerCase().trim() || '';
+                    if (value && cellText !== value.toLowerCase()) {
+                        visible = false;
+                    }
+                });
+                row.style.display = visible ? '' : 'none';
+            });
+        }
+
+        function updateSelectAllCheckboxState() {
+            const rows = tbody.querySelectorAll('tr');
+            let total = 0;
+            let checked = 0;
+            rows.forEach(row => {
+                if (row.style.display !== 'none') {
+                    const checkbox = row.querySelector('.extension-checkbox');
+                    if (checkbox && !checkbox.disabled) {
+                        total++;
+                        if (checkbox.checked) checked++;
+                    }
+                }
+            });
+        }
+
+        updateSelectAllCheckboxState();
+        updateBuildSelectedButton();
+    });
+}
 
     // Schließen-Button-Funktionalität
     document.getElementById('close-extension-helper').addEventListener('click', () => {
@@ -1341,18 +1024,38 @@
         buildingsData = [];
     });
 
+    // Initial den Button hinzufügen
+    addMenuButton();
+
+    // Filterfunktion
+    function filterTableByDropdown(table, columnIndex, filterValue) {
+        const tbody = table.querySelector('tbody');
+        const rows = tbody.querySelectorAll('tr');
+        rows.forEach(row => {
+            const cell = row.children[columnIndex];
+            const cellText = cell?.textContent.toLowerCase() || '';
+            const match = !filterValue || cellText === filterValue.toLowerCase();
+            row.style.display = match ? '' : 'none';
+        });
+    }
+
     // Funktion zur Filterungen der Tabelleninhalten
     function filterTable(tbody, searchTerm) {
         const rows = tbody.querySelectorAll("tr");
-        searchTerm = searchTerm.toLowerCase();
 
         rows.forEach(row => {
-            const cells = Array.from(row.cells).map(cell => cell.textContent.toLowerCase());
-            const isBuilt = row.classList.contains("built");
+            const leitstelle = row.cells[1]?.textContent.toLowerCase() || "";
+            const wachenName = row.cells[2]?.textContent.toLowerCase() || "";
+            const erweiterung = row.cells[3]?.textContent.toLowerCase() || "";
+            const isBuilt = row.classList.contains("built"); // Prüft, ob bereits gebaut
 
-            const matchesSearch = cells.some(text => text.includes(searchTerm));
-
-            row.style.display = (!isBuilt && matchesSearch) ? "" : "none";
+            if (isBuilt) {
+                row.style.display = "none"; // Gebaute Zeilen bleiben unsichtbar
+            } else if (leitstelle.includes(searchTerm) || wachenName.includes(searchTerm) || erweiterung.includes(searchTerm)) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
         });
     }
 
@@ -1368,9 +1071,6 @@
         const bpolAllExtensions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; // Alle BPol-Erweiterungen
         const polSonderEinheitAllExtensions = [0, 1, 2, 3, 4]; // Alle PolSondereinheit-Erweiterungen
         const KhAllExtensions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]; // Alle Krankenhaus-Erweiterungen
-
-        const extension = building.extensions_available?.find(ext => ext.id === extensionId);
-        const extensionIdCaption = extension?.caption;
 
         // Falls Premium aktiv ist, gibt es keine Einschränkungen für THW, B-Pol, Schulen und Pol-Sondereinheit
         if (typeof !user_premium !== "undefined" && user_premium) {
@@ -1465,73 +1165,12 @@
             return false;
         }
 
-        // 🔁 Erweiterungsabhängigkeiten für Lagerraum
-        const containerDependencies = {
-            'initial_containers': null, // immer erlaubt
-            'additional_containers_1': 'initial_containers',
-            'additional_containers_2': 'additional_containers_1',
-            'additional_containers_3': 'additional_containers_2',
-            'additional_containers_4': 'additional_containers_3',
-            'additional_containers_5': 'additional_containers_4',
-            'additional_containers_6': 'additional_containers_5',
-        };
-
-        function getExtensionCaption(extensionId, building) {
-            const ext = building.extensions_available?.find(e => e.id === extensionId);
-            return ext?.caption || null;
-        }
-
-        function hasExtensionCaption(building, caption) {
-            return building.extensions.some(ext => ext.caption === caption);
-        }
-
-        const caption = getExtensionCaption(extensionId, building);
-
-        // Wenn es sich um Lagerraum-Erweiterung handelt
-        if (caption && containerDependencies.hasOwnProperty(caption)) {
-            const requiredCaption = containerDependencies[caption];
-
-            // initial_containers ist immer erlaubt (requiredCaption === null)
-            if (requiredCaption === null) return false;
-
-            // Prüfe, ob vorherige Erweiterung gebaut wurde
-            if (!hasExtensionCaption(building, requiredCaption)) return true;
-        }
-
         return false;
-    }
-
-    // Funktion zur Überprüfung zum Bau der Lagerräume
-    function canBuildStorage(building, storageKey) {
-        const buildOrder = [
-            'initial_containers',
-            'additional_containers_1',
-            'additional_containers_2',
-            'additional_containers_3',
-            'additional_containers_4',
-            'additional_containers_5',
-            'additional_containers_6'
-        ];
-
-        const index = buildOrder.indexOf(storageKey);
-        if (index === -1 || index === 0) return true;
-
-        const previousKey = buildOrder[index - 1];
-
-        // Prüfen, ob vorheriger Typ gebaut wurde oder bereits im Bau ist
-        const builtStorage = building.builtStorage || [];
-        const isAlreadyBuilt = builtStorage.includes(previousKey);
-
-        const isInProgress =
-              inProgressStorageUpgrades.has(building.id) &&
-              inProgressStorageUpgrades.get(building.id).has(previousKey);
-
-        return isAlreadyBuilt || isInProgress;
     }
 
     // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    // Anfang des Bereichs für den Bau einer Erweiterung oder eines Lager
+    // Anfang des Bereichs für den Bau einer Erweiterung in einem Gebäude
 
     // Funktion zum Bau einer Erweiterung
     async function buildExtension(building, extensionId, currency, amount, row) {
@@ -1607,102 +1246,7 @@
         });
     }
 
-    // Funktion zum Bau eines Lagerraums
-    async function buildStorage(building, storageKey, currency, cost, row) {
-    // Gibt das passende Lagerobjekt aus manualStorageRooms zurück
-    function getStorageEntryByKey(key) {
-        for (const group in manualStorageRooms) {
-            for (const entry of manualStorageRooms[group]) {
-                const entryKey = Object.keys(entry)[0];
-                if (entryKey === key) {
-                    return { ...entry, key: entryKey };
-                }
-            }
-        }
-        return null;
-    }
-
-    // Findet den nächsten noch nicht gebauten zusätzlichen Lagerraum
-    function getNextAdditionalStorage(building, groupKey) {
-        const built = new Set(building.storage_upgrades || []);
-        const entries = manualStorageRooms[groupKey] || [];
-        return entries.find(e => !built.has(Object.keys(e)[0]));
-    }
-
-    // Gruppenschlüssel (z. B. "0_normal", "0_small", …) aus Gebäude-Typ ermitteln
-    function getGroupKeyForBuilding(building) {
-        // Beispielhafte Logik – ggf. anpassen!
-        if (building.building_type === 5) return '5_normal'; // Rettungshubschrauber
-        if (building.level < 5) return '0_small';
-        return '0_normal';
-    }
-
-    const groupKey = getGroupKeyForBuilding(building);
-    let entry;
-
-    // Falls storageKey nur ein Platzhalter ist (z. B. "additional_containers")
-    if (storageKey === 'additional_containers') {
-        entry = getNextAdditionalStorage(building, groupKey);
-        if (!entry) {
-            alert("Alle zusätzlichen Lagerräume wurden bereits gebaut.");
-            return;
-        }
-    } else {
-        entry = getStorageEntryByKey(storageKey);
-        if (!entry) {
-            alert(`Unbekannte Lagererweiterung: ${storageKey}`);
-            return;
-        }
-    }
-
-    const typeName = entry.key;
-    const readableName = entry.name;
-
-    if (!canBuildStorage(building, typeName)) {
-        alert(`Die Erweiterung "${readableName}" kann nicht gebaut werden, da die vorherige Lagererweiterung fehlt.`);
-        return;
-    }
-
-    const csrfToken = getCSRFToken();
-    const buildUrl = `/buildings/${building.id}/storage_upgrade/${currency}/${typeName}?redirect_building_id=${building.id}`;
-
-    await new Promise((resolve, reject) => {
-        GM_xmlhttpRequest({
-            method: 'POST',
-            url: buildUrl,
-            headers: {
-                'X-CSRF-Token': csrfToken,
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            onload: function (response) {
-                console.log(`Lagerraum "${typeName}" (${currency}) für Gebäude ${building.id} gebaut.`);
-
-                if (!inProgressStorageUpgrades.has(building.id)) {
-                    inProgressStorageUpgrades.set(building.id, new Set());
-                }
-                inProgressStorageUpgrades.get(building.id).add(typeName);
-
-                if (row) {
-                    row.classList.add("built");
-                    row.style.backgroundColor = '#d4edda';
-                    row.style.transition = 'opacity 0.5s ease';
-                    row.style.opacity = '0.5';
-
-                    setTimeout(() => {
-                        row.remove();
-                    }, 1000);
-                }
-
-                resolve(response);
-            },
-            onerror: function (error) {
-                console.error(`Fehler beim Bauen von "${readableName}" in Gebäude ${building.id}.`, error);
-                alert(`Der Lagerbau "${readableName}" mit ${currency} ist fehlgeschlagen. Bitte versuche es erneut.`);
-                reject(error);
-            }
-        });
-    });
-}
+    // Ende des Bereichs für den Bau * einer Erweiterung * in einem Gebäude
 
 
     // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1766,156 +1310,111 @@
 
     // Funktion zum Bau der ausgewählten Erweiterungen
     async function buildSelectedExtensions() {
-        // Alle angehakten Erweiterungs- und Lagerraum-Checkboxen sammeln
-        const selectedExtensionCheckboxes = document.querySelectorAll('.extension-checkbox:checked');
-        const selectedStorageCheckboxes = document.querySelectorAll('.storage-checkbox:checked');
+        const selectedExtensions = document.querySelectorAll('.extension-checkbox:checked');
 
-        // Erweiterungen nach Gebäude gruppieren
+        // Checkboxen sofort entmarkieren
+        selectedExtensions.forEach(checkbox => {
+            checkbox.checked = false;
+        });
+
         const selectedExtensionsByBuilding = {};
-        selectedExtensionCheckboxes.forEach(checkbox => {
+
+        selectedExtensions.forEach(checkbox => {
             const buildingId = checkbox.dataset.buildingId;
             const extensionId = checkbox.dataset.extensionId;
-            if (!selectedExtensionsByBuilding[buildingId]) selectedExtensionsByBuilding[buildingId] = [];
+
+            if (!selectedExtensionsByBuilding[buildingId]) {
+                selectedExtensionsByBuilding[buildingId] = [];
+            }
             selectedExtensionsByBuilding[buildingId].push(parseInt(extensionId, 10));
         });
 
-        // Lagerräume nach Gebäude gruppieren
-        const selectedStorageByBuilding = {};
-        selectedStorageCheckboxes.forEach(checkbox => {
-            const buildingId = checkbox.dataset.buildingId;
-            const lagerKey = checkbox.dataset.lagerKey;
-            if (!selectedStorageByBuilding[buildingId]) selectedStorageByBuilding[buildingId] = [];
-            selectedStorageByBuilding[buildingId].push(lagerKey);
-        });
-
-        // Bei Kleinwachen: Validierung für maximal erlaubte Erweiterungen (wie bisher)
         for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
             const building = buildingsData.find(b => String(b.id) === String(buildingId));
-            if (!building) continue;
+
+            if (!building) continue; // Falls das Gebäude nicht gefunden wird, einfach überspringen
+
+            // **Überprüfung nur für Kleinwachen**
             if (building.small_building) {
+                // Feuerwehr Kleinwache - ungültige Kombinationen
                 if (building.building_type === 0) {
                     const invalidCombinationsFeuerwache = [0, 6, 8, 13, 14, 16, 18, 19, 25];
-                    const selectedInvalid = extensions.filter(id => invalidCombinationsFeuerwache.includes(id));
-                    if (selectedInvalid.length > 1) {
-                        showError("Für die Feuerwache (Kleinwache) darf nur eine Spezial-Erweiterung gewählt werden.");
+                    const selectedInvalidExtensionsFeuerwache = extensions.filter(extensionId => invalidCombinationsFeuerwache.includes(extensionId));
+                    if (selectedInvalidExtensionsFeuerwache.length > 1) {
+                        showError("Information zu deinem Bauvorhaben:\n\nDiese Erweiterungen für die Feuerwache (Kleinwache) können nicht zusammen gebaut werden.\n\nBitte wähle nur eine Erweiterung aus.");
+
+                        // Master-Checkbox entmarkieren & Button deaktivieren
+                        document.querySelector('.select-all-checkbox').checked = false;
                         updateBuildSelectedButton();
                         return;
+
                     }
                 }
+
+                // Polizeiwache Kleinwache - ungültige Kombinationen
                 if (building.building_type === 6) {
                     const invalidCombinationsPolizei = [10, 11, 12, 13];
-                    const selectedInvalid = extensions.filter(id => invalidCombinationsPolizei.includes(id));
-                    if (selectedInvalid.length > 1) {
-                        showError("Für die Polizeiwache (Kleinwache) darf nur eine Spezial-Erweiterung gewählt werden.");
+                    const selectedInvalidExtensionsPolizei = extensions.filter(extensionId => invalidCombinationsPolizei.includes(extensionId));
+                    if (selectedInvalidExtensionsPolizei.length > 1) {
+                        showError("Information zu deinem Bauvorhaben:\n\nDiese Erweiterungen für die Polizeiwache (Kleinwache) können nicht zusammen gebaut werden.\n\nBitte wähle nur eine Erweiterung aus.");
+
+                        // Master-Checkbox entmarkieren & Button deaktivieren
+                        document.querySelector('.select-all-checkbox').checked = false;
                         updateBuildSelectedButton();
                         return;
+
                     }
                 }
             }
         }
 
-        // Premium-Check: Bei Nicht-Premium max. 2 Erweiterungen auf einmal
+        const userInfo = await getUserCredits(); // Holt die User-Daten
+
+        // Beispiel zur Verwendung der Variable
+        if (user_premium) {
+            console.log("User is a premium member.");
+        } else {
+            console.log("User is not a premium member.");
+        }
+
+        // Fahren Sie mit der Verarbeitung fort, abhängig vom Premium-Status des Benutzers
         if (!user_premium) {
             for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
                 if (extensions.length > 2) {
-                    alert(`Ohne Premium-Account kannst du pro Gebäude nur 2 Erweiterungen gleichzeitig bauen.`);
+                    alert(`Zu viele Erweiterungen für Gebäude ${getBuildingCaption(buildingId)} ausgewählt.\n\nDa du keinen Premium-Account hast, kannst du maximal 2 Ausbauten auswählen.`);
+
+                    // Master-Checkbox entmarkieren & Button deaktivieren
+                    document.querySelector('.select-all-checkbox').checked = false;
                     updateBuildSelectedButton();
                     return;
                 }
             }
         }
 
-        // Währungsabfrage (Credits/Coins) – wir gehen davon aus, dass Erweiterungen und Lagerräume mit Credits gebaut werden sollen
-        const userInfo = await getUserCredits();
-
-        // Gesamtkosten berechnen (du kannst auch Coins analog hinzufügen, falls gewünscht)
+        // Der Rest der Verarbeitung bleibt unverändert
         let totalCredits = 0;
-        // Erweiterungen
-        // Erweiterungen bauen
+        let totalCoins = 0;
+
+        // Berechnung der Gesamtkosten
         for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
-            const building = buildingsData.find(b => String(b.id) === String(buildingId));
-            if (!building) continue;
-
-            for (const extensionId of extensions) {
-                try {
-                    await buildExtension(building, extensionId, 'credits');
-                    builtCount++;
-                    updateProgressBar(progressFill, progressText, builtCount, totalCount);
-                } catch (e) {
-                    console.error(`Fehler beim Bau der Erweiterung ${extensionId} für Gebäude ${buildingId}`, e);
-                }
-            }
-        }
-
-        // Lagerräume bauen
-        for (const [buildingId, lagerKeys] of Object.entries(selectedStorageByBuilding)) {
-            const building = buildingsData.find(b => String(b.id) === String(buildingId));
-            if (!building) continue;
-
-            for (const lagerKey of lagerKeys) {
-                try {
-                    await buildStorage(building, lagerKey, 'credits');
-                    builtCount++;
-                    updateProgressBar(progressFill, progressText, builtCount, totalCount);
-                } catch (e) {
-                    console.error(`Fehler beim Bau des Lagerraums ${lagerKey} für Gebäude ${buildingId}`, e);
-                }
-            }
-        }
-
-        // Nach Abschluss:
-        alert('Bau abgeschlossen!');
-        updateBuildSelectedButton();
-
-        // Prüfen ob User genug Credits hat
-        if (userInfo.credits < totalCredits) {
-            alert(`Du hast nicht genug Credits (${formatNumber(totalCredits)} benötigt).`);
-            updateBuildSelectedButton();
-            return;
-        }
-
-        // Währungsdialog überspringen (immer Credits) – Wenn Coins-Option gewünscht ist, bitte Bescheid geben!
-        // Fortschrittsanzeige (optional)
-        const totalCount =
-              Object.values(selectedExtensionsByBuilding).reduce((a, b) => a + b.length, 0) +
-              Object.values(selectedStorageByBuilding).reduce((a, b) => a + b.length, 0);
-
-        let builtCount = 0;
-        const { progressContainer, progressText, progressFill } = await createProgressBar(totalCount);
-
-        // Erweiterungen bauen
-        for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
-            const building = buildingsData.find(b => String(b.id) === String(buildingId));
-            for (const extensionId of extensions) {
+            extensions.forEach(extensionId => {
                 const row = document.querySelector(`.row-${buildingId}-${extensionId}`);
-                const extensionCost = row ? parseInt(row.querySelector('.credit-button').innerText.replace(/\D/g, ''), 10) : 0;
-                await buildExtension(building, extensionId, 'credits', extensionCost, row);
-                builtCount++;
-                updateProgress(builtCount, totalCount, progressText, progressFill);
-            }
+                totalCredits += parseInt(row.querySelector('.credit-button').innerText.replace(/\D/g, ''), 10);
+                totalCoins += parseInt(row.querySelector('.coins-button').innerText.replace(/\D/g, ''), 10);
+            });
         }
 
-        // Lagerräume bauen
-        for (const [buildingId, lagerKeys] of Object.entries(selectedStorageByBuilding)) {
-            const building = buildingsData.find(b => String(b.id) === String(buildingId));
-            for (const lagerKey of lagerKeys) {
-                const selector = `.storage-checkbox[data-building-id="${buildingId}"][data-lager-key="${lagerKey}"]`;
-                const row = document.querySelector(selector)?.closest('tr');
-                const storageCost = row ? parseInt(row.querySelector('.credit-button').innerText.replace(/\D/g, ''), 10) : 0;
-                await buildStorage(building, lagerKey, 'credits', storageCost, row);
-                builtCount++;
-                updateProgress(builtCount, totalCount, progressText, progressFill);
-            }
-        }
+        // Zeige Währungsauswahl, falls keine Fehler aufgetreten sind
+        showCurrencySelection(selectedExtensionsByBuilding, userInfo);
 
-        removeProgressBar(progressContainer);
+        // Alle "Select All"-Checkboxen abwählen
+        document.querySelectorAll('.select-all-checkbox').forEach(checkbox => {
+            checkbox.checked = false;
+            checkbox.dispatchEvent(new Event('change')); // Event auslösen, falls nötig
+        });
 
-        // Nach dem Bau: Tabelle aktualisieren
-        renderMissingExtensions(buildingsData);
-
-        // Checkboxen abwählen und Button deaktivieren
-        document.querySelectorAll('.extension-checkbox, .storage-checkbox').forEach(cb => cb.checked = false);
-        updateBuildSelectedButton();
+        // Sicherstellen, dass der Button deaktiviert wird
+        setTimeout(updateBuildSelectedButton, 100);
     }
 
     // Funktiom um eine Fehlermeldung auszugeben
@@ -2114,23 +1613,21 @@
         document.body.appendChild(selectionDiv);
     }
 
+    // Updatefunktion des Buttons
     function updateBuildSelectedButton() {
-        document.querySelectorAll('.build-selected-button').forEach(btn => {
-            const groupKey = btn.dataset.group;
-            const anySelected = document.querySelector(
-                `.extension-checkbox[data-group="${groupKey}"]:checked,
-             .storage-checkbox[data-group="${groupKey}"]:checked`
-            );
-            btn.disabled = !anySelected;
+        const groups = document.querySelectorAll('.spoiler-content');
+        groups.forEach(group => {
+            const buildSelectedButton = group.previousElementSibling.querySelector('.build-selected-button');
+            const selectedCheckboxes = group.querySelectorAll('.extension-checkbox:checked');
+            if (buildSelectedButton) {
+                buildSelectedButton.disabled = selectedCheckboxes.length === 0;
+            }
         });
     }
 
     // Event-Listener für Checkbox-Änderungen hinzufügen
     document.addEventListener('change', (event) => {
-        if (
-            event.target.classList.contains('extension-checkbox') ||
-            event.target.classList.contains('storage-checkbox')
-        ) {
+        if (event.target.classList.contains('extension-checkbox')) {
             updateBuildSelectedButton();
         }
     });
