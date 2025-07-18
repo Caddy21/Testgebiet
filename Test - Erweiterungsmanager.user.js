@@ -15,7 +15,6 @@
 // To-Do
 // Lagererweiterungen einbauen
 // manualExtensions verbessern um etliches Ausklammern zu verhindern und dem User weniger Arbeit zu machen
-// Suche verbessern
 
 (function() {
     'use strict';
@@ -171,6 +170,7 @@
             { id: 4, name: 'Diensthundestaffel', cost: 100000, coins: 10 },
 
         ],
+
         '0_small': [ // Feuerwehr (Kleinwache)
             { id: 0, name: 'Rettungsdienst', cost: 100000, coins: 20 },
             { id: 1, name: '1te AB-Stellplatz', cost: 100000, coins: 20 },
@@ -700,122 +700,122 @@
 
     // Funktion um die Tabellen mit Daten zu füllen
     async function renderMissingExtensions(buildings) {
-    const userInfo = await getUserCredits();
-    const list = document.getElementById('extension-list');
-    list.innerHTML = '';
+        const userInfo = await getUserCredits();
+        const list = document.getElementById('extension-list');
+        list.innerHTML = '';
 
-    buildingGroups = {};
-    buildingsData = buildings;
+        buildingGroups = {};
+        buildingsData = buildings;
 
-    buildings.sort((a, b) => {
-        if (a.building_type === b.building_type) {
-            return a.caption.localeCompare(b.caption);
-        }
-        return a.building_type - b.building_type;
-    });
-
-    buildings.forEach(building => {
-        const buildingTypeKey = `${building.building_type}_${building.small_building ? 'small' : 'normal'}`;
-        const extensions = manualExtensions[buildingTypeKey];
-        if (!extensions) return;
-
-        const existingExtensions = new Set(building.extensions.map(e => e.type_id));
-
-        const allowedExtensions = extensions.filter(extension => {
-            if (isExtensionLimitReached(building, extension.id)) return false;
-
-            if (building.building_type === 6 && building.small_building) {
-                const forbidden = [10, 11, 12, 13];
-                if (forbidden.some(id => existingExtensions.has(id))) {
-                    return !forbidden.includes(extension.id);
-                }
+        buildings.sort((a, b) => {
+            if (a.building_type === b.building_type) {
+                return a.caption.localeCompare(b.caption);
             }
-
-            if (building.building_type === 0 && building.small_building) {
-                const forbidden = [0, 6, 8, 13, 14, 16, 18, 19, 25];
-                if (forbidden.some(id => existingExtensions.has(id))) {
-                    return !forbidden.includes(extension.id);
-                }
-            }
-
-            return !existingExtensions.has(extension.id);
+            return a.building_type - b.building_type;
         });
 
-        if (allowedExtensions.length > 0) {
-            if (!buildingGroups[buildingTypeKey]) buildingGroups[buildingTypeKey] = [];
-            buildingGroups[buildingTypeKey].push({ building, missingExtensions: allowedExtensions });
-        }
-    });
+        buildings.forEach(building => {
+            const buildingTypeKey = `${building.building_type}_${building.small_building ? 'small' : 'normal'}`;
+            const extensions = manualExtensions[buildingTypeKey];
+            if (!extensions) return;
 
-    const buildingTypeNames = {
-        '0_normal': 'Feuerwache (Normal)',
-        '0_small': 'Feuerwache (Kleinwache)',
-        '1_normal': 'Feuerwehrschule',
-        '2_normal': 'Rettungswache',
-        '3_normal': 'Rettungsschule',
-        '4_normal': 'Krankenhaus',
-        '5_normal': 'Rettungshubschrauber-Station',
-        '6_normal': 'Polizeiwache (Normal)',
-        '6_small': 'Polizeiwache (Kleinwache)',
-        '8_normal': 'Polizeischule',
-        '9_normal': 'Technisches Hilfswerk',
-        '10_normal': 'Technisches Hilfswerk - Bundesschule',
-        '11_normal': 'Bereitschaftspolizei',
-        '12_normal': 'Schnelleinsatzgruppe (SEG)',
-        '13_normal': 'Polizeihubschrauber-Station',
-        '17_normal': 'Polizei-Sondereinheiten',
-        '24_normal': 'Reiterstaffel',
-        '25_normal': 'Bergrettungswache',
-        '27_normal': 'Schule für Seefahrt und Seenotrettung',
-    };
+            const existingExtensions = new Set(building.extensions.map(e => e.type_id));
 
-    Object.keys(buildingGroups).forEach(groupKey => {
-        const group = buildingGroups[groupKey];
-        const buildingType = buildingTypeNames[groupKey] || 'Unbekannt';
+            const allowedExtensions = extensions.filter(extension => {
+                if (isExtensionLimitReached(building, extension.id)) return false;
 
-        const buildingHeader = document.createElement('h4');
-        buildingHeader.textContent = buildingType;
-        buildingHeader.classList.add('building-header');
-        list.appendChild(buildingHeader);
+                if (building.building_type === 6 && building.small_building) {
+                    const forbidden = [10, 11, 12, 13];
+                    if (forbidden.some(id => existingExtensions.has(id))) {
+                        return !forbidden.includes(extension.id);
+                    }
+                }
 
-        const buttonContainer = document.createElement('div');
-        buttonContainer.style.display = 'flex';
-        buttonContainer.style.gap = '10px';
-        buttonContainer.style.justifyContent = 'center';
-        buttonContainer.style.alignItems = 'center';
+                if (building.building_type === 0 && building.small_building) {
+                    const forbidden = [0, 6, 8, 13, 14, 16, 18, 19, 25];
+                    if (forbidden.some(id => existingExtensions.has(id))) {
+                        return !forbidden.includes(extension.id);
+                    }
+                }
 
-        const spoilerButton = document.createElement('button');
-        spoilerButton.textContent = 'Erweiterungen anzeigen';
-        spoilerButton.classList.add('btn', 'spoiler-button');
-        buttonContainer.appendChild(spoilerButton);
+                return !existingExtensions.has(extension.id);
+            });
 
-        const buildSelectedButton = document.createElement('button');
-        buildSelectedButton.textContent = 'Ausgewählte Erweiterungen bauen';
-        buildSelectedButton.classList.add('btn', 'build-selected-button');
-        buildSelectedButton.disabled = true;
-        buildSelectedButton.onclick = () => buildSelectedExtensions();
-        buttonContainer.appendChild(buildSelectedButton);
-
-        const buildAllButton = document.createElement('button');
-        buildAllButton.textContent = 'Sämtliche Erweiterungen bei allen Wachen bauen';
-        buildAllButton.classList.add('btn', 'build-all-button');
-        buildAllButton.onclick = () => showCurrencySelectionForAll(groupKey);
-        buttonContainer.appendChild(buildAllButton);
-
-        list.appendChild(buttonContainer);
-
-        const contentWrapper = document.createElement('div');
-        contentWrapper.className = 'spoiler-content';
-        contentWrapper.style.display = 'none';
-
-        spoilerButton.addEventListener('click', () => {
-            const visible = contentWrapper.style.display === 'block';
-            contentWrapper.style.display = visible ? 'none' : 'block';
-            spoilerButton.textContent = visible ? 'Erweiterungen anzeigen' : 'Erweiterungen ausblenden';
+            if (allowedExtensions.length > 0) {
+                if (!buildingGroups[buildingTypeKey]) buildingGroups[buildingTypeKey] = [];
+                buildingGroups[buildingTypeKey].push({ building, missingExtensions: allowedExtensions });
+            }
         });
 
-        const table = document.createElement('table');
-        table.innerHTML = `
+        const buildingTypeNames = {
+            '0_normal': 'Feuerwache (Normal)',
+            '0_small': 'Feuerwache (Kleinwache)',
+            '1_normal': 'Feuerwehrschule',
+            '2_normal': 'Rettungswache',
+            '3_normal': 'Rettungsschule',
+            '4_normal': 'Krankenhaus',
+            '5_normal': 'Rettungshubschrauber-Station',
+            '6_normal': 'Polizeiwache (Normal)',
+            '6_small': 'Polizeiwache (Kleinwache)',
+            '8_normal': 'Polizeischule',
+            '9_normal': 'Technisches Hilfswerk',
+            '10_normal': 'Technisches Hilfswerk - Bundesschule',
+            '11_normal': 'Bereitschaftspolizei',
+            '12_normal': 'Schnelleinsatzgruppe (SEG)',
+            '13_normal': 'Polizeihubschrauber-Station',
+            '17_normal': 'Polizei-Sondereinheiten',
+            '24_normal': 'Reiterstaffel',
+            '25_normal': 'Bergrettungswache',
+            '27_normal': 'Schule für Seefahrt und Seenotrettung',
+        };
+
+        Object.keys(buildingGroups).forEach(groupKey => {
+            const group = buildingGroups[groupKey];
+            const buildingType = buildingTypeNames[groupKey] || 'Unbekannt';
+
+            const buildingHeader = document.createElement('h4');
+            buildingHeader.textContent = buildingType;
+            buildingHeader.classList.add('building-header');
+            list.appendChild(buildingHeader);
+
+            const buttonContainer = document.createElement('div');
+            buttonContainer.style.display = 'flex';
+            buttonContainer.style.gap = '10px';
+            buttonContainer.style.justifyContent = 'center';
+            buttonContainer.style.alignItems = 'center';
+
+            const spoilerButton = document.createElement('button');
+            spoilerButton.textContent = 'Erweiterungen anzeigen';
+            spoilerButton.classList.add('btn', 'spoiler-button');
+            buttonContainer.appendChild(spoilerButton);
+
+            const buildSelectedButton = document.createElement('button');
+            buildSelectedButton.textContent = 'Ausgewählte Erweiterungen bauen';
+            buildSelectedButton.classList.add('btn', 'build-selected-button');
+            buildSelectedButton.disabled = true;
+            buildSelectedButton.onclick = () => buildSelectedExtensions();
+            buttonContainer.appendChild(buildSelectedButton);
+
+            const buildAllButton = document.createElement('button');
+            buildAllButton.textContent = 'Sämtliche Erweiterungen bei allen Wachen bauen';
+            buildAllButton.classList.add('btn', 'build-all-button');
+            buildAllButton.onclick = () => showCurrencySelectionForAll(groupKey);
+            buttonContainer.appendChild(buildAllButton);
+
+            list.appendChild(buttonContainer);
+
+            const contentWrapper = document.createElement('div');
+            contentWrapper.className = 'spoiler-content';
+            contentWrapper.style.display = 'none';
+
+            spoilerButton.addEventListener('click', () => {
+                const visible = contentWrapper.style.display === 'block';
+                contentWrapper.style.display = visible ? 'none' : 'block';
+                spoilerButton.textContent = visible ? 'Erweiterungen anzeigen' : 'Erweiterungen ausblenden';
+            });
+
+            const table = document.createElement('table');
+            table.innerHTML = `
       <thead style="background-color: #f2f2f2; font-weight: bold; border-bottom: 2px solid #ccc;">
         <tr>
           <th style="padding: 10px; text-align: center;">Alle An- / Abwählen</th>
@@ -829,190 +829,191 @@
       <tbody></tbody>
       `;
 
-        const tbody = table.querySelector('tbody');
-        const filters = {}; // für kombinierte Filterung
-        const filterRow = document.createElement('tr');
-        const filterElements = {}; // speichert Dropdown-Elemente zum Zurücksetzen
+            const tbody = table.querySelector('tbody');
+            const filters = {}; // für kombinierte Filterung
+            const filterRow = document.createElement('tr');
+            const filterElements = {}; // speichert Dropdown-Elemente zum Zurücksetzen
 
-        // Checkbox-Zelle in der Filterzeile
-        const selectAllCell = document.createElement('th');
-        selectAllCell.style.textAlign = 'center';
-        const selectAllCheckbox = document.createElement('input');
-        selectAllCheckbox.type = 'checkbox';
-        selectAllCheckbox.className = 'select-all-checkbox';
-        selectAllCheckbox.dataset.group = groupKey;
-        selectAllCell.appendChild(selectAllCheckbox);
-        filterRow.appendChild(selectAllCell);
+            // Checkbox-Zelle in der Filterzeile
+            const selectAllCell = document.createElement('th');
+            selectAllCell.style.textAlign = 'center';
+            const selectAllCheckbox = document.createElement('input');
+            selectAllCheckbox.type = 'checkbox';
+            selectAllCheckbox.className = 'select-all-checkbox';
+            selectAllCheckbox.dataset.group = groupKey;
+            selectAllCell.appendChild(selectAllCheckbox);
+            filterRow.appendChild(selectAllCell);
 
-        // Funktion für Dropdowns mit kombinierten Filtern
-        function createDropdownFilter(options, placeholder, columnIndex) {
-            const cell = document.createElement('th');
-            const select = document.createElement('select');
-            select.innerHTML = `<option value="">🔽 ${placeholder}</option>`;
-            [...new Set(options)].sort().forEach(opt => {
-                const option = document.createElement('option');
-                option.value = opt;
-                option.textContent = opt;
-                select.appendChild(option);
-            });
+            // Funktion für Dropdowns mit kombinierten Filtern
+            function createDropdownFilter(options, placeholder, columnIndex) {
+                const cell = document.createElement('th');
+                const select = document.createElement('select');
+                select.innerHTML = `<option value="">🔽 ${placeholder}</option>`;
+                [...new Set(options)].sort().forEach(opt => {
+                    const option = document.createElement('option');
+                    option.value = opt;
+                    option.textContent = opt;
+                    select.appendChild(option);
+                });
 
-            select.addEventListener('change', () => {
-                if (select.value === '') {
-                    delete filters[columnIndex];
-                } else {
-                    filters[columnIndex] = select.value;
-                }
+                select.addEventListener('change', () => {
+                    if (select.value === '') {
+                        delete filters[columnIndex];
+                    } else {
+                        filters[columnIndex] = select.value;
+                    }
+                    applyAllFilters(table, filters);
+                    updateSelectAllCheckboxState();
+                });
+
+                filterElements[columnIndex] = select;
+                cell.appendChild(select);
+                return cell;
+            }
+
+            const leitstellen = group.map(g => getLeitstelleName(g.building));
+            const wachen = group.map(g => g.building.caption);
+            const erweiterungen = group.flatMap(g => g.missingExtensions.map(e => e.name));
+
+            filterRow.appendChild(createDropdownFilter(leitstellen, 'Leitstelle', 1));
+            filterRow.appendChild(createDropdownFilter(wachen, 'Wache', 2));
+            filterRow.appendChild(createDropdownFilter(erweiterungen, 'Erweiterung', 3));
+
+            // Filter zurücksetzen Button in 4. Spalte (Bauen mit Credits)
+            const resetCell = document.createElement('th');
+            resetCell.style.textAlign = 'center';
+            const resetButton = document.createElement('button');
+            resetButton.textContent = 'Filter zurücksetzen';
+            resetButton.classList.add('btn', 'btn-sm', 'btn-primary');
+            resetButton.style.padding = '2px 6px';
+            resetButton.style.fontSize = '0.8em';
+            resetButton.style.borderRadius = '0.25rem';
+            resetButton.style.height = 'auto';
+            resetButton.onclick = () => {
+                Object.keys(filterElements).forEach(i => {
+                    filterElements[i].selectedIndex = 0;
+                });
+                Object.keys(filters).forEach(k => delete filters[k]);
                 applyAllFilters(table, filters);
+                updateSelectAllCheckboxState();
+            };
+            resetCell.appendChild(resetButton);
+            filterRow.appendChild(resetCell);
+
+            // Letzte Spalte (Bauen mit Coins) leer lassen
+            filterRow.appendChild(document.createElement('th'));
+
+            table.querySelector('thead').appendChild(filterRow);
+
+            selectAllCheckbox.addEventListener('change', () => {
+                const rows = tbody.querySelectorAll('tr');
+                rows.forEach(row => {
+                    if (row.style.display !== 'none') {
+                        const checkbox = row.querySelector('.extension-checkbox');
+                        if (checkbox && !checkbox.disabled) {
+                            checkbox.checked = selectAllCheckbox.checked;
+                        }
+                    }
+                });
+                updateBuildSelectedButton();
                 updateSelectAllCheckboxState();
             });
 
-            filterElements[columnIndex] = select;
-            cell.appendChild(select);
-            return cell;
-        }
+            group.forEach(({ building, missingExtensions }) => {
+                missingExtensions.forEach(extension => {
+                    if (isExtensionLimitReached(building, extension.id)) return;
 
-        const leitstellen = group.map(g => getLeitstelleName(g.building));
-        const wachen = group.map(g => g.building.caption);
-        const erweiterungen = group.flatMap(g => g.missingExtensions.map(e => e.name));
+                    const row = document.createElement('tr');
+                    row.classList.add(`row-${building.id}-${extension.id}`);
 
-        filterRow.appendChild(createDropdownFilter(leitstellen, 'Leitstelle', 1));
-        filterRow.appendChild(createDropdownFilter(wachen, 'Wache', 2));
-        filterRow.appendChild(createDropdownFilter(erweiterungen, 'Erweiterung', 3));
+                    const checkboxCell = document.createElement('td');
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.className = 'extension-checkbox';
+                    checkbox.dataset.buildingId = building.id;
+                    checkbox.dataset.extensionId = extension.id;
+                    checkbox.disabled = userInfo.credits < extension.cost && userInfo.coins < extension.coins;
+                    checkbox.addEventListener('change', () => {
+                        updateBuildSelectedButton();
 
-        // Filter zurücksetzen Button in 4. Spalte (Bauen mit Credits)
-        const resetCell = document.createElement('th');
-        resetCell.style.textAlign = 'center';
-        const resetButton = document.createElement('button');
-        resetButton.textContent = 'Filter zurücksetzen';
-        resetButton.classList.add('btn', 'btn-sm', 'btn-primary');
-        resetButton.style.padding = '2px 6px';
-        resetButton.style.fontSize = '0.8em';
-        resetButton.style.borderRadius = '0.25rem';
-        resetButton.style.height = 'auto';
-        resetButton.onclick = () => {
-            Object.keys(filterElements).forEach(i => {
-                filterElements[i].selectedIndex = 0;
+                    });
+                    checkboxCell.appendChild(checkbox);
+                    row.appendChild(checkboxCell);
+
+                    const leitstelleCell = document.createElement('td');
+                    leitstelleCell.textContent = getLeitstelleName(building);
+                    row.appendChild(leitstelleCell);
+
+                    const nameCell = document.createElement('td');
+                    nameCell.textContent = building.caption;
+                    row.appendChild(nameCell);
+
+                    const extensionCell = document.createElement('td');
+                    extensionCell.textContent = extension.name;
+                    row.appendChild(extensionCell);
+
+                    const creditCell = document.createElement('td');
+                    const creditButton = document.createElement('button');
+                    creditButton.textContent = `${formatNumber(extension.cost)} Credits`;
+                    creditButton.classList.add('btn', 'btn-xl', 'credit-button');
+                    creditButton.style.backgroundColor = '#28a745';
+                    creditButton.style.color = 'white';
+                    creditButton.disabled = userInfo.credits < extension.cost;
+                    creditButton.onclick = () => buildExtension(building, extension.id, 'credits', extension.cost, row);
+                    creditCell.appendChild(creditButton);
+                    row.appendChild(creditCell);
+
+                    const coinsCell = document.createElement('td');
+                    const coinsButton = document.createElement('button');
+                    coinsButton.textContent = `${extension.coins} Coins`;
+                    coinsButton.classList.add('btn', 'btn-xl', 'coins-button');
+                    coinsButton.style.backgroundColor = '#dc3545';
+                    coinsButton.style.color = 'white';
+                    coinsButton.disabled = userInfo.coins < extension.coins;
+                    coinsButton.onclick = () => buildExtension(building, extension.id, 'coins', extension.coins, row);
+                    coinsCell.appendChild(coinsButton);
+                    row.appendChild(coinsCell);
+
+                    tbody.appendChild(row);
+                });
             });
-            Object.keys(filters).forEach(k => delete filters[k]);
-            applyAllFilters(table, filters);
-            updateSelectAllCheckboxState();
-        };
-        resetCell.appendChild(resetButton);
-        filterRow.appendChild(resetCell);
 
-        // Letzte Spalte (Bauen mit Coins) leer lassen
-        filterRow.appendChild(document.createElement('th'));
+            contentWrapper.appendChild(table);
+            list.appendChild(contentWrapper);
 
-        table.querySelector('thead').appendChild(filterRow);
+            function applyAllFilters(table, filters) {
+                const rows = table.querySelectorAll('tbody tr');
+                rows.forEach(row => {
+                    let visible = true;
+                    Object.entries(filters).forEach(([columnIndex, value]) => {
+                        const cellText = row.children[columnIndex]?.textContent.toLowerCase().trim() || '';
+                        if (value && cellText !== value.toLowerCase()) {
+                            visible = false;
+                        }
+                    });
+                    row.style.display = visible ? '' : 'none';
+                });
+            }
 
-        selectAllCheckbox.addEventListener('change', () => {
-            const rows = tbody.querySelectorAll('tr');
-            rows.forEach(row => {
-                if (row.style.display !== 'none') {
-                    const checkbox = row.querySelector('.extension-checkbox');
-                    if (checkbox && !checkbox.disabled) {
-                        checkbox.checked = selectAllCheckbox.checked;
+            function updateSelectAllCheckboxState() {
+                const rows = tbody.querySelectorAll('tr');
+                let total = 0;
+                let checked = 0;
+                rows.forEach(row => {
+                    if (row.style.display !== 'none') {
+                        const checkbox = row.querySelector('.extension-checkbox');
+                        if (checkbox && !checkbox.disabled) {
+                            total++;
+                            if (checkbox.checked) checked++;
+                        }
                     }
-                }
-            });
+                });
+            }
+
+            updateSelectAllCheckboxState();
             updateBuildSelectedButton();
-            updateSelectAllCheckboxState();
         });
-
-        group.forEach(({ building, missingExtensions }) => {
-            missingExtensions.forEach(extension => {
-                if (isExtensionLimitReached(building, extension.id)) return;
-
-                const row = document.createElement('tr');
-
-                const checkboxCell = document.createElement('td');
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.className = 'extension-checkbox';
-                checkbox.dataset.buildingId = building.id;
-                checkbox.dataset.extensionId = extension.id;
-                checkbox.disabled = userInfo.credits < extension.cost && userInfo.coins < extension.coins;
-                checkbox.addEventListener('change', () => {
-                    updateBuildSelectedButton();
-
-                });
-                checkboxCell.appendChild(checkbox);
-                row.appendChild(checkboxCell);
-
-                const leitstelleCell = document.createElement('td');
-                leitstelleCell.textContent = getLeitstelleName(building);
-                row.appendChild(leitstelleCell);
-
-                const nameCell = document.createElement('td');
-                nameCell.textContent = building.caption;
-                row.appendChild(nameCell);
-
-                const extensionCell = document.createElement('td');
-                extensionCell.textContent = extension.name;
-                row.appendChild(extensionCell);
-
-                const creditCell = document.createElement('td');
-                const creditButton = document.createElement('button');
-                creditButton.textContent = `${formatNumber(extension.cost)} Credits`;
-                creditButton.classList.add('btn', 'btn-xl', 'credit-button');
-                creditButton.style.backgroundColor = '#28a745';
-                creditButton.style.color = 'white';
-                creditButton.disabled = userInfo.credits < extension.cost;
-                creditButton.onclick = () => buildExtension(building, extension.id, 'credits', extension.cost, row);
-                creditCell.appendChild(creditButton);
-                row.appendChild(creditCell);
-
-                const coinsCell = document.createElement('td');
-                const coinsButton = document.createElement('button');
-                coinsButton.textContent = `${extension.coins} Coins`;
-                coinsButton.classList.add('btn', 'btn-xl', 'coins-button');
-                coinsButton.style.backgroundColor = '#dc3545';
-                coinsButton.style.color = 'white';
-                coinsButton.disabled = userInfo.coins < extension.coins;
-                coinsButton.onclick = () => buildExtension(building, extension.id, 'coins', extension.coins, row);
-                coinsCell.appendChild(coinsButton);
-                row.appendChild(coinsCell);
-
-                tbody.appendChild(row);
-            });
-        });
-
-        contentWrapper.appendChild(table);
-        list.appendChild(contentWrapper);
-
-        function applyAllFilters(table, filters) {
-            const rows = table.querySelectorAll('tbody tr');
-            rows.forEach(row => {
-                let visible = true;
-                Object.entries(filters).forEach(([columnIndex, value]) => {
-                    const cellText = row.children[columnIndex]?.textContent.toLowerCase().trim() || '';
-                    if (value && cellText !== value.toLowerCase()) {
-                        visible = false;
-                    }
-                });
-                row.style.display = visible ? '' : 'none';
-            });
-        }
-
-        function updateSelectAllCheckboxState() {
-            const rows = tbody.querySelectorAll('tr');
-            let total = 0;
-            let checked = 0;
-            rows.forEach(row => {
-                if (row.style.display !== 'none') {
-                    const checkbox = row.querySelector('.extension-checkbox');
-                    if (checkbox && !checkbox.disabled) {
-                        total++;
-                        if (checkbox.checked) checked++;
-                    }
-                }
-            });
-        }
-
-        updateSelectAllCheckboxState();
-        updateBuildSelectedButton();
-    });
-}
+    }
 
     // Schließen-Button-Funktionalität
     document.getElementById('close-extension-helper').addEventListener('click', () => {
@@ -1312,13 +1313,9 @@
     async function buildSelectedExtensions() {
         const selectedExtensions = document.querySelectorAll('.extension-checkbox:checked');
 
-        // Checkboxen sofort entmarkieren
-        selectedExtensions.forEach(checkbox => {
-            checkbox.checked = false;
-        });
-
         const selectedExtensionsByBuilding = {};
 
+        // ZUERST Daten erfassen
         selectedExtensions.forEach(checkbox => {
             const buildingId = checkbox.dataset.buildingId;
             const extensionId = checkbox.dataset.extensionId;
@@ -1331,90 +1328,82 @@
 
         for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
             const building = buildingsData.find(b => String(b.id) === String(buildingId));
+            if (!building) continue;
 
-            if (!building) continue; // Falls das Gebäude nicht gefunden wird, einfach überspringen
-
-            // **Überprüfung nur für Kleinwachen**
+            // Regeln für Kleinwachen
             if (building.small_building) {
-                // Feuerwehr Kleinwache - ungültige Kombinationen
                 if (building.building_type === 0) {
-                    const invalidCombinationsFeuerwache = [0, 6, 8, 13, 14, 16, 18, 19, 25];
-                    const selectedInvalidExtensionsFeuerwache = extensions.filter(extensionId => invalidCombinationsFeuerwache.includes(extensionId));
-                    if (selectedInvalidExtensionsFeuerwache.length > 1) {
-                        showError("Information zu deinem Bauvorhaben:\n\nDiese Erweiterungen für die Feuerwache (Kleinwache) können nicht zusammen gebaut werden.\n\nBitte wähle nur eine Erweiterung aus.");
-
-                        // Master-Checkbox entmarkieren & Button deaktivieren
-                        document.querySelector('.select-all-checkbox').checked = false;
+                    const invalid = [0, 6, 8, 13, 14, 16, 18, 19, 25];
+                    if (extensions.filter(id => invalid.includes(id)).length > 1) {
+                        showError("Information zu deinem Bauvorhaben:\n\nDiese Erweiterungen für die Feuerwehr-Kleinwache können nicht zusammen gebaut werden.\n\nBitte wähle nur eine Erweiterung aus.");
                         updateBuildSelectedButton();
                         return;
-
                     }
                 }
 
-                // Polizeiwache Kleinwache - ungültige Kombinationen
                 if (building.building_type === 6) {
-                    const invalidCombinationsPolizei = [10, 11, 12, 13];
-                    const selectedInvalidExtensionsPolizei = extensions.filter(extensionId => invalidCombinationsPolizei.includes(extensionId));
-                    if (selectedInvalidExtensionsPolizei.length > 1) {
-                        showError("Information zu deinem Bauvorhaben:\n\nDiese Erweiterungen für die Polizeiwache (Kleinwache) können nicht zusammen gebaut werden.\n\nBitte wähle nur eine Erweiterung aus.");
-
-                        // Master-Checkbox entmarkieren & Button deaktivieren
-                        document.querySelector('.select-all-checkbox').checked = false;
+                    const invalid = [10, 11, 12, 13];
+                    if (extensions.filter(id => invalid.includes(id)).length > 1) {
+                        showError("Information zu deinem Bauvorhaben:\n\nDiese Erweiterungen für die Polizei-Kleinwache können nicht zusammen gebaut werden.\n\nBitte wähle nur eine Erweiterung aus.");
                         updateBuildSelectedButton();
                         return;
-
                     }
                 }
             }
         }
 
-        const userInfo = await getUserCredits(); // Holt die User-Daten
+        const userInfo = await getUserCredits();
 
-        // Beispiel zur Verwendung der Variable
-        if (user_premium) {
-            console.log("User is a premium member.");
-        } else {
-            console.log("User is not a premium member.");
-        }
-
-        // Fahren Sie mit der Verarbeitung fort, abhängig vom Premium-Status des Benutzers
         if (!user_premium) {
             for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
                 if (extensions.length > 2) {
-                    alert(`Zu viele Erweiterungen für Gebäude ${getBuildingCaption(buildingId)} ausgewählt.\n\nDa du keinen Premium-Account hast, kannst du maximal 2 Ausbauten auswählen.`);
-
-                    // Master-Checkbox entmarkieren & Button deaktivieren
-                    document.querySelector('.select-all-checkbox').checked = false;
+                    alert(`Zu viele Erweiterungen für Gebäude ${getBuildingCaption(buildingId)} ausgewählt.\n\nOhne Premium-Account sind maximal 2 Ausbauten möglich.`);
                     updateBuildSelectedButton();
                     return;
                 }
             }
         }
 
-        // Der Rest der Verarbeitung bleibt unverändert
+        // Optional: Credits & Coins berechnen (robust mit Prüfung)
         let totalCredits = 0;
         let totalCoins = 0;
-
-        // Berechnung der Gesamtkosten
         for (const [buildingId, extensions] of Object.entries(selectedExtensionsByBuilding)) {
             extensions.forEach(extensionId => {
                 const row = document.querySelector(`.row-${buildingId}-${extensionId}`);
-                totalCredits += parseInt(row.querySelector('.credit-button').innerText.replace(/\D/g, ''), 10);
-                totalCoins += parseInt(row.querySelector('.coins-button').innerText.replace(/\D/g, ''), 10);
+                if (!row) {
+                    console.warn(`⚠️ Zeile für Erweiterung ${extensionId} in Gebäude ${buildingId} nicht gefunden.`);
+                    return;
+                }
+
+                const creditElement = row.querySelector('.credit-button');
+                const coinElement = row.querySelector('.coins-button');
+
+                if (creditElement) {
+                    totalCredits += parseInt(creditElement.innerText.replace(/\D/g, ''), 10);
+                }
+
+                if (coinElement) {
+                    totalCoins += parseInt(coinElement.innerText.replace(/\D/g, ''), 10);
+                }
             });
         }
 
-        // Zeige Währungsauswahl, falls keine Fehler aufgetreten sind
+        // Zeige Coin/Credit-Auswahl
         showCurrencySelection(selectedExtensionsByBuilding, userInfo);
 
-        // Alle "Select All"-Checkboxen abwählen
-        document.querySelectorAll('.select-all-checkbox').forEach(checkbox => {
-            checkbox.checked = false;
-            checkbox.dispatchEvent(new Event('change')); // Event auslösen, falls nötig
-        });
+        // Checkboxen und Buttons erst jetzt zurücksetzen
+        setTimeout(() => {
+            selectedExtensions.forEach(checkbox => {
+                checkbox.checked = false;
+            });
 
-        // Sicherstellen, dass der Button deaktiviert wird
-        setTimeout(updateBuildSelectedButton, 100);
+            document.querySelectorAll('.select-all-checkbox').forEach(checkbox => {
+                checkbox.checked = false;
+                checkbox.dispatchEvent(new Event('change'));
+            });
+
+            updateBuildSelectedButton();
+        }, 100);
     }
 
     // Funktiom um eine Fehlermeldung auszugeben
