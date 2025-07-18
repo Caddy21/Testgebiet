@@ -455,9 +455,45 @@
         close.addEventListener('click', () => overlay.remove());
         panel.appendChild(close);
 
-        const title = document.createElement('h2');
-        title.textContent = 'Erweiterungen verwalten';
-        panel.appendChild(title);
+        // Beschreibung und Tabs
+        const description = document.createElement('div');
+
+        const descHeading = document.createElement('h4');
+        descHeading.style.marginBottom = '10px';
+        descHeading.textContent = '🛠️ Hier könnt ihr festlegen, welche Erweiterungen und Lagerräume pro Wachen-Typ angezeigt werden sollen.';
+        description.appendChild(descHeading);
+
+        const descText = document.createElement('p');
+        descText.textContent = 'Die Auswahl wird gespeichert und beim nächsten Besuch automatisch übernommen.';
+        description.appendChild(descText);
+
+        panel.appendChild(description);
+
+        // Tabs nur mit Erweiterungen (Lagerräume später)
+        const btnGroup = document.createElement('div');
+        btnGroup.style.marginBottom = '10px';
+
+        const extBtn = document.createElement('button');
+        extBtn.id = 'tab-ext-btn';
+        extBtn.className = 'tab-ext-btn active';
+        extBtn.textContent = 'Erweiterungen';
+        extBtn.style.background = '#007bff';
+        extBtn.style.color = 'white';
+        extBtn.style.padding = '6px 12px';
+        extBtn.style.marginRight = '6px';
+        extBtn.style.border = 'none';
+        extBtn.style.borderRadius = '4px';
+        extBtn.style.cursor = 'pointer';
+
+        btnGroup.appendChild(extBtn);
+        panel.appendChild(btnGroup);
+
+        // Container für den Inhalt
+        const tabContent = document.createElement('div');
+        tabContent.id = 'settings-tab-content';
+        tabContent.style.margin = '20px 0';
+        panel.appendChild(tabContent);
+
 
         const form = document.createElement('form');
 
@@ -594,6 +630,7 @@
             saveExtensionSettings(settings);
             alert('Einstellungen gespeichert!');
             overlay.remove();
+            location.reload();
         });
         btnContainer.appendChild(saveBtn);
 
@@ -713,29 +750,61 @@
     lightbox.id = 'extension-lightbox';
     lightbox.style.display = 'none';
     lightbox.innerHTML = `
-    <div id="extension-lightbox-content">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <button id="close-extension-helper">Schließen</button>
-            <button id="open-extension-settings" style="padding: 5px 10px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
-                ⚙️ Einstellungen
-            </button>
-        </div>
-        <h2>Erweiterungs-Manager</h2>
-        <h5>
-            <br>In den unteren Tabellen könnt Ihr eure Erweiterungen verwalten und über die verschiedenen Möglichkeiten in Auftrag geben.
-            <br>Feedback jeglicher Art könnt Ihr gern im Forum im entsprechenden Thread hinterlassen.
-        </h5>
+<div id="extension-lightbox-content">
+    <button id="close-extension-helper">Schließen</button>
+    <h3>🚒🏗️ <strong>Herzlich willkommen beim ultimativen Ausbau-Assistenten für eure Wachen!</strong> 🚒🏗️</h3>
+    <h2>
+        <br>Dem Erweiterungs-Manager
+    </h2>
+    <h5>
         <br>
+        <br>Dieses kleine Helferlein zeigt euch genau, wo noch Platz in euren Wachen ist: Welche <strong>Erweiterungen</strong> und <strong>Lagerräume</strong> noch möglich sind – und mit nur ein paar Klicks geht’s direkt in den Ausbau. Einfacher wird’s nicht!
+        <br>
+        <br>Und das Beste: Über den
+        <button id="open-extension-settings" style="
+            font-weight: 600;
+            color: #fff;
+            background-color: var(--primary-color, #007bff);
+            border: none;
+            padding: 6px 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 0 5px;
+        ">
+          Einstellungen
+        </button>
+        -Button könnt ihr festlegen, welche Erweiterungen und Lagerräume euch pro Wachen-Typ angezeigt werden – ganz nach eurem Geschmack. Einmal gespeichert, für immer gemerkt.
+        <br>
+        <br>Kleiner Hinweis am Rande: Feedback, Verbesserungsvorschläge oder Kritik zum Skript sind jederzeit im
+        <a href="https://forum.leitstellenspiel.de/index.php?thread/27856-script-erweiterungs-manager/" target="_blank" style="color:#007bff; text-decoration:none;">
+            <strong>Forum</strong>
+        </a> willkommen. 💌
+        <br>
+        <br>
+        <br>Und nun viel Spaß beim Credits oder Coins ausgeben!
         <div id="extension-list">
-            Bitte habe einen Moment Geduld!
-            <br><br>
-            Lade Gebäudedaten und erstelle die Tabellen...
+        Einen Moment Geduld bitte …
+        <br><br>
+        Gebäudedaten werden geladen, Kaffee kocht – gleich geht's los!
         </div>
-    </div>
+    </h5>
+</div>
 `;
 
     document.body.appendChild(lightbox);
-    document.getElementById('open-extension-settings').addEventListener('click', openExtensionSettingsOverlay);
+
+    const openBtn = document.getElementById('open-extension-settings');
+    openBtn.addEventListener('mouseenter', () => {
+        openBtn.style.backgroundColor = '#0056b3'; // dunkleres Blau beim Hover
+    });
+    openBtn.addEventListener('mouseleave', () => {
+        openBtn.style.backgroundColor = 'var(--primary-color, #007bff)';
+    });
+
+    openBtn.addEventListener('click', () => {
+        openExtensionSettingsOverlay();
+    });
 
     const lightboxContent = lightbox.querySelector('#extension-lightbox-content');
 
